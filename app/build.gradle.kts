@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.wizneylabs.kollie"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.wizneylabs.kollie"
