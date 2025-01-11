@@ -1,5 +1,6 @@
 package com.wizneylabs.kollie
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wizneylabs.kollie.ui.theme.KollieTheme
@@ -23,9 +26,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KollieTheme {
-
+                KollieApp()
             }
         }
+    }
+}
+
+@Composable
+fun KollieApp() {
+
+    val configuration = LocalConfiguration.current;
+
+    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+    {
+        MyCanvas();
+    }
+    else
+    {
+        MyCanvas2();
     }
 }
 
@@ -34,8 +52,6 @@ fun MyCanvas() {
     Canvas(modifier = Modifier
         .padding(vertical = 20.dp)
         .fillMaxSize()) {
-
-//        drawRect(color = Color.Blue);
 
         val multiColorGradient = Brush.verticalGradient(
             0f to Color.Red,
@@ -48,7 +64,19 @@ fun MyCanvas() {
     }
 }
 
-@Preview
+@Composable
+fun MyCanvas2() {
+    Canvas(modifier = Modifier
+        .padding(vertical = 20.dp)
+        .fillMaxSize()) {
+
+        drawRect(color = Color.Blue);
+    }
+}
+
+@Preview("Canvas Previews",
+    device = Devices.PIXEL_5,
+    )
 @Composable
 fun CanvasPreview() {
     KollieTheme {
