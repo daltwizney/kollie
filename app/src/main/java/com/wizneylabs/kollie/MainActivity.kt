@@ -1,5 +1,6 @@
 package com.wizneylabs.kollie
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.RuntimeShader
 import android.os.Bundle
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,11 +58,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun KollieApp(viewModel: MainViewModel) {
 
+    val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
 
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
     {
-        MyAGSLCanvas();
+        MyAGSLCanvas(context);
     }
     else
     {
@@ -84,24 +87,39 @@ fun KollieApp(viewModel: MainViewModel) {
     }
 }
 
+class ShaderLoader(private val context: Context) {
+    fun loadShader(fileName: String): String {
+        return context.resources
+            .assets
+            .open("shaders/$fileName")
+            .bufferedReader()
+            .use { it.readText() }
+    }
+}
+
 @Composable
-fun MyAGSLCanvas() {
+fun MyAGSLCanvas(context: Context) {
+
+//    val shader = remember {
+//        RuntimeShader("""
+//            uniform float2 resolution;
+//            uniform float time;
+//
+//            half4 main(float2 coord) {
+//                float2 uv = coord/resolution.xy;
+//                float3 color = float3(
+//                    sin(uv.x * 6.28 + time) * 0.5 + 0.5,
+//                    sin(uv.y * 6.28 + time) * 0.5 + 0.5,
+//                    sin((uv.x + uv.y) * 6.28 + time) * 0.5 + 0.5
+//                );
+//                return half4(color, 1.0);
+//            }
+//        """.trimIndent())
+//    }
 
     val shader = remember {
-        RuntimeShader("""
-            uniform float2 resolution;
-            uniform float time;
-            
-            half4 main(float2 coord) {
-                float2 uv = coord/resolution.xy;
-                float3 color = float3(
-                    sin(uv.x * 6.28 + time) * 0.5 + 0.5,
-                    sin(uv.y * 6.28 + time) * 0.5 + 0.5,
-                    sin((uv.x + uv.y) * 6.28 + time) * 0.5 + 0.5
-                );
-                return half4(color, 1.0);
-            }
-        """.trimIndent())
+//        RuntimeShader(ShaderLoader(context).loadShader("gradient.agsl"))
+        RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
     }
 
     var time by remember { mutableStateOf(0f) }
@@ -123,7 +141,8 @@ fun MyAGSLCanvas() {
             size.width,
             size.height
         )
-        shader.setFloatUniform("time", time)
+//        shader.setFloatUniform("time", time)
+        shader.setFloatUniform("radius", 0.3f);
 
         drawRect(
             brush = ShaderBrush(shader),

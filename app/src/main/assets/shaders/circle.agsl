@@ -1,0 +1,29 @@
+uniform float2 resolution;
+uniform float radius;
+
+float circle(float2 uv, float2 center, float radius) {
+    float aspect = resolution.x/resolution.y;
+
+    float2 aspectCorrectedUV = uv;
+    if (aspect > 1.0) {
+        aspectCorrectedUV.x = (uv.x - 0.5) * aspect + 0.5;
+    } else {
+        aspectCorrectedUV.y = (uv.y - 0.5) / aspect + 0.5;
+    }
+
+    float d = length(aspectCorrectedUV - center);
+
+    // Add anti-aliasing with smoothstep
+    // The 0.002 value controls the width of the smooth edge
+    // Smaller values = sharper edge, larger values = more blur
+    float edgeSmoothness = 0.005;
+
+    return smoothstep(radius + edgeSmoothness, radius - edgeSmoothness, d);
+}
+
+half4 main(float2 coord) {
+    float2 uv = coord/resolution.xy;
+    float2 center = float2(0.5, 0.5);
+    float c = circle(uv, center, radius);
+    return half4(c, c, c, 1.0);
+}
