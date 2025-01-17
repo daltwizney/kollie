@@ -1,6 +1,7 @@
 package com.wizneylabs.kollie
 
 import android.content.res.Configuration
+import android.graphics.RuntimeShader
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,11 +16,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -39,39 +47,88 @@ class MainActivity : ComponentActivity() {
             val viewModel: MainViewModel = viewModel();
 
             KollieTheme {
-                KollieApp()
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(text = viewModel.Count.value,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 42.sp
-                    )
-                    Button(onClick= { viewModel.increment() }) {
-                        Text("Increment")
-                    }
-                }
+                KollieApp(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun KollieApp() {
+fun KollieApp(viewModel: MainViewModel) {
 
     val configuration = LocalConfiguration.current;
 
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
     {
-        MyCanvas();
+        MyAGSLCanvas();
     }
     else
     {
-        MyCanvas2();
+        MyCanvas();
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = viewModel.Count.value,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                fontSize = 42.sp
+            )
+            Button(onClick= { viewModel.increment() }) {
+                Text("Increment")
+            }
+        }
+    }
+}
+
+@Composable
+fun MyAGSLCanvas() {
+
+    val shader = remember {
+        RuntimeShader("""
+            uniform float2 resolution;
+            uniform float time;
+            
+            half4 main(float2 coord) {
+                float2 uv = coord/resolution.xy;
+                float3 color = float3(
+                    sin(uv.x * 6.28 + time) * 0.5 + 0.5,
+                    sin(uv.y * 6.28 + time) * 0.5 + 0.5,
+                    sin((uv.x + uv.y) * 6.28 + time) * 0.5 + 0.5
+                );
+                return half4(color, 1.0);
+            }
+        """.trimIndent())
+    }
+
+    var time by remember { mutableStateOf(0f) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            withFrameNanos { frameTimeNanos ->
+                time = (frameTimeNanos / 1_000_000_000f)
+            }
+        }
+    }
+
+    Canvas(modifier = Modifier
+        .padding(vertical = 20.dp)
+        .fillMaxSize()
+    ) {
+        shader.setFloatUniform(
+            "resolution",
+            size.width,
+            size.height
+        )
+        shader.setFloatUniform("time", time)
+
+        drawRect(
+            brush = ShaderBrush(shader),
+            size = size
+        )
     }
 }
 
