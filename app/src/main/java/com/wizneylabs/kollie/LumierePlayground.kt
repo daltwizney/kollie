@@ -2,6 +2,7 @@ package com.wizneylabs.kollie
 
 import android.content.Context
 import android.graphics.RuntimeShader
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -48,7 +49,14 @@ fun MyAGSLCanvas(context: Context) {
 
     val shader = remember {
 //        RuntimeShader(ShaderLoader(context).loadShader("gradient.agsl"))
-        RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
+//        RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
+
+        try {
+            RuntimeShader(ShaderLoader(context).loadShader("emissiveCircle.agsl"))
+        } catch (e: IllegalArgumentException) {
+            Log.e("Shader", "Compilation failed: ${e.message}")
+            null
+        }
     }
 
     var time by remember { mutableStateOf(0f) }
@@ -61,21 +69,25 @@ fun MyAGSLCanvas(context: Context) {
         }
     }
 
-    Canvas(modifier = Modifier
-        .padding(vertical = 20.dp)
-        .fillMaxSize()
-    ) {
-        shader.setFloatUniform(
-            "resolution",
-            size.width,
-            size.height
-        )
-//        shader.setFloatUniform("time", time)
-        shader.setFloatUniform("radius", 0.3f);
+    if (shader != null)
+    {
+        Canvas(modifier = Modifier
+            .padding(vertical = 20.dp)
+            .fillMaxSize()
+        ) {
 
-        drawRect(
-            brush = ShaderBrush(shader),
-            size = size
-        )
+            shader.setFloatUniform(
+                "resolution",
+                size.width,
+                size.height
+            )
+//        shader.setFloatUniform("time", time)
+//            shader.setFloatUniform("radius", 0.3f);
+
+            drawRect(
+                brush = ShaderBrush(shader),
+                size = size
+            )
+        }
     }
 }

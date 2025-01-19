@@ -1,0 +1,50 @@
+uniform float2 resolution;
+
+// Parameters for the circle
+const float CIRCLE_RADIUS = 0.15;    // Slightly smaller main circle
+const float GLOW_RADIUS = 0.8;       // Much larger glow radius
+const float3 CIRCLE_COLOR = float3(1.0, 0.4, 0.1);  // Orange-red color
+const float3 GLOW_COLOR = float3(1.0, 0.2, 0.05);   // Darker orange for the glow
+
+float circleSDF(float2 p, float2 center) {
+    return length(p - center);
+}
+
+// Helper function to create a glow layer
+float createGlow(float dist, float radius, float intensity) {
+    float glow = 1.0 - smoothstep(0.0, radius, dist);
+    return pow(glow, intensity);
+}
+
+half4 main(float2 coord) {
+    // Normalize coordinates to [0,1] range
+    float2 uv = coord / resolution;
+
+    // Center and scale coordinates to [-1,1] range
+    uv = (uv * 2.0 - 1.0) * float2(resolution.x / resolution.y, 1.0);
+
+    // Calculate distance from center
+    float dist = circleSDF(uv, float2(0.0, 0.0));
+
+    // Create the main circle with soft edges
+    float circle = 1.0 - smoothstep(CIRCLE_RADIUS - 0.01, CIRCLE_RADIUS + 0.01, dist);
+
+    // Create multiple layers of glow with different intensities
+    float glow1 = createGlow(dist, GLOW_RADIUS, 1.5) * 0.6;        // Wide, subtle glow
+    float glow2 = createGlow(dist, GLOW_RADIUS * 0.5, 2.0) * 0.8;  // Medium glow
+    float glow3 = createGlow(dist, GLOW_RADIUS * 0.25, 3.0);       // Intense inner glow
+
+    // Combine all glow layers
+    float totalGlow = glow1 + glow2 + glow3;
+
+    // Combine circle and enhanced glow
+    float3 color = CIRCLE_COLOR * circle + GLOW_COLOR * totalGlow * (1.0 - circle);
+
+    // Add extra brightness to the center
+    color += CIRCLE_COLOR * (1.0 - smoothstep(0.0, CIRCLE_RADIUS * 0.3, dist)) * 2.0;
+
+    // Boost overall brightness
+    color *= 1.5;
+
+    return half4(color, 1.0);
+}

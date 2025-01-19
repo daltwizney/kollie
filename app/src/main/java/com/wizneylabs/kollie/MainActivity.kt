@@ -65,5 +65,6 @@ fun KollieApp(viewModel: MainViewModel) {
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
 
-    KollieCanvas(viewModel);
+//    KollieCanvas(viewModel);
+    MyAGSLCanvas(context);
 }
