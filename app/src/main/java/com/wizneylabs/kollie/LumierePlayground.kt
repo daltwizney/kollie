@@ -30,29 +30,11 @@ class ShaderLoader(private val context: Context) {
 @Composable
 fun MyAGSLCanvas(context: Context) {
 
-//    val shader = remember {
-//        RuntimeShader("""
-//            uniform float2 resolution;
-//            uniform float time;
-//
-//            half4 main(float2 coord) {
-//                float2 uv = coord/resolution.xy;
-//                float3 color = float3(
-//                    sin(uv.x * 6.28 + time) * 0.5 + 0.5,
-//                    sin(uv.y * 6.28 + time) * 0.5 + 0.5,
-//                    sin((uv.x + uv.y) * 6.28 + time) * 0.5 + 0.5
-//                );
-//                return half4(color, 1.0);
-//            }
-//        """.trimIndent())
-//    }
-
     val shader = remember {
-//        RuntimeShader(ShaderLoader(context).loadShader("gradient.agsl"))
-//        RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
 
         try {
-            RuntimeShader(ShaderLoader(context).loadShader("emissiveCircle.agsl"))
+//        RuntimeShader(ShaderLoader(context).loadShader("gradient.agsl"))
+        RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
         } catch (e: IllegalArgumentException) {
             Log.e("Shader", "Compilation failed: ${e.message}")
             null
@@ -81,8 +63,9 @@ fun MyAGSLCanvas(context: Context) {
                 size.width,
                 size.height
             )
-//        shader.setFloatUniform("time", time)
-//            shader.setFloatUniform("radius", 0.3f);
+
+//            shader.setFloatUniform("time", time)
+            shader.setFloatUniform("radius", 0.3f);
 
             drawRect(
                 brush = ShaderBrush(shader),
