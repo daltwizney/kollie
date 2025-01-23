@@ -69,9 +69,9 @@ fun KollieApp() {
             horizontalWalks, verticalWalks)
     );
 
-    MazeRenderer(pathfinderAppViewModel, cellSizePx);
+//    MazeRenderer(pathfinderAppViewModel, cellSizePx);
 //    KollieCanvas(mainViewModel);
-//    MyAGSLCanvas(context);
+    MyAGSLCanvas(context);
 }
 
 @Composable
