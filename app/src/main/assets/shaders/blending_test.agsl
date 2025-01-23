@@ -1,0 +1,14 @@
+uniform float4 colorA;
+uniform float4 colorB;
+
+uniform float2 resolution;
+
+half4 main(float2 fragCoord) {
+
+    float2 uv = fragCoord / resolution;
+
+    float delta = uv.x;
+    float3 color = mix(colorA.rgb, colorB.rgb, delta);
+
+    return float4(color, 1.0);
+}

@@ -33,8 +33,9 @@ fun MyAGSLCanvas(context: Context) {
     val shader = remember {
 
         try {
-//        RuntimeShader(ShaderLoader(context).loadShader("gradient.agsl"))
-        RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
+//            RuntimeShader(ShaderLoader(context).loadShader("gradient.agsl"))
+//            RuntimeShader(ShaderLoader(context).loadShader("circle.agsl"))
+            RuntimeShader(ShaderLoader(context).loadShader("blending_test.agsl"));
         } catch (e: IllegalArgumentException) {
             Log.e("Shader", "Compilation failed: ${e.message}")
             null
@@ -58,6 +59,12 @@ fun MyAGSLCanvas(context: Context) {
             .fillMaxSize()
         ) {
 
+            shader.setFloatUniform("colorA",
+                floatArrayOf(1.0f, 0.0f, 0.0f, 1.0f));
+
+            shader.setFloatUniform("colorB",
+                floatArrayOf(0.0f, 0.0f, 1.0f, 1.0f));
+
             shader.setFloatUniform(
                 "resolution",
                 size.width,
@@ -65,7 +72,7 @@ fun MyAGSLCanvas(context: Context) {
             )
 
 //            shader.setFloatUniform("time", time)
-            shader.setFloatUniform("radius", 0.3f);
+//            shader.setFloatUniform("radius", 0.3f);
 
             drawRect(
                 brush = ShaderBrush(shader),
