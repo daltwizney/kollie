@@ -6,6 +6,28 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 
 class InputManager {
 
+    /**
+     *  TODO: we want to create a state machine here that gets updated every frame so we can support
+     *  both polling and event-based input handling in kollie.
+     *
+     *  How Phaser handles input:
+     *
+     *  Phaser maintains an event queue between frames. When input events occur, they're added to
+     *  this queue chronologically. During the next frame's update, Phaser processes the entire
+     *  queue in order, so even brief interactions like quick clicks (mousedown + mouseup) get
+     *  processed. This means your game logic can check for these events, even if they both
+     *  occurred in the time between frames.
+     *
+     *  if both events happened between frames, Phaser will report both justDown and justUp as true
+     *  in the same frame. This way your game code can detect and handle quick taps or clicks that
+     *  occurred between frame updates.
+     *
+     * Phaser clears the input state for one-shot checks like justDown/justUp at the end of each
+     * frame update. The actual input states (isDown, isUp) persist, but the "just" flags are reset
+     * so they'll only trigger once per press/release event.
+     *
+     */
+
     val TAG = InputManager::class.simpleName;
 
     fun handleTap(offset: Offset) {
