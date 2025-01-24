@@ -96,18 +96,18 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
         .fillMaxSize()
         .pointerInput(Unit) {
             detectTapGestures (
-                onTap = { offset -> viewModel.handleTap(offset )},
-                onDoubleTap = { offset  -> viewModel.handleDoubleTap(offset) },
-                onPress = { offset -> viewModel.handlePress(offset) },
-                onLongPress = { offset -> viewModel.handleLongPress(offset) }
+                onTap = { offset -> viewModel.input.handleTap(offset )},
+                onDoubleTap = { offset  -> viewModel.input.handleDoubleTap(offset) },
+                onPress = { offset -> viewModel.input.handlePress(offset) },
+                onLongPress = { offset -> viewModel.input.handleLongPress(offset) }
             )
         }
         .pointerInput(Unit) {
             detectDragGestures(
-                onDragStart = { offset -> viewModel.handleDragStart(offset) },
-                onDrag = { change, dragAmount -> viewModel.handleDrag(change, dragAmount) },
-                onDragEnd = { viewModel.handleDragEnd() },
-                onDragCancel = { viewModel.handleDragCanceled() }
+                onDragStart = { offset -> viewModel.input.handleDragStart(offset) },
+                onDrag = { change, dragAmount -> viewModel.input.handleDrag(change, dragAmount) },
+                onDragEnd = { viewModel.input.handleDragEnd() },
+                onDragCancel = { viewModel.input.handleDragCanceled() }
             )
         }
     ) {
