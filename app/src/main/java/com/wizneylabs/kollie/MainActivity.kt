@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -99,6 +100,14 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
                 onDoubleTap = { offset  -> viewModel.handleDoubleTap(offset) },
                 onPress = { offset -> viewModel.handlePress(offset) },
                 onLongPress = { offset -> viewModel.handleLongPress(offset) }
+            )
+        }
+        .pointerInput(Unit) {
+            detectDragGestures(
+                onDragStart = { offset -> viewModel.handleDragStart(offset) },
+                onDrag = { change, dragAmount -> viewModel.handleDrag(change, dragAmount) },
+                onDragEnd = { viewModel.handleDragEnd() },
+                onDragCancel = { viewModel.handleDragCanceled() }
             )
         }
     ) {
