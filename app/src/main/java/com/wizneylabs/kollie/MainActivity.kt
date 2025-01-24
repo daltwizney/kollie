@@ -1,5 +1,6 @@
 package com.wizneylabs.kollie
 
+import android.app.Application
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -21,7 +23,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleEventObserver
 import com.wizneylabs.kollie.ui.theme.KollieTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -81,6 +85,23 @@ fun KollieApp() {
 fun MazeRenderer(viewModel: PathfinderAppViewModel,
                  cellSizePx: Int) {
 
+    // this code is here to let the view model know about
+    // activity life cycle changes!
+    val lifecycle = LocalLifecycleOwner.current.lifecycle;
+
+    DisposableEffect(lifecycle) {
+
+        Log.d("DisposableEffectTest", "RUNNING AGAIN!");
+
+        val observer = LifecycleEventObserver { _, event ->
+            viewModel.handleLifecycleEvent(event)
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
+
     Log.d("MazeRenderer", "drawing maze!");
 
     val context = LocalContext.current;
@@ -111,6 +132,10 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
             )
         }
     ) {
+        val frameCount = viewModel.frameCounter.value;
+
+        Log.d("MazeRenderer", "game loop running! frameCount = ${frameCount}");
+
         for (i in 0..rows - 1)
         {
             for (j in 0..columns - 1)
