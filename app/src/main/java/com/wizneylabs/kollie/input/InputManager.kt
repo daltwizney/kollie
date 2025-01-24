@@ -7,6 +7,13 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 class InputManager {
 
     /**
+     *  TODO: for now, let's just expose some event-based input handling to kollie components,
+     *  so we can build the pathfinder demo app w/o polling input support.
+     *
+     *  Add polling input support later, as per notes below:
+     */
+
+    /**
      *  TODO: we want to create a state machine here that gets updated every frame so we can support
      *  both polling and event-based input handling in kollie.
      *
