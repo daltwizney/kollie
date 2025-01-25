@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wizneylabs.kollie.input.InputManager
 import com.wizneylabs.kollie.pathfinder.Maze
+import com.wizneylabs.kollie.utils.SlidingWindow
 
 class PathfinderAppViewModelFactory(
     private val width: Int,
@@ -22,27 +23,6 @@ class PathfinderAppViewModelFactory(
             width, height, horizontalWalks, verticalWalks
         ) as T;
     }
-}
-
-class SlidingWindow<T>(val maxSize: Int) {
-    val deque = ArrayDeque<T>(maxSize)
-
-    fun add(item: T) {
-        if (deque.size >= maxSize) {
-            deque.removeFirst()
-        }
-        deque.addLast(item)
-    }
-
-    fun first(): T {
-        return deque.first();
-    }
-
-    fun last(): T {
-        return deque.last();
-    }
-
-    fun getItems(): List<T> = deque.toList()
 }
 
 class PathfinderAppViewModel(
@@ -70,28 +50,28 @@ class PathfinderAppViewModel(
 
     var frameCounter = mutableStateOf(0L);
 
-    var frameTime = 0.0f;
+    var timeSeconds = 0.0f;
 
     var fps = mutableStateOf(0.0f);
-
-    private var _fps =  0.0f;
+    var frameTime = mutableStateOf(0.0f);
 
     private var _frameBuffer = SlidingWindow<Float>(120);
 
     private var _debug = true;
 
-    fun updateGame(frameTimeSeconds: Float) {
+    fun updateGame(timeSeconds: Float) {
 
-        this.frameTime = frameTimeSeconds;
+        this.timeSeconds = timeSeconds;
         frameCounter.value++;
 
         if (_debug) {
 
-            _frameBuffer.add(this.frameTime);
+            _frameBuffer.add(this.timeSeconds);
 
-            if (frameCounter.value % 30L == 0L) {
+            if (frameCounter.value % 60L == 0L) {
 
                 fps.value = _frameBuffer.maxSize / (_frameBuffer.last() - _frameBuffer.first());
+                frameTime.value = 1.0f/fps.value;
             }
 
             Log.d(TAG, "fps = ${fps.value}");

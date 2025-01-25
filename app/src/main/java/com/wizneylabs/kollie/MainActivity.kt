@@ -93,6 +93,41 @@ fun KollieApp() {
 }
 
 @Composable
+fun DebugUI(viewModel: PathfinderAppViewModel) {
+
+    Column(modifier = Modifier
+        .offset(x = 0.dp, y = 20.dp)
+        .background(Color.Black.copy(alpha = 0.7f))
+        .padding(2.dp, 2.dp)
+        .clearAndSetSemantics {  },
+    ) {
+        val fps = viewModel.fps.value;
+        val frameTime = viewModel.frameTime.value * 1000;
+
+        var fpsColor = Color.Red;
+
+        if (fps > 58.0f)
+        {
+            fpsColor = Color.Green;
+        }
+        else if (fps > 50.0f)
+        {
+            fpsColor = Color.Yellow;
+        }
+
+        Text(
+            text = "FPS: ${("%.1f").format(fps)}",
+            modifier = Modifier,
+            color = fpsColor,
+        );
+
+        Text(text = "dT: ${("%.1f").format(frameTime) }",
+            modifier = Modifier,
+            color = fpsColor);
+    }
+}
+
+@Composable
 fun MazeRenderer(viewModel: PathfinderAppViewModel,
                  cellSizePx: Int) {
 
@@ -100,10 +135,10 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
 
         while (true) {
 
-            withFrameNanos { frameTimeNanos ->
+            withFrameNanos { timeNanos ->
 
                 // Your update code here
-                viewModel.updateGame(frameTimeNanos / 1_000_000_000f);
+                viewModel.updateGame(timeNanos / 1_000_000_000f);
 
 //                Log.d("MazeRenderer", "frame count = ${viewModel.frameCounter.value}");
 //                Log.d("MazeRenderer", "frame time = ${viewModel.frameTime}");
@@ -172,29 +207,6 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
             }
         }
 
-        Column(modifier = Modifier
-            .offset(x = 0.dp, y = 20.dp)
-            .background(Color.Black.copy(alpha = 0.7f))
-            .padding(2.dp, 2.dp)
-            .clearAndSetSemantics {  },
-        ) {
-            val fps = viewModel.fps.value;
-            var fpsColor = Color.Red;
-
-            if (fps > 58.0f)
-            {
-                fpsColor = Color.Green;
-            }
-            else if (fps > 50.0f)
-            {
-                fpsColor = Color.Yellow;
-            }
-
-            Text(
-                text = "FPS: ${("%.1f").format(fps)}",
-                modifier = Modifier,
-                color = fpsColor,
-            );
-        }
+        DebugUI(viewModel);
     }
 }
