@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.withFrameNanos
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -25,10 +27,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.wizneylabs.kollie.ui.theme.KollieTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,24 +89,23 @@ fun KollieApp() {
 fun MazeRenderer(viewModel: PathfinderAppViewModel,
                  cellSizePx: Int) {
 
-    // this code is here to let the view model know about
-    // activity life cycle changes!
-    val lifecycle = LocalLifecycleOwner.current.lifecycle;
+    LaunchedEffect(Unit) {
 
-    DisposableEffect(lifecycle) {
+        while (true) {
 
-        Log.d("DisposableEffectTest", "RUNNING AGAIN!");
+            withFrameNanos { frameTimeNanos ->
 
-        val observer = LifecycleEventObserver { _, event ->
-            viewModel.handleLifecycleEvent(event)
-        }
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
+                // Your update code here
+                viewModel.updateGame(frameTimeNanos / 1_000_000_000f);
+
+                Log.d("MazeRenderer", "frame count = ${viewModel.frameCounter.value}");
+//                Log.d("MazeRenderer", "frame time = ${viewModel.frameTime}");
+//                Log.d("MazeRenderer", "fps = ${viewModel.fps}");
+            }
         }
     }
 
-    Log.d("MazeRenderer", "drawing maze!");
+    Log.d("MazeRenderer", "RECOMPOSITION HAPPENED - drawing maze!");
 
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
@@ -133,8 +136,6 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
         }
     ) {
         val frameCount = viewModel.frameCounter.value;
-
-        Log.d("MazeRenderer", "game loop running! frameCount = ${frameCount}");
 
         for (i in 0..rows - 1)
         {

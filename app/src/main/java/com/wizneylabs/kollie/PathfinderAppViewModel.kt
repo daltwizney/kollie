@@ -5,15 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.wizneylabs.kollie.input.InputManager
 import com.wizneylabs.kollie.pathfinder.Maze
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class PathfinderAppViewModelFactory(
     private val width: Int,
@@ -27,6 +22,27 @@ class PathfinderAppViewModelFactory(
             width, height, horizontalWalks, verticalWalks
         ) as T;
     }
+}
+
+class SlidingWindow<T>(val maxSize: Int) {
+    val deque = ArrayDeque<T>(maxSize)
+
+    fun add(item: T) {
+        if (deque.size >= maxSize) {
+            deque.removeFirst()
+        }
+        deque.addLast(item)
+    }
+
+    fun first(): T {
+        return deque.first();
+    }
+
+    fun last(): T {
+        return deque.last();
+    }
+
+    fun getItems(): List<T> = deque.toList()
 }
 
 class PathfinderAppViewModel(
@@ -52,77 +68,28 @@ class PathfinderAppViewModel(
     val Height: Int
         get() = _height
 
-    var frameCounter = mutableStateOf(0);
+    var frameCounter = mutableStateOf(0L);
 
-    suspend fun updateGame() {
+    var frameTime = 0.0f;
 
-        delay(16);
+    var fps = 0.0f;
 
+    private var _frameBuffer = SlidingWindow<Float>(120);
+
+    fun updateGame(frameTimeSeconds: Float) {
+
+        this.frameTime = frameTimeSeconds;
         frameCounter.value++;
-    }
 
-    private var _gameLoopJob: Job? = null;
+        _frameBuffer.add(this.frameTime);
+
+        fps = _frameBuffer.maxSize / (_frameBuffer.last() - _frameBuffer.first());
+    }
 
     init {
 
         maze = Maze(_width, _height);
         maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
-
-        this.startGameLoop();
     }
 
-    fun startGameLoop() {
-
-        if (_gameLoopJob == null)
-        {
-            _gameLoopJob = viewModelScope.launch {
-
-                // TODO: this is wrong - you want this to be lifecycle aware!
-
-                while (true) {
-
-                    updateGame();
-                }
-            }
-        }
-    }
-
-    fun stopGameLoop() {
-
-        if (_gameLoopJob != null)
-        {
-            _gameLoopJob?.cancel();
-            _gameLoopJob = null;
-        }
-    }
-
-    fun handleLifecycleEvent(event: Lifecycle.Event) {
-
-        // this is how the viewmodel can tell what the activity lifecycle
-        // currently is...
-
-        when (event) {
-            Lifecycle.Event.ON_CREATE -> {
-                // Initialize resources
-            }
-            Lifecycle.Event.ON_START -> {
-                // Become visible
-            }
-            Lifecycle.Event.ON_RESUME -> {
-                // Gain focus, start animations/updates
-                this.startGameLoop();
-            }
-            Lifecycle.Event.ON_PAUSE -> {
-                // Lose focus, pause animations/updates
-                this.stopGameLoop();
-            }
-            Lifecycle.Event.ON_STOP -> {
-                // No longer visible
-            }
-            Lifecycle.Event.ON_DESTROY -> {
-                // Clean up resources
-            }
-            else -> {}
-        }
-    }
 }
