@@ -1,8 +1,13 @@
 package com.wizneylabs.kollie.pathfinder
 
 import com.wizneylabs.kollie.core.Component
+import com.wizneylabs.kollie.core.Entity
 
-class GridRenderer: Component() {
+// TODO: this isn't good - we don't want the component to know about the entity in its
+// constructor...
+
+class GridRenderer(private val entity: Entity):
+    Component(entity, 0) {
 
     var rows: Int = 0;
     var columns: Int = 0;

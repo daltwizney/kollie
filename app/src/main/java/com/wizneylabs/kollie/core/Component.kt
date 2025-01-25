@@ -3,6 +3,11 @@ package com.wizneylabs.kollie.core
 open class Component(private val entity: Entity,
                      private val _id: Int) {
 
+    init {
+
+        throw RuntimeException("TODO: bad design - Component constructor can't have params!");
+    }
+
     val id: Int
         get() = _id;
 

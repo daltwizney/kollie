@@ -2,9 +2,6 @@ package com.wizneylabs.kollie
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.vector.Path
-import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wizneylabs.kollie.input.InputManager
@@ -50,7 +47,10 @@ class PathfinderAppViewModel(
 
     var frameCounter = mutableStateOf(0L);
 
-    var timeSeconds = 0.0f;
+    private var _lastFrameTime = 0.0f; // seconds
+
+    var _time = 0.0f; // seconds
+    var _deltaTime = 0.0f; // seconds
 
     var fps = mutableStateOf(0.0f);
     var frameTime = mutableStateOf(0.0f);
@@ -61,12 +61,16 @@ class PathfinderAppViewModel(
 
     fun updateGame(timeSeconds: Float) {
 
-        this.timeSeconds = timeSeconds;
+        _deltaTime = timeSeconds - _lastFrameTime;
+
+        _time = timeSeconds;
+        _lastFrameTime = timeSeconds;
+
         frameCounter.value++;
 
         if (_debug) {
 
-            _frameBuffer.add(this.timeSeconds);
+            _frameBuffer.add(this._time);
 
             if (frameCounter.value % 60L == 0L) {
 

@@ -141,7 +141,7 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
                 viewModel.updateGame(timeNanos / 1_000_000_000f);
 
 //                Log.d("MazeRenderer", "frame count = ${viewModel.frameCounter.value}");
-//                Log.d("MazeRenderer", "frame time = ${viewModel.frameTime}");
+//                Log.d("MazeRenderer", "frame time = ${viewModel._time}");
 //                Log.d("MazeRenderer", "fps = ${viewModel.fps}");
             }
         }
