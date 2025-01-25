@@ -3,6 +3,9 @@ package com.wizneylabs.kollie.core
 open class Component(private val entity: Entity,
                      private val _id: Int) {
 
+    val id: Int
+        get() = _id;
+
     // TODO: we'll need to create the components this way,
     // where the user instantiates a component object
     // and the component registers itself with the entity

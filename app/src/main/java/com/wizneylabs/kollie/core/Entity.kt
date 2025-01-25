@@ -13,7 +13,19 @@ class Entity(val scene: Scene,
         });
     }
 
-    fun AddComponent(component: Component) {
+    inline fun <reified T: Component> AddComponent(): T {
+
+        // TODO: pass a unique component ID!
+        val component: Component = T::class.java.getDeclaredConstructor().newInstance(this, 0);
+
+        this.AddExistingComponent(component);
+
+        return component as T;
+    }
+
+    fun AddExistingComponent(component: Component) {
+
+        // TODO: check if component ID is already reserved, if so throw an error!
 
         _components.add(component);
 
