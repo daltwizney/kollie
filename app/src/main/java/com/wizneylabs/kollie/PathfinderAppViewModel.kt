@@ -72,18 +72,40 @@ class PathfinderAppViewModel(
 
     var frameTime = 0.0f;
 
-    var fps = 0.0f;
+    var fps = mutableStateOf(0.0f);
+
+    private var _fps =  0.0f;
 
     private var _frameBuffer = SlidingWindow<Float>(120);
+
+    private var _debug = true;
 
     fun updateGame(frameTimeSeconds: Float) {
 
         this.frameTime = frameTimeSeconds;
         frameCounter.value++;
 
-        _frameBuffer.add(this.frameTime);
+        if (_debug) {
 
-        fps = _frameBuffer.maxSize / (_frameBuffer.last() - _frameBuffer.first());
+            _frameBuffer.add(this.frameTime);
+
+            if (frameCounter.value % 30L == 0L) {
+
+                fps.value = _frameBuffer.maxSize / (_frameBuffer.last() - _frameBuffer.first());
+            }
+
+            Log.d(TAG, "fps = ${fps.value}");
+        }
+    }
+
+    fun setDebugEnabled(enabled: Boolean) {
+
+        if (enabled == _debug)
+        {
+            return;
+        }
+
+        _debug = enabled;
     }
 
     init {

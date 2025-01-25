@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -171,14 +172,29 @@ fun MazeRenderer(viewModel: PathfinderAppViewModel,
             }
         }
 
-        Text(
-            text = "FPS: 900,000",
-            modifier = Modifier
-                .offset(x = 0.dp, y = 20.dp)
-                .background(Color.Black.copy(alpha = 0.7f))
-                .padding(2.dp, 2.dp)
-                .clearAndSetSemantics {  },
-            color = Color.Green,
-        );
+        Column(modifier = Modifier
+            .offset(x = 0.dp, y = 20.dp)
+            .background(Color.Black.copy(alpha = 0.7f))
+            .padding(2.dp, 2.dp)
+            .clearAndSetSemantics {  },
+        ) {
+            val fps = viewModel.fps.value;
+            var fpsColor = Color.Red;
+
+            if (fps > 58.0f)
+            {
+                fpsColor = Color.Green;
+            }
+            else if (fps > 50.0f)
+            {
+                fpsColor = Color.Yellow;
+            }
+
+            Text(
+                text = "FPS: ${("%.1f").format(fps)}",
+                modifier = Modifier,
+                color = fpsColor,
+            );
+        }
     }
 }
