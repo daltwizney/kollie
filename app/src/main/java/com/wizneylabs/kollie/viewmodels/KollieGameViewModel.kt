@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wizneylabs.kollie.input.InputManager
 import com.wizneylabs.kollie.pathfinder.Maze
+import com.wizneylabs.kollie.physics.GridCollisionQueryInput
+import com.wizneylabs.kollie.physics.GridCollisionQueryOutput
 import com.wizneylabs.kollie.utils.SlidingWindow
 
 import com.wizneylabs.kollie.physics.NativeLib
@@ -77,13 +79,14 @@ class KollieGameViewModel(
     val horizontalWalks = horizontalWalks;
     val verticalWalks = verticalWalks;
 
+    val physics = NativeLib();
+
     init {
 
         maze = Maze(columns, rows);
         maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
 
-        val lib = NativeLib();
-        Log.d("NativeTest", lib.stringFromJNI());
+        Log.d("NativeTest", physics.stringFromJNI());
 
         this.input.onTap.add(this::handleTapInput);
     }
@@ -92,8 +95,18 @@ class KollieGameViewModel(
 
 //        Log.d(TAG + "TapInput", "tap offset: ${offset}");
 
-        val row = (offset.y / cellSize).toInt();
-        val column = (offset.x / cellSize).toInt();
+//        val row = (offset.y / cellSize).toInt();
+//        val column = (offset.x / cellSize).toInt();
+
+        var queryInput = GridCollisionQueryInput();
+        queryInput.pointX = offset.x.toInt();
+        queryInput.pointY = offset.y.toInt();
+        queryInput.cellSize = this.cellSize;
+
+        val queryResult = physics.gridCollisionQuery(queryInput);
+
+        val row = queryResult.row;
+        val column = queryResult.column;
 
         Log.d(TAG + "TapInput", "clicked cell: (${row}, ${column})");
     }
