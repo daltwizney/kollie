@@ -58,30 +58,24 @@ fun KollieApp() {
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
 
-    val screenWidth = configuration.screenWidthDp.dp;
-    val screenHeight = configuration.screenHeightDp.dp;
+    val screenWidthDp = configuration.screenWidthDp.dp;
+    val screenHeightDp = configuration.screenHeightDp.dp;
 
-    val screenWidthPx = with (LocalDensity.current) { screenWidth.toPx() };
-    val screenHeightPx = with (LocalDensity.current) { screenHeight.toPx() };
+    val screenWidth = (with (LocalDensity.current) { screenWidthDp.toPx() }).toInt();
+    val screenHeight = (with (LocalDensity.current) { screenHeightDp.toPx() }).toInt();
 
-    val cellSize = 20.dp;
+    val cellSize = 100;
+
     val horizontalWalks = 3;
     val verticalWalks = 6;
 
-    val cellSizePx = (with (LocalDensity.current) { cellSize.toPx() }).toInt();
-
-    // number of rows and columns for maze is based on screen 'landscape' orientation!
-    val rows = (screenHeightPx / cellSizePx).toInt();
-    val columns = (screenWidthPx / cellSizePx).toInt();
-
-    Log.d("MazeRenderer", "rows = ${rows}, cols = ${columns}");
-
     val pathfinderAppViewModel = viewModel<KollieGameViewModel>(
-        factory = KollieGameViewModelFactory(columns, rows,
+        factory = KollieGameViewModelFactory(
+            screenWidth, screenHeight, cellSize,
             horizontalWalks, verticalWalks)
     );
 
-    MazeRenderer(pathfinderAppViewModel, cellSizePx);
+    MazeRenderer(pathfinderAppViewModel);
 //    KollieCanvas(mainViewModel);
 //    MyAGSLCanvas(context);
 }
@@ -122,8 +116,7 @@ fun DebugUI(viewModel: KollieGameViewModel) {
 }
 
 @Composable
-fun MazeRenderer(viewModel: KollieGameViewModel,
-                 cellSizePx: Int) {
+fun MazeRenderer(viewModel: KollieGameViewModel) {
 
     LaunchedEffect(Unit) {
 
@@ -140,8 +133,6 @@ fun MazeRenderer(viewModel: KollieGameViewModel,
             }
         }
     }
-
-    Log.d("MazeRenderer", "RECOMPOSITION HAPPENED - drawing maze!");
 
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
@@ -176,6 +167,8 @@ fun MazeRenderer(viewModel: KollieGameViewModel,
         ) {
             val frameCount = viewModel.frameCounter.value;
 
+            val cellSize = viewModel.cellSize;
+
             for (i in 0..rows - 1)
             {
                 for (j in 0..columns - 1)
@@ -189,9 +182,9 @@ fun MazeRenderer(viewModel: KollieGameViewModel,
 
                     drawRect(color = cellColor,
                         topLeft = Offset(
-                            j * 1.0f * cellSizePx,
-                            i * 1.0f * cellSizePx),
-                        size = Size(cellSizePx.toFloat(), cellSizePx.toFloat())
+                            j * 1.0f * cellSize,
+                            i * 1.0f * cellSize),
+                        size = Size(cellSize.toFloat(), cellSize.toFloat())
                     );
 
                     isBlack = !isBlack;

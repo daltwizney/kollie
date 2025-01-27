@@ -42,6 +42,8 @@ class InputManager {
     fun handleTap(offset: Offset) {
 
         Log.d(TAG, "TAP input received with offset: ${offset}");
+
+        onTap.forEach({ it(offset) });
     }
 
     fun handleDoubleTap(offset: Offset) {

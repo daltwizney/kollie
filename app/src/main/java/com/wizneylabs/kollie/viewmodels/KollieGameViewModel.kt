@@ -2,6 +2,8 @@ package com.wizneylabs.kollie.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wizneylabs.kollie.input.InputManager
@@ -11,41 +13,37 @@ import com.wizneylabs.kollie.utils.SlidingWindow
 import com.wizneylabs.kollie.physics.NativeLib
 
 class KollieGameViewModelFactory(
-    private val width: Int,
-    private val height: Int,
+    private val screenWidth: Int,
+    private val screenHeight: Int,
+    private val cellSize: Int,
     private val horizontalWalks: Int = 10,
     private val verticalWalks: Int = 10
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return KollieGameViewModel(
-            width, height, horizontalWalks, verticalWalks
+            screenWidth, screenHeight, cellSize, horizontalWalks, verticalWalks
         ) as T;
     }
 }
 
 class KollieGameViewModel(
-    width: Int,
-    height: Int,
+
+    screenWidth: Int,
+    screenHeight: Int,
+    cellSize: Int = 100,
     horizontalWalks: Int = 10,
     verticalWalks: Int = 10
 
 ) : ViewModel() {
 
+    /**
+     *  General game data
+     */
+
     val TAG = KollieGameViewModel::class.simpleName;
 
-    val maze: Maze;
-
-    val _width = width;
-    val _height = height;
-
     val input = InputManager();
-
-    val Width: Int
-        get() = _width;
-
-    val Height: Int
-        get() = _height
 
     var frameCounter = mutableStateOf(0L);
 
@@ -61,13 +59,43 @@ class KollieGameViewModel(
 
     private var _debug = true;
 
+    /**
+     *  Maze-specific data
+     */
+
+    val maze: Maze;
+
+    // number of rows and columns for maze is based on screen 'landscape' orientation!
+    val rows = screenHeight / cellSize;
+    val columns = screenWidth / cellSize;
+
+    val cellSize = cellSize;
+
+    val screenHeight = screenHeight;
+    val screenWidth = screenWidth;
+
+    val horizontalWalks = horizontalWalks;
+    val verticalWalks = verticalWalks;
+
     init {
 
-        maze = Maze(_width, _height);
+        maze = Maze(columns, rows);
         maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
 
         val lib = NativeLib();
         Log.d("NativeTest", lib.stringFromJNI());
+
+        this.input.onTap.add(this::handleTapInput);
+    }
+
+    fun handleTapInput(offset: Offset) {
+
+//        Log.d(TAG + "TapInput", "tap offset: ${offset}");
+
+        val row = (offset.y / cellSize).toInt();
+        val column = (offset.x / cellSize).toInt();
+
+        Log.d(TAG + "TapInput", "clicked cell: (${row}, ${column})");
     }
 
     fun updateGame(timeSeconds: Float) {
@@ -88,8 +116,6 @@ class KollieGameViewModel(
                 fps.value = _frameBuffer.maxSize / (_frameBuffer.last() - _frameBuffer.first());
                 frameTime.value = 1.0f/fps.value;
             }
-
-            Log.d(TAG, "fps = ${fps.value}");
         }
     }
 
