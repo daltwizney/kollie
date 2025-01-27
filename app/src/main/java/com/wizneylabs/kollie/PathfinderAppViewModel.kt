@@ -8,6 +8,8 @@ import com.wizneylabs.kollie.input.InputManager
 import com.wizneylabs.kollie.pathfinder.Maze
 import com.wizneylabs.kollie.utils.SlidingWindow
 
+import com.wizneylabs.kollie.physics.NativeLib
+
 class PathfinderAppViewModelFactory(
     private val width: Int,
     private val height: Int,
@@ -59,6 +61,15 @@ class PathfinderAppViewModel(
 
     private var _debug = true;
 
+    init {
+
+        maze = Maze(_width, _height);
+        maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
+
+        val lib = NativeLib();
+        Log.d("NativeTest", lib.stringFromJNI());
+    }
+
     fun updateGame(timeSeconds: Float) {
 
         _deltaTime = timeSeconds - _lastFrameTime;
@@ -91,11 +102,4 @@ class PathfinderAppViewModel(
 
         _debug = enabled;
     }
-
-    init {
-
-        maze = Maze(_width, _height);
-        maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
-    }
-
 }
