@@ -1,6 +1,5 @@
 package com.wizneylabs.kollie
 
-import android.app.Application
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
@@ -31,16 +29,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import com.wizneylabs.kollie.ui.theme.KollieTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.delay
-import org.joml.Vector2i
+import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
+import com.wizneylabs.kollie.viewmodels.KollieGameViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,12 +74,10 @@ fun KollieApp() {
     val rows = (screenHeightPx / cellSizePx).toInt();
     val columns = (screenWidthPx / cellSizePx).toInt();
 
-    val mainViewModel = viewModel<MainViewModel>();
-
     Log.d("MazeRenderer", "rows = ${rows}, cols = ${columns}");
 
-    val pathfinderAppViewModel = viewModel<PathfinderAppViewModel>(
-        factory = PathfinderAppViewModelFactory(columns, rows,
+    val pathfinderAppViewModel = viewModel<KollieGameViewModel>(
+        factory = KollieGameViewModelFactory(columns, rows,
             horizontalWalks, verticalWalks)
     );
 
@@ -94,7 +87,7 @@ fun KollieApp() {
 }
 
 @Composable
-fun DebugUI(viewModel: PathfinderAppViewModel) {
+fun DebugUI(viewModel: KollieGameViewModel) {
 
     Column(modifier = Modifier
         .offset(x = 0.dp, y = 20.dp)
@@ -129,7 +122,7 @@ fun DebugUI(viewModel: PathfinderAppViewModel) {
 }
 
 @Composable
-fun MazeRenderer(viewModel: PathfinderAppViewModel,
+fun MazeRenderer(viewModel: KollieGameViewModel,
                  cellSizePx: Int) {
 
     LaunchedEffect(Unit) {

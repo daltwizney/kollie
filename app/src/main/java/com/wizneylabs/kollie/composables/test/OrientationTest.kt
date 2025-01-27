@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie
+package com.wizneylabs.kollie.composables.test
 
 import android.content.Context
 import android.content.res.Configuration
@@ -20,10 +20,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import com.wizneylabs.kollie.ui.theme.KollieTheme
 
 @Composable
-fun OrientationHandler(context: Context, configuration: Configuration, viewModel: MainViewModel) {
+fun OrientationHandler(context: Context, configuration: Configuration, viewModel: ViewModel) {
 
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
     {
@@ -38,15 +39,15 @@ fun OrientationHandler(context: Context, configuration: Configuration, viewModel
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = viewModel.Count.value,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontSize = 42.sp
-            )
-            Button(onClick= { viewModel.increment() }) {
-                Text("Increment")
-            }
+//            Text(text = viewModel.Count.value,
+//                modifier = Modifier
+//                    .fillMaxWidth(),
+//                textAlign = TextAlign.Center,
+//                fontSize = 42.sp
+//            )
+//            Button(onClick= { viewModel.increment() }) {
+//                Text("Increment")
+//            }
         }
     }
 }

@@ -6,6 +6,8 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 
 class InputManager {
 
+    val onTap = mutableListOf<(Offset) -> Unit>();
+
     /**
      *  TODO: for now, let's just expose some event-based input handling to kollie components,
      *  so we can build the pathfinder demo app w/o polling input support.

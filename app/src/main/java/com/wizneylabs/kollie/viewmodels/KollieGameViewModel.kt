@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie
+package com.wizneylabs.kollie.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +10,7 @@ import com.wizneylabs.kollie.utils.SlidingWindow
 
 import com.wizneylabs.kollie.physics.NativeLib
 
-class PathfinderAppViewModelFactory(
+class KollieGameViewModelFactory(
     private val width: Int,
     private val height: Int,
     private val horizontalWalks: Int = 10,
@@ -18,13 +18,13 @@ class PathfinderAppViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return PathfinderAppViewModel(
+        return KollieGameViewModel(
             width, height, horizontalWalks, verticalWalks
         ) as T;
     }
 }
 
-class PathfinderAppViewModel(
+class KollieGameViewModel(
     width: Int,
     height: Int,
     horizontalWalks: Int = 10,
@@ -32,7 +32,7 @@ class PathfinderAppViewModel(
 
 ) : ViewModel() {
 
-    val TAG = PathfinderAppViewModel::class.simpleName;
+    val TAG = KollieGameViewModel::class.simpleName;
 
     val maze: Maze;
 
