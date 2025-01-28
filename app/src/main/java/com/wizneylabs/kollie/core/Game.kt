@@ -1,11 +1,23 @@
 package com.wizneylabs.kollie.core
 
-class Game {
+import com.wizneylabs.kollie.input.InputManager
 
-    val currentScene: Scene
+class Game(initialScene: Scene? = null) {
+
+    val CurrentScene: Scene
         get() = _currentScene;
 
-    private var _currentScene: Scene = Scene();
+    val Input: InputManager
+        get() = _input;
+
+    private val _input: InputManager = InputManager();
+
+    private var _currentScene: Scene;
+
+    init {
+
+        _currentScene = initialScene ?: Scene();
+    }
 
     fun Update(t: Float, dt: Float) {
 
