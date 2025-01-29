@@ -31,6 +31,8 @@ class Game(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
 
         _currentScene = initialScene ?: Scene();
 
+        _currentScene.Initialize(this);
+
         _currentScene.Start();
     }
 

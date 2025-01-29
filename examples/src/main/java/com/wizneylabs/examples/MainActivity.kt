@@ -35,8 +35,7 @@ import com.wizneylabs.examples.ui.theme.KollieTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wizneylabs.examples.scenes.PathfinderDemoScene
-import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
-import com.wizneylabs.kollie.viewmodels.KollieGameViewModelFactory
+import com.wizneylabs.kollie.pathfinder.GridRenderer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,10 +141,8 @@ fun MazeRenderer(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
 
-    val rows = viewModel.maze.Height;
-    val columns = viewModel.maze.Width;
-
-    var isBlack = true;
+//    val rows = viewModel.maze.Height;
+//    val columns = viewModel.maze.Width;
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -172,30 +169,40 @@ fun MazeRenderer(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel
         ) {
             val frameCount = viewModel.frameCounter.value;
 
-            val cellSize = viewModel.cellSize;
+//            val cellSize = viewModel.cellSize;
 
-            for (i in 0..rows - 1)
+            val game = viewModel.Game;
+
+            val gridRenderers = game.CurrentScene.GridRenderers;
+
+            Log.d("GridRenderer", "grid renderers = ${gridRenderers.size}");
+
+            val gridRenderer = gridRenderers[0].component as GridRenderer;
+
+            val rows = gridRenderer.rows;
+            val columns = gridRenderer.columns;
+            val cellSize = gridRenderer.cellSize;
+
+            if (gridRenderer.IsInitialized)
             {
-                for (j in 0..columns - 1)
+                for (i in 0..rows - 1)
                 {
-                    var cellColor = Color.Black;
-
-                    if (viewModel.maze.getValue(i, j) == 1)
+                    for (j in 0..columns - 1)
                     {
-                        cellColor = Color.Blue;
+                        Log.d("GridRenderer", "about to get color");
+
+                        var cellColor = gridRenderer.getColor(i, j);
+
+                        Log.d("GridRenderer", "about to draw color");
+
+                        drawRect(color = cellColor,
+                            topLeft = Offset(
+                                j * 1.0f * cellSize,
+                                i * 1.0f * cellSize),
+                            size = Size(cellSize.toFloat(), cellSize.toFloat())
+                        );
                     }
-
-                    drawRect(color = cellColor,
-                        topLeft = Offset(
-                            j * 1.0f * cellSize,
-                            i * 1.0f * cellSize),
-                        size = Size(cellSize.toFloat(), cellSize.toFloat())
-                    );
-
-                    isBlack = !isBlack;
                 }
-
-                isBlack = !isBlack;
             }
         }
 

@@ -2,7 +2,14 @@ package com.wizneylabs.kollie.core
 
 import com.wizneylabs.kollie.pathfinder.GridRenderer
 
-open class Scene {
+open class Scene() {
+
+    // TODO: we don't want this to be nullable!  create a SceneContainer
+    // so user code doesn't know about implementation details of engine!
+    val Game: Game?
+        get() = _game;
+
+    private var _game: Game? = null;
 
     private val _entities = mutableListOf<Entity>();
 
@@ -13,7 +20,20 @@ open class Scene {
      *  be drawn differently in the main scene rendering composable
      */
 
+    val GridRenderers: MutableList<ComponentContainer>
+        get() = _gridRenderers;
+
     private val _gridRenderers = mutableListOf<ComponentContainer>();
+
+    fun Initialize(game: Game) {
+
+        if (_game != null)
+        {
+            throw RuntimeException("scene is already initialized!");
+        }
+
+        _game = game;
+    }
 
     open fun Start() {
 

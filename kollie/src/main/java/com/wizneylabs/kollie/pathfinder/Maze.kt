@@ -2,6 +2,7 @@ package com.wizneylabs.kollie.pathfinder
 
 import android.util.Log
 
+// TODO:  update this to accept rows and columns, instead of width/height
 class Maze(width: Int, height: Int) {
 
     private val _width = width;

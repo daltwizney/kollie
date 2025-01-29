@@ -7,6 +7,9 @@ class ComponentContainer(entity: Entity,
     val component: Component
         get() = _component;
 
+    val awake: Boolean
+        get() = _awake;
+
     val started: Boolean
         get() = _started;
 
@@ -14,19 +17,27 @@ class ComponentContainer(entity: Entity,
     private val _component: Component = component;
     private val _id: Int = id;
 
+    private var _awake = false;
     private var _started = false;
 
     init {
 
-        component.Awake();
     }
 
     val id: Int
         get() = _id;
 
+    fun Awake() {
+
+        if (!_awake && !_started) {
+            component.Awake();
+            _awake = true;
+        }
+    }
+
     fun Start() {
 
-        if (!_started)
+        if (_awake && !_started)
         {
             component.Start();
             _started = true;

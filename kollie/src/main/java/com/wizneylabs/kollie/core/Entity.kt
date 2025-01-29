@@ -12,7 +12,11 @@ class Entity(val scene: Scene,
 
         this._components.forEach({ c ->
 
-            if (!c.started)
+            if (!c.awake)
+            {
+                c.Awake();
+            }
+            else if (!c.started)
             {
                 c.Start();
             }

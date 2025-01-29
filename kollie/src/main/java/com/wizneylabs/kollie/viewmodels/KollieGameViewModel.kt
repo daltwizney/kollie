@@ -25,7 +25,6 @@ class KollieGameViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return KollieGameViewModel(initialScene,
             screenWidth, screenHeight, cellSize,
-            horizontalWalks, verticalWalks
         ) as T;
     }
 }
@@ -36,14 +35,15 @@ class KollieGameViewModel(
     screenWidth: Int,
     screenHeight: Int,
     cellSize: Int = 100,
-    horizontalWalks: Int = 10,
-    verticalWalks: Int = 10
 
 ) : ViewModel() {
 
     /**
      *  General game data
      */
+
+    val Game: Game
+        get() = _game;
 
     val TAG = KollieGameViewModel::class.simpleName;
 
@@ -69,21 +69,9 @@ class KollieGameViewModel(
      *  Maze-specific data
      */
 
-    val maze: Maze;
-
-    // number of rows and columns for maze is based on screen 'landscape' orientation!
-    val rows = screenHeight / cellSize;
-    val columns = screenWidth / cellSize;
-
     val cellSize = cellSize;
 
-    val horizontalWalks = horizontalWalks;
-    val verticalWalks = verticalWalks;
-
     init {
-
-        maze = Maze(columns, rows);
-        maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
 
         this.input.onTap.add(this::handleTapInput);
     }
