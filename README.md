@@ -8,6 +8,7 @@
 <p align="center">
 A 2D Kotlin Game Engine for Jetpack Compose Apps
 <br />
+(*under heavy construction*)
 </p>
 
 </div>
