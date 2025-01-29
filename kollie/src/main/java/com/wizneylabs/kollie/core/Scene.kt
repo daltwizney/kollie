@@ -1,5 +1,6 @@
 package com.wizneylabs.kollie.core
 
+import android.util.Log
 import com.wizneylabs.kollie.pathfinder.GridRenderer
 
 open class Scene() {
@@ -8,6 +9,9 @@ open class Scene() {
     // so user code doesn't know about implementation details of engine!
     val Game: Game?
         get() = _game;
+
+    val Entities: MutableList<Entity>
+        get() = _entities;
 
     private var _game: Game? = null;
 
@@ -75,6 +79,28 @@ open class Scene() {
         }
 
         return -1;
+    }
+
+    inline fun <reified T> GetComponentByType(): T? {
+
+        val entities = this.Entities;
+
+        entities.forEach({ entity ->
+
+            Log.d("TapInput", "searching entity ${entity.Name}");
+
+            val componentContainers = entity.Components;
+
+            componentContainers.forEach({ container ->
+
+                if (container.component is T) {
+
+                    return container.component as T;
+                }
+            })
+        })
+
+        return null;
     }
 
     fun ReleaseComponentId(id: Int) {

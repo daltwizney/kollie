@@ -12,19 +12,17 @@ import com.wizneylabs.kollie.utils.SlidingWindow
 
 import com.wizneylabs.kollie.core.Game
 import com.wizneylabs.kollie.core.Scene
+import com.wizneylabs.kollie.pathfinder.MazeRenderer
 
 class KollieGameViewModelFactory(
     private val initialScene: Scene,
     private val screenWidth: Int,
     private val screenHeight: Int,
-    private val cellSize: Int,
-    private val horizontalWalks: Int = 10,
-    private val verticalWalks: Int = 10
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return KollieGameViewModel(initialScene,
-            screenWidth, screenHeight, cellSize,
+            screenWidth, screenHeight
         ) as T;
     }
 }
@@ -34,7 +32,6 @@ class KollieGameViewModel(
     initialScene: Scene,
     screenWidth: Int,
     screenHeight: Int,
-    cellSize: Int = 100,
 
 ) : ViewModel() {
 
@@ -46,8 +43,6 @@ class KollieGameViewModel(
         get() = _game;
 
     val TAG = KollieGameViewModel::class.simpleName;
-
-    val input = InputManager();
 
     var frameCounter = mutableStateOf(0L);
 
@@ -65,28 +60,20 @@ class KollieGameViewModel(
 
     private val _game = Game(screenWidth, screenHeight, initialScene);
 
-    /**
-     *  Maze-specific data
-     */
-
-    val cellSize = cellSize;
-
     init {
 
-        this.input.onTap.add(this::handleTapInput);
+        _game.Input.onTap.add(this::handleTapInput);
     }
 
     fun handleTapInput(offset: Offset) {
 
-//        Log.d(TAG + "TapInput", "tap offset: ${offset}");
-
-//        val row = (offset.y / cellSize).toInt();
-//        val column = (offset.x / cellSize).toInt();
+        // TODO: here for testing - remove before flight!
+        val mazeRenderer = _game.CurrentScene.GetComponentByType<MazeRenderer>();
 
         var queryInput = GridCollisionQueryInput();
         queryInput.pointX = offset.x.toInt();
         queryInput.pointY = offset.y.toInt();
-        queryInput.cellSize = this.cellSize;
+        queryInput.cellSize = mazeRenderer?.gridRenderer?.cellSize ?: 100;
 
         val queryResult = _game.Physics.gridCollisionQuery(queryInput);
 

@@ -4,6 +4,12 @@ class Entity(val scene: Scene,
              private var _name: String,
              val _id: Int) {
 
+    val Name: String
+        get() = _name;
+
+    val Components: MutableList<ComponentContainer>
+        get() = _components;
+
     private val _components = mutableListOf<ComponentContainer>();
 
     private val _usedComponentIDs = hashSetOf<Int>();

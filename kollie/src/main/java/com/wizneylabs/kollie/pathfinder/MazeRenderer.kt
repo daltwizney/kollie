@@ -37,11 +37,11 @@ class MazeRenderer: Component() {
 
                 if (maze!!.getValue(i, j) == 1)
                 {
-                    gridRenderer!!.setColor(i, j, Color.Green);
+                    gridRenderer!!.setColor(i, j, Color.Blue);
                 }
                 else
                 {
-                    gridRenderer!!.setColor(i, j, Color.Red);
+                    gridRenderer!!.setColor(i, j, Color.Black);
                 }
             }
         }
