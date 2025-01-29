@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie.ui.theme
+package com.wizneylabs.examples.ui.theme
 
 import android.app.Activity
 import android.os.Build

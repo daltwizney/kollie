@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie.ui.theme
+package com.wizneylabs.examples.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

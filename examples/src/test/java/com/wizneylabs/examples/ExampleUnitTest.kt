@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie
+package com.wizneylabs.examples
 
 import org.junit.Test
 

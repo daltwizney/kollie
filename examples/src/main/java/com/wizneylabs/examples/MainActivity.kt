@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie
+package com.wizneylabs.examples
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
-import com.wizneylabs.kollie.ui.theme.KollieTheme
+import com.wizneylabs.examples.ui.theme.KollieTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
