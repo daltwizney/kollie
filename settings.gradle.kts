@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "kollie"
 include(":app")
 include(":physics")
+include(":kollie")

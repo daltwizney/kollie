@@ -69,10 +69,11 @@ fun KollieApp() {
     val horizontalWalks = 3;
     val verticalWalks = 6;
 
-    val pathfinderAppViewModel = viewModel<KollieGameViewModel>(
-        factory = KollieGameViewModelFactory(
+    val pathfinderAppViewModel = viewModel<com.wizneylabs.kollie.viewmodels.KollieGameViewModel>(
+        factory = com.wizneylabs.kollie.viewmodels.KollieGameViewModelFactory(
             screenWidth, screenHeight, cellSize,
-            horizontalWalks, verticalWalks)
+            horizontalWalks, verticalWalks
+        )
     );
 
     MazeRenderer(pathfinderAppViewModel);
@@ -81,7 +82,7 @@ fun KollieApp() {
 }
 
 @Composable
-fun DebugUI(viewModel: KollieGameViewModel) {
+fun DebugUI(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel) {
 
     Column(modifier = Modifier
         .offset(x = 0.dp, y = 20.dp)
@@ -116,7 +117,7 @@ fun DebugUI(viewModel: KollieGameViewModel) {
 }
 
 @Composable
-fun MazeRenderer(viewModel: KollieGameViewModel) {
+fun MazeRenderer(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel) {
 
     LaunchedEffect(Unit) {
 

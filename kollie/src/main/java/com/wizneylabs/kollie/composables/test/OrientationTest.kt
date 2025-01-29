@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
-import com.wizneylabs.kollie.ui.theme.KollieTheme
 
 @Composable
 fun OrientationHandler(context: Context, configuration: Configuration, viewModel: ViewModel) {
@@ -84,7 +83,5 @@ fun MyCanvas2() {
 )
 @Composable
 fun CanvasPreview() {
-    KollieTheme {
         MyCanvas()
-    }
 }
