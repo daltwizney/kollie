@@ -30,10 +30,12 @@ class Game(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
     init {
 
         _currentScene = initialScene ?: Scene();
+
+        _currentScene.Start();
     }
 
-    fun Update(t: Float, dt: Float) {
+    fun Tick(t: Float, dt: Float) {
 
-        _currentScene.Update(t, dt);
+        _currentScene.Tick(t, dt);
     }
 }

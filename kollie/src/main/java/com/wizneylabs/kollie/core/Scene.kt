@@ -6,7 +6,7 @@ open class Scene {
 
     private val _entities = mutableListOf<Entity>();
 
-    private var _nextAvailableEntityId = 0;
+    private val _usedEntityIDs = hashSetOf<Int>();
 
     /**
      *  Rendering - scene needs to keep track of different types of renderers so they can
@@ -15,17 +15,51 @@ open class Scene {
 
     private val _gridRenderers = mutableListOf<ComponentContainer>();
 
-    open fun Update(t: Float, dt: Float) {
+    open fun Start() {
 
-        this._entities.forEach({ e ->
-
-            e.Update(t, dt);
-        });
     }
 
-    fun AddEntity(name: String) {
+    fun Tick(t: Float, dt: Float) {
 
-        this._entities.add(Entity(this, name, _nextAvailableEntityId++));
+        _entities.forEach({ entity ->
+            entity.Update(t, dt);
+        })
+    }
+
+    fun AddEntity(name: String): Entity {
+
+        val entity = Entity(this, name, GetNextAvailableEntityId());
+
+        this._entities.add(entity);
+
+        return entity;
+    }
+
+    fun GetNextAvailableEntityId(): Int {
+
+        if (_usedEntityIDs.size == Int.MAX_VALUE)
+        {
+            return -1;
+        }
+
+        // only try up to Int.MAX_VALUE times
+        for (i in 0..Int.MAX_VALUE)
+        {
+            val id = (0..Int.MAX_VALUE).random();
+
+            if (!_usedEntityIDs.contains(id))
+            {
+                _usedEntityIDs.add(id);
+                return id;
+            }
+        }
+
+        return -1;
+    }
+
+    fun ReleaseComponentId(id: Int) {
+
+        _usedEntityIDs.remove(id);
     }
 
     fun onComponentAdded(container: ComponentContainer) {

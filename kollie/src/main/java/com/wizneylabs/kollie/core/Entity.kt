@@ -6,10 +6,20 @@ class Entity(val scene: Scene,
 
     private val _components = mutableListOf<ComponentContainer>();
 
+    private val _usedComponentIDs = hashSetOf<Int>();
+
     fun Update(t: Float, dt: Float) {
 
         this._components.forEach({ c ->
-            c.Update(t, dt);
+
+            if (!c.started)
+            {
+                c.Start();
+            }
+            else
+            {
+                c.Update(t, dt);
+            }
         });
     }
 
@@ -17,12 +27,39 @@ class Entity(val scene: Scene,
 
         val component: Component = T::class.java.getDeclaredConstructor().newInstance();
 
-        // TODO: pass a unique component ID!
-        val container = ComponentContainer(this, component, 0);
+        val container = ComponentContainer(this, component,
+            GetNextAvailableComponentId());
 
         this.AddExistingComponent(container);
 
         return component as T;
+    }
+
+    fun GetNextAvailableComponentId(): Int {
+
+        if (_usedComponentIDs.size == Int.MAX_VALUE)
+        {
+            return -1;
+        }
+
+        // only try up to Int.MAX_VALUE times
+        for (i in 0..Int.MAX_VALUE)
+        {
+            val id = (0..Int.MAX_VALUE).random();
+
+            if (!_usedComponentIDs.contains(id))
+            {
+                _usedComponentIDs.add(id);
+                return id;
+            }
+        }
+
+        return -1;
+    }
+
+    fun ReleaseComponentId(id: Int) {
+
+        _usedComponentIDs.remove(id);
     }
 
     fun AddExistingComponent(component: ComponentContainer) {

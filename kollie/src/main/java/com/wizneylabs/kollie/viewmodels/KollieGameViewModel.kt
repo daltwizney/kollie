@@ -63,6 +63,8 @@ class KollieGameViewModel(
 
     private var _debug = true;
 
+    private val _game = Game(screenWidth, screenHeight, initialScene);
+
     /**
      *  Maze-specific data
      */
@@ -77,8 +79,6 @@ class KollieGameViewModel(
 
     val horizontalWalks = horizontalWalks;
     val verticalWalks = verticalWalks;
-
-    val game = Game(screenWidth, screenHeight, initialScene);
 
     init {
 
@@ -100,7 +100,7 @@ class KollieGameViewModel(
         queryInput.pointY = offset.y.toInt();
         queryInput.cellSize = this.cellSize;
 
-        val queryResult = game.Physics.gridCollisionQuery(queryInput);
+        val queryResult = _game.Physics.gridCollisionQuery(queryInput);
 
         val row = queryResult.row;
         val column = queryResult.column;
@@ -127,6 +127,8 @@ class KollieGameViewModel(
                 frameTime.value = 1.0f/fps.value;
             }
         }
+
+        _game.Tick(_time, _deltaTime);
     }
 
     fun setDebugEnabled(enabled: Boolean) {
