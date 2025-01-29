@@ -1,12 +1,14 @@
 package com.wizneylabs.examples.scenes
 
 import android.util.Log
+import androidx.compose.ui.geometry.Offset
 import com.wizneylabs.kollie.pathfinder.GridRenderer
 import com.wizneylabs.kollie.core.Scene
 
 import com.wizneylabs.examples.components.BasicComponentExample
 import com.wizneylabs.kollie.pathfinder.Maze
 import com.wizneylabs.kollie.pathfinder.MazeRenderer
+import com.wizneylabs.kollie.physics.GridCollisionQueryInput
 
 class PathfinderDemoScene: Scene() {
 
@@ -61,5 +63,26 @@ class PathfinderDemoScene: Scene() {
         val mazeRenderer = grid.AddComponent<MazeRenderer>();
         mazeRenderer.gridRenderer = gridRenderer;
         mazeRenderer.maze = maze;
+
+        // setup input handlers
+        this.Game?.Input?.onTap?.add(this::handleTapInput);
+    }
+
+    fun handleTapInput(offset: Offset) {
+
+        // TODO: here for testing - remove before flight!
+        val mazeRenderer = this.Game?.CurrentScene?.FindComponentByType<MazeRenderer>();
+
+        var queryInput = GridCollisionQueryInput();
+        queryInput.pointX = offset.x.toInt();
+        queryInput.pointY = offset.y.toInt();
+        queryInput.cellSize = mazeRenderer?.gridRenderer?.cellSize ?: 100;
+
+        val queryResult = this.Game?.Physics?.gridCollisionQuery(queryInput) ?: null;
+
+        val row = queryResult?.row ?: -1;
+        val column = queryResult?.column ?: -1;
+
+        Log.d(TAG + "TapInput", "clicked cell: (${row}, ${column})");
     }
 }

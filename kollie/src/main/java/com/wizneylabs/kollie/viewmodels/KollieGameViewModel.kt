@@ -61,26 +61,6 @@ class KollieGameViewModel(
     private val _game = Game(screenWidth, screenHeight, initialScene);
 
     init {
-
-        _game.Input.onTap.add(this::handleTapInput);
-    }
-
-    fun handleTapInput(offset: Offset) {
-
-        // TODO: here for testing - remove before flight!
-        val mazeRenderer = _game.CurrentScene.GetComponentByType<MazeRenderer>();
-
-        var queryInput = GridCollisionQueryInput();
-        queryInput.pointX = offset.x.toInt();
-        queryInput.pointY = offset.y.toInt();
-        queryInput.cellSize = mazeRenderer?.gridRenderer?.cellSize ?: 100;
-
-        val queryResult = _game.Physics.gridCollisionQuery(queryInput);
-
-        val row = queryResult.row;
-        val column = queryResult.column;
-
-        Log.d(TAG + "TapInput", "clicked cell: (${row}, ${column})");
     }
 
     fun updateGame(timeSeconds: Float) {

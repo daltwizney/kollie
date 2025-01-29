@@ -81,13 +81,11 @@ open class Scene() {
         return -1;
     }
 
-    inline fun <reified T> GetComponentByType(): T? {
+    inline fun <reified T> FindComponentByType(): T? {
 
         val entities = this.Entities;
 
         entities.forEach({ entity ->
-
-            Log.d("TapInput", "searching entity ${entity.Name}");
 
             val componentContainers = entity.Components;
 
