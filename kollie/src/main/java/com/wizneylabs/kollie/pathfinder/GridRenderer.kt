@@ -66,10 +66,6 @@ class GridRenderer():
             return Color.Magenta;
         }
 
-        val color = _colors[row][column];
-
-        Log.d(TAG, "color requested! row = $row, column = $column, rows = ${_colors.size}, columns = $columns")
-
-        return color;
+        return _colors[row][column];
     }
 }

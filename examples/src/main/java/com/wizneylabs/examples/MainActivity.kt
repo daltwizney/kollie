@@ -130,19 +130,12 @@ fun MazeRenderer(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel
 
                 // Your update code here
                 viewModel.updateGame(timeNanos / 1_000_000_000f);
-
-//                Log.d("MazeRenderer", "frame count = ${viewModel.frameCounter.value}");
-//                Log.d("MazeRenderer", "frame time = ${viewModel._time}");
-//                Log.d("MazeRenderer", "fps = ${viewModel.fps}");
             }
         }
     }
 
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
-
-//    val rows = viewModel.maze.Height;
-//    val columns = viewModel.maze.Width;
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -169,41 +162,38 @@ fun MazeRenderer(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel
         ) {
             val frameCount = viewModel.frameCounter.value;
 
-//            val cellSize = viewModel.cellSize;
-
             val game = viewModel.Game;
 
             val gridRenderers = game.CurrentScene.GridRenderers;
 
-            Log.d("GridRenderer", "grid renderers = ${gridRenderers.size}");
+            // TODO: need to sort gridRenderers into a priority queue, based on depth
 
-            val gridRenderer = gridRenderers[0].component as GridRenderer;
+            gridRenderers.forEach({ gridRendererContainer ->
 
-            val rows = gridRenderer.rows;
-            val columns = gridRenderer.columns;
-            val cellSize = gridRenderer.cellSize;
+                val gridRenderer = gridRendererContainer.component as GridRenderer;
 
-            if (gridRenderer.IsInitialized)
-            {
-                for (i in 0..rows - 1)
+                val rows = gridRenderer.rows;
+                val columns = gridRenderer.columns;
+                val cellSize = gridRenderer.cellSize;
+
+                if (gridRenderer.IsInitialized)
                 {
-                    for (j in 0..columns - 1)
+                    for (i in 0..rows - 1)
                     {
-                        Log.d("GridRenderer", "about to get color");
+                        for (j in 0..columns - 1)
+                        {
+                            val cellColor = gridRenderer.getColor(i, j);
 
-                        var cellColor = gridRenderer.getColor(i, j);
-
-                        Log.d("GridRenderer", "about to draw color");
-
-                        drawRect(color = cellColor,
-                            topLeft = Offset(
-                                j * 1.0f * cellSize,
-                                i * 1.0f * cellSize),
-                            size = Size(cellSize.toFloat(), cellSize.toFloat())
-                        );
+                            drawRect(color = cellColor,
+                                topLeft = Offset(
+                                    j * 1.0f * cellSize,
+                                    i * 1.0f * cellSize),
+                                size = Size(cellSize.toFloat(), cellSize.toFloat())
+                            );
+                        }
                     }
                 }
-            }
+            });
         }
 
         DebugUI(viewModel);
