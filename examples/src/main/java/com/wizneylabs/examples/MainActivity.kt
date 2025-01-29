@@ -37,6 +37,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun KollieApp() {
 
+    // TODO: this can be cleaned up more.  create a helper func to setup
+    // the scene and viewmodel!
+
     val context = LocalContext.current;
     val configuration = LocalConfiguration.current;
 
@@ -46,16 +49,16 @@ fun KollieApp() {
     val screenWidth = (with (LocalDensity.current) { screenWidthDp.toPx() }).toInt();
     val screenHeight = (with (LocalDensity.current) { screenHeightDp.toPx() }).toInt();
 
+    // TODO: this won't guarantee your scene persists across recompositions!
+    // you need to have the viewmodel instantiate the demo scene!
     val demoScene = PathfinderDemoScene();
 
-    val pathfinderAppViewModel = viewModel<com.wizneylabs.kollie.viewmodels.KollieGameViewModel>(
+    val viewModel = viewModel<com.wizneylabs.kollie.viewmodels.KollieGameViewModel>(
         factory = com.wizneylabs.kollie.viewmodels
             .KollieGameViewModelFactory(demoScene,
                 screenWidth, screenHeight
-        )
+            )
     );
 
-    KollieCanvas(pathfinderAppViewModel);
-//    KollieCanvas(mainViewModel);
-//    MyAGSLCanvas(context);
+    KollieCanvas(viewModel);
 }

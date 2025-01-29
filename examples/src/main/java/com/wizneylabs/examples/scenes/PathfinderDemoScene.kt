@@ -18,6 +18,10 @@ class PathfinderDemoScene: Scene() {
     val horizontalWalks = 3;
     val verticalWalks = 6;
 
+    init {
+        Log.d(TAG, "creating new pathfinder demo scene!");
+    }
+
     override fun Start() {
 
         Log.d(TAG, "pathfinder demo scene initializing!");

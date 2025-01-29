@@ -16,12 +16,15 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wizneylabs.kollie.core.Scene
 import com.wizneylabs.kollie.pathfinder.GridRenderer
-
+import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
 
 @Composable
-fun KollieCanvas(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel) {
+fun KollieCanvas(viewModel: KollieGameViewModel) {
 
     LaunchedEffect(Unit) {
 
@@ -34,9 +37,6 @@ fun KollieCanvas(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel
             }
         }
     }
-
-    val context = LocalContext.current;
-    val configuration = LocalConfiguration.current;
 
     Box(modifier = Modifier.fillMaxSize()) {
 
