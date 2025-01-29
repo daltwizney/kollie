@@ -4,7 +4,7 @@ class Entity(val scene: Scene,
              private var _name: String,
              val _id: Int) {
 
-    private val _components = mutableListOf<Component>();
+    private val _components = mutableListOf<ComponentContainer>();
 
     fun Update(t: Float, dt: Float) {
 
@@ -15,15 +15,17 @@ class Entity(val scene: Scene,
 
     inline fun <reified T: Component> AddComponent(): T {
 
-        // TODO: pass a unique component ID!
-        val component: Component = T::class.java.getDeclaredConstructor().newInstance(this, 0);
+        val component: Component = T::class.java.getDeclaredConstructor().newInstance();
 
-        this.AddExistingComponent(component);
+        // TODO: pass a unique component ID!
+        val container = ComponentContainer(this, component, 0);
+
+        this.AddExistingComponent(container);
 
         return component as T;
     }
 
-    fun AddExistingComponent(component: Component) {
+    fun AddExistingComponent(component: ComponentContainer) {
 
         // TODO: check if component ID is already reserved, if so throw an error!
 
@@ -32,7 +34,7 @@ class Entity(val scene: Scene,
         this.scene.onComponentAdded(component);
     }
 
-    fun RemoveComponent(component: Component) {
+    fun RemoveComponent(component: ComponentContainer) {
 
         // TODO: need component IDs so we can find
         // the right one to remove!

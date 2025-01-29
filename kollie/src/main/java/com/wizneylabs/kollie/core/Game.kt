@@ -1,8 +1,9 @@
 package com.wizneylabs.kollie.core
 
+import com.wizneylabs.kollie.physics.PhysicsEngine
 import com.wizneylabs.kollie.input.InputManager
 
-class Game(initialScene: Scene? = null) {
+class Game(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
 
     val CurrentScene: Scene
         get() = _currentScene;
@@ -10,8 +11,20 @@ class Game(initialScene: Scene? = null) {
     val Input: InputManager
         get() = _input;
 
-    private val _input: InputManager = InputManager();
+    val Physics: PhysicsEngine
+        get() = _physics;
 
+    val ScreenWidth: Int
+        get() = _screenWidth;
+
+    val ScreenHeight: Int
+        get() = _screenHeight
+
+    private val _screenWidth: Int = screenWidth;
+    private val _screenHeight: Int = screenHeight;
+
+    private val _input: InputManager = InputManager();
+    private val _physics: PhysicsEngine = PhysicsEngine();
     private var _currentScene: Scene;
 
     init {

@@ -2,7 +2,7 @@ package com.wizneylabs.kollie.core
 
 import com.wizneylabs.kollie.pathfinder.GridRenderer
 
-class Scene {
+open class Scene {
 
     private val _entities = mutableListOf<Entity>();
 
@@ -13,9 +13,9 @@ class Scene {
      *  be drawn differently in the main scene rendering composable
      */
 
-    private val _gridRenderers = mutableListOf<GridRenderer>();
+    private val _gridRenderers = mutableListOf<ComponentContainer>();
 
-    fun Update(t: Float, dt: Float) {
+    open fun Update(t: Float, dt: Float) {
 
         this._entities.forEach({ e ->
 
@@ -28,14 +28,14 @@ class Scene {
         this._entities.add(Entity(this, name, _nextAvailableEntityId++));
     }
 
-    fun onComponentAdded(component: Component) {
+    fun onComponentAdded(container: ComponentContainer) {
 
-        if (component is GridRenderer) {
-            _gridRenderers.add(component);
+        if (container.component is GridRenderer) {
+            _gridRenderers.add(container);
         }
     }
 
-    fun onComponentRemoved(component: Component) {
+    fun onComponentRemoved(container: ComponentContainer) {
 
         // NOTE: component must not be destroyed yet here,
         // as we need to be able to remove it's reference
@@ -43,7 +43,7 @@ class Scene {
         // of components need to be separate parts of the
         // component lifecycle!
 
-        if (component is GridRenderer)
+        if (container.component is GridRenderer)
         {
             // TODO: you probably need to add component IDs so you can
             // find the component by ID and remove it!

@@ -3,18 +3,18 @@ package com.wizneylabs.kollie.viewmodels
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.wizneylabs.kollie.input.InputManager
 import com.wizneylabs.kollie.pathfinder.Maze
 import com.wizneylabs.kollie.physics.GridCollisionQueryInput
-import com.wizneylabs.kollie.physics.GridCollisionQueryOutput
 import com.wizneylabs.kollie.utils.SlidingWindow
 
-import com.wizneylabs.kollie.physics.NativeLib
+import com.wizneylabs.kollie.core.Game
+import com.wizneylabs.kollie.core.Scene
 
 class KollieGameViewModelFactory(
+    private val initialScene: Scene,
     private val screenWidth: Int,
     private val screenHeight: Int,
     private val cellSize: Int,
@@ -23,14 +23,16 @@ class KollieGameViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return KollieGameViewModel(
-            screenWidth, screenHeight, cellSize, horizontalWalks, verticalWalks
+        return KollieGameViewModel(initialScene,
+            screenWidth, screenHeight, cellSize,
+            horizontalWalks, verticalWalks
         ) as T;
     }
 }
 
 class KollieGameViewModel(
 
+    initialScene: Scene,
     screenWidth: Int,
     screenHeight: Int,
     cellSize: Int = 100,
@@ -73,20 +75,15 @@ class KollieGameViewModel(
 
     val cellSize = cellSize;
 
-    val screenHeight = screenHeight;
-    val screenWidth = screenWidth;
-
     val horizontalWalks = horizontalWalks;
     val verticalWalks = verticalWalks;
 
-    val physics = NativeLib();
+    val game = Game(screenWidth, screenHeight, initialScene);
 
     init {
 
         maze = Maze(columns, rows);
         maze.generateDrunkenCrawl(horizontalWalks, verticalWalks);
-
-        Log.d("NativeTest", physics.stringFromJNI());
 
         this.input.onTap.add(this::handleTapInput);
     }
@@ -103,7 +100,7 @@ class KollieGameViewModel(
         queryInput.pointY = offset.y.toInt();
         queryInput.cellSize = this.cellSize;
 
-        val queryResult = physics.gridCollisionQuery(queryInput);
+        val queryResult = game.Physics.gridCollisionQuery(queryInput);
 
         val row = queryResult.row;
         val column = queryResult.column;

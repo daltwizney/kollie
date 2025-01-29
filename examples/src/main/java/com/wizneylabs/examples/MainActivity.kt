@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.wizneylabs.examples.ui.theme.KollieTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wizneylabs.examples.scenes.PathfinderDemoScene
 import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
 import com.wizneylabs.kollie.viewmodels.KollieGameViewModelFactory
 
@@ -69,10 +70,13 @@ fun KollieApp() {
     val horizontalWalks = 3;
     val verticalWalks = 6;
 
+    val demoScene = PathfinderDemoScene();
+
     val pathfinderAppViewModel = viewModel<com.wizneylabs.kollie.viewmodels.KollieGameViewModel>(
-        factory = com.wizneylabs.kollie.viewmodels.KollieGameViewModelFactory(
-            screenWidth, screenHeight, cellSize,
-            horizontalWalks, verticalWalks
+        factory = com.wizneylabs.kollie.viewmodels
+            .KollieGameViewModelFactory(demoScene,
+                screenWidth, screenHeight, cellSize,
+                horizontalWalks, verticalWalks
         )
     );
 

@@ -14,7 +14,7 @@ class GridCollisionQueryOutput() {
     var column: Int = -1;
 }
 
-class NativeLib {
+class PhysicsEngine {
 
     /**
      * A native method that is implemented by the 'physics' native library,
