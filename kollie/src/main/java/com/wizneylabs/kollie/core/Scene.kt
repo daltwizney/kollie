@@ -85,19 +85,19 @@ open class Scene() {
             return null;
         }
 
-        _entities.forEach({ entity ->
+        _entities.forEach { entity ->
 
-            val componentContainers = entity.Components.values;
+            val components = entity.Components;
 
-            componentContainers.forEach({ container ->
+            components.forEach { component ->
 
-                if (container.component::class.simpleName == typeName)
+                if (component::class.simpleName == typeName)
                 {
                     @Suppress("UNCHECKED_CAST")
-                    return container.component as T;
+                    return component as T;
                 }
-            });
-        });
+            };
+        };
 
         return null;
     }

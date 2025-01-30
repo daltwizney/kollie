@@ -7,8 +7,10 @@ class Entity(val scene: Scene,
     val Name: String
         get() = _name;
 
-    val Components: MutableMap<String, ComponentContainer>
-        get() = _components;
+    val Components: List<Component>
+        get() {
+            return _components.values.map { container -> container.component };
+        }
 
     private val _components = mutableMapOf<String, ComponentContainer>();
 
@@ -33,15 +35,19 @@ class Entity(val scene: Scene,
         });
     }
 
-    fun <T: Component> AddComponent(componentFactory: () -> T): T {
+    fun <T: Component> AddComponent(componentFactory: () -> T, componentID: String? = null): T {
 
         val component = componentFactory();
 
         val container = ComponentContainer(this, component,
             _getNextAvailableComponentId());
 
-        val componentTypeName = component::class.simpleName
-            ?: throw RuntimeException("failed to get component type name!");
+        val componentTypeName = componentID ?: component::class.simpleName;
+
+        if (componentTypeName == null)
+        {
+            throw RuntimeException("failed to get component type name!");
+        }
 
         _components[componentTypeName] = container;
 
@@ -52,28 +58,13 @@ class Entity(val scene: Scene,
 
     fun <T: Component> GetComponent(typeName: String?): T? {
 
-        if (typeName == null)
+        if (typeName == null || !_components.contains(typeName))
         {
             return null;
         }
 
-        _components.values.forEach({ container ->
-
-            val component = container.component;
-
-            if (component::class.simpleName == typeName)
-            {
-                @Suppress("UNCHECKED_CAST")
-                return component as T;
-            }
-        });
-
-        return null;
-    }
-
-    fun GetComponentName(component: Component): String {
-
-        return component::class.simpleName ?: "";
+        @Suppress("UNCHECKED_CAST")
+        return _components[typeName]?.component as T;
     }
 
     private fun _getNextAvailableComponentId(): Int {

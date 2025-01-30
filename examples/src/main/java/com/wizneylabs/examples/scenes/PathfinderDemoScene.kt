@@ -34,14 +34,14 @@ class PathfinderDemoScene: Scene() {
         // entity A
         val entityA = this.AddEntity("basicComponent");
 
-        val componentA = entityA.AddComponent { BasicComponentExample() };
+        val componentA = entityA.AddComponent(::BasicComponentExample);
 
         componentA.name = "bob";
 
         // entity B
         val entityB = this.AddEntity("basicComponent");
 
-        entityB.AddComponent { BasicComponentExample() };
+        entityB.AddComponent(::BasicComponentExample);
 
         val componentB: BasicComponentExample? =
             entityB.GetComponent(BasicComponentExample::class.simpleName);
@@ -60,14 +60,14 @@ class PathfinderDemoScene: Scene() {
         // grid renderer
         val grid = this.AddEntity("grid");
 
-        grid.AddComponent { GridRenderer() };
+        grid.AddComponent(::GridRenderer);
 
         val gridRenderer: GridRenderer? = grid.GetComponent(GridRenderer::class.simpleName);
         gridRenderer?.rows = rows;
         gridRenderer?.columns = columns;
         gridRenderer?.cellSize = cellSize;
 
-        val mazeRenderer = grid.AddComponent { MazeRenderer() };
+        val mazeRenderer = grid.AddComponent(::MazeRenderer);
         mazeRenderer.gridRenderer = gridRenderer;
         mazeRenderer.maze = maze;
 
