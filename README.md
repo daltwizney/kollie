@@ -5,7 +5,7 @@
 <h3 align="center">kollie</h3>
 
 <p align="center">
-An Android-first, Kotlin Game Engine for Jetpack Compose Apps
+An Android-first, 2D & 3D rendering engine for Jetpack Compose
 <br />
 (*under heavy construction*)
 </p>
@@ -42,7 +42,7 @@ kollie is under heavy construction - check back soon for more info!
 <!-- LICENSE -->
 ## License
 
-Distributed under the project_license. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
