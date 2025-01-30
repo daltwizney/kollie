@@ -5,7 +5,7 @@
 <h3 align="center">kollie</h3>
 
 <p align="center">
-A 2D Kotlin Game Engine for Jetpack Compose Apps
+An Android-first, Kotlin Game Engine for Jetpack Compose Apps
 <br />
 (*under heavy construction*)
 </p>
