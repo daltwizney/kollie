@@ -17,6 +17,9 @@ class Entity(val scene: Scene,
 
     fun Update(t: Float, dt: Float) {
 
+        // TODO: we always want awake() to get called on component construction
+        // and the Start() method to get called this frame (but after updating all started objects),
+        // so the Update will always run no more than 1 frame after an object was created!
         this._components.values.forEach({ c ->
 
             if (!c.awake)
