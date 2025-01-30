@@ -3,8 +3,9 @@ package com.wizneylabs.kollie.pathfinder
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.wizneylabs.kollie.core.Component
+import com.wizneylabs.kollie.core.Entity
 
-class MazeRenderer: Component() {
+class MazeRenderer(entity: Entity): Component(entity) {
 
     val TAG = MazeRenderer::class.simpleName;
 

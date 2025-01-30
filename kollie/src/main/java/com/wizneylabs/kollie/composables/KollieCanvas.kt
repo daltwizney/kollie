@@ -1,5 +1,6 @@
 package com.wizneylabs.kollie.composables
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -69,9 +70,9 @@ fun KollieCanvas(viewModel: KollieGameViewModel) {
 
             // TODO: need to sort gridRenderers into a priority queue, based on depth
 
-            gridRenderers.forEach({ gridRendererContainer ->
+            gridRenderers.forEach { component ->
 
-                val gridRenderer = gridRendererContainer.component as GridRenderer;
+                val gridRenderer = component as GridRenderer;
 
                 val rows = gridRenderer.rows;
                 val columns = gridRenderer.columns;
@@ -94,7 +95,7 @@ fun KollieCanvas(viewModel: KollieGameViewModel) {
                         }
                     }
                 }
-            });
+            };
         }
 
         DebugUI(viewModel);

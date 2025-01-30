@@ -3,9 +3,10 @@ package com.wizneylabs.kollie.pathfinder
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.wizneylabs.kollie.core.Component
+import com.wizneylabs.kollie.core.Entity
 
-class GridRenderer():
-    Component() {
+class GridRenderer(entity: Entity):
+    Component(entity) {
 
     val TAG = GridRenderer::class.simpleName;
 
@@ -25,6 +26,8 @@ class GridRenderer():
 
     override fun Awake() {
 
+        super.Awake();
+
         if (rows < 1 || columns < 1 || cellSize < 1)
         {
             throw RuntimeException("Invalid grid renderer shape!");
@@ -32,13 +35,17 @@ class GridRenderer():
 
         _colors = Array(rows) { Array(columns) { _defaultCellColor } };
 
+        Log.d(TAG, "renderer initialized!")
+
         _isInitialized = true;
     }
 
-    override fun Start() {}
+    override fun Start() {
+        super.Start();
+    }
 
     override fun Update(t: Float, dt: Float) {
-
+        super.Update(t, dt);
     }
 
     fun isValidCell(row: Int, column: Int): Boolean {

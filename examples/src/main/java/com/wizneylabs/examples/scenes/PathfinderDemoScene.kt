@@ -67,9 +67,11 @@ class PathfinderDemoScene: Scene() {
         gridRenderer?.columns = columns;
         gridRenderer?.cellSize = cellSize;
 
-        val mazeRenderer = grid.AddComponent(::MazeRenderer);
-        mazeRenderer.gridRenderer = gridRenderer;
-        mazeRenderer.maze = maze;
+        grid.AddComponent(::MazeRenderer, "mazeRenderer");
+
+        val mazeRenderer = grid.GetComponent<MazeRenderer>("mazeRenderer");
+        mazeRenderer?.gridRenderer = gridRenderer;
+        mazeRenderer?.maze = maze;
 
         // setup input handlers
         this.Game?.Input?.onTap?.add(this::handleTapInput);

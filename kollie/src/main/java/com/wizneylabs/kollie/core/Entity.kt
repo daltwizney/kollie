@@ -1,5 +1,11 @@
 package com.wizneylabs.kollie.core
 
+/**
+ *  Entity names and component IDs are unique within each scene.
+ *  Component IDs consist of a user supplied ID, prefixed with the entity name.
+ *
+ *  If user doesn't supply an ID, component ID is 'EntityName' + 'Typename'
+ */
 class Entity(val scene: Scene,
              private var _name: String,
              val _id: Int) {
@@ -7,14 +13,7 @@ class Entity(val scene: Scene,
     val Name: String
         get() = _name;
 
-    val Components: List<Component>
-        get() {
-            return _components.values.map { container -> container.component };
-        }
-
-    private val _components = mutableMapOf<String, ComponentContainer>();
-
-    private val _usedComponentIDs = hashSetOf<Int>();
+    private val _components = mutableMapOf<String, Component>();
 
     fun Update(t: Float, dt: Float) {
 
@@ -35,73 +34,54 @@ class Entity(val scene: Scene,
         });
     }
 
-    fun <T: Component> AddComponent(componentFactory: () -> T, componentID: String? = null): T {
+    fun <T: Component> AddComponent(componentFactory: (Entity) -> T, id: String? = null): T {
 
-        val component = componentFactory();
+        // TODO: verify component ID is unique!
 
-        val container = ComponentContainer(this, component,
-            _getNextAvailableComponentId());
+        val component = componentFactory(this);
 
-        val componentTypeName = componentID ?: component::class.simpleName;
+        var componentID = id ?: component::class.simpleName;
 
-        if (componentTypeName == null)
+        if (componentID == null)
         {
             throw RuntimeException("failed to get component type name!");
         }
 
-        _components[componentTypeName] = container;
+        componentID = this._name + componentID;
 
-        this.scene.onComponentAdded(container);
+        _components[componentID] = component;
+
+        this.scene.onComponentAdded(componentID, component);
 
         return component;
     }
 
-    fun <T: Component> GetComponent(typeName: String?): T? {
+    fun <T: Component> GetComponent(id: String?): T? {
 
-        if (typeName == null || !_components.contains(typeName))
+        if (id == null || !_components.contains(this._name + id))
         {
             return null;
         }
 
         @Suppress("UNCHECKED_CAST")
-        return _components[typeName]?.component as T;
+        return _components[this._name + id] as T;
     }
 
-    private fun _getNextAvailableComponentId(): Int {
+    fun RemoveComponent(id: String) {
 
-        if (_usedComponentIDs.size == Int.MAX_VALUE)
-        {
-            return -1;
-        }
+    }
 
-        // only try up to Int.MAX_VALUE times
-        for (i in 0..Int.MAX_VALUE)
-        {
-            val id = (0..Int.MAX_VALUE).random();
+    fun <T: Component> FindComponentByType(typeName: String): T? {
 
-            if (!_usedComponentIDs.contains(id))
+        _components.forEach { component ->
+
+            if (component::class.simpleName == typeName)
             {
-                _usedComponentIDs.add(id);
-                return id;
+                @Suppress("UNCHECKED_CAST")
+                return component as T;
             }
-        }
+        };
 
-        return -1;
-    }
-
-    fun ReleaseComponentId(id: Int) {
-
-        _usedComponentIDs.remove(id);
-    }
-
-    fun RemoveComponent(component: ComponentContainer) {
-
-        // TODO: need component IDs so we can find
-        // the right one to remove!
-
-        // component IDs can probably just be in
-        // integer and don't have to be unique
-        // across entities, so long as entities
-        // all have unique IDs in each scene
+        return null;
     }
 }

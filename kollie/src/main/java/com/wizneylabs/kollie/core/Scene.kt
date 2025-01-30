@@ -1,6 +1,5 @@
 package com.wizneylabs.kollie.core
 
-import android.util.Log
 import com.wizneylabs.kollie.pathfinder.GridRenderer
 
 open class Scene() {
@@ -21,10 +20,12 @@ open class Scene() {
      *  be drawn differently in the main scene rendering composable
      */
 
-    val GridRenderers: MutableList<ComponentContainer>
-        get() = _gridRenderers;
+    val GridRenderers: List<Component>
+        get() {
+            return _gridRenderers.values.toList();
+        }
 
-    private val _gridRenderers = mutableListOf<ComponentContainer>();
+    private val _gridRenderers = HashMap<String, Component>();
 
     fun Initialize(game: Game) {
 
@@ -44,7 +45,7 @@ open class Scene() {
 
         _entities.forEach({ entity ->
             entity.Update(t, dt);
-        })
+        });
     }
 
     fun AddEntity(name: String): Entity {
@@ -87,16 +88,12 @@ open class Scene() {
 
         _entities.forEach { entity ->
 
-            val components = entity.Components;
+            val component = entity.FindComponentByType<T>(typeName);
 
-            components.forEach { component ->
-
-                if (component::class.simpleName == typeName)
-                {
-                    @Suppress("UNCHECKED_CAST")
-                    return component as T;
-                }
-            };
+            if (component != null)
+            {
+                return component;
+            }
         };
 
         return null;
@@ -107,14 +104,19 @@ open class Scene() {
         _usedEntityIDs.remove(id);
     }
 
-    fun onComponentAdded(container: ComponentContainer) {
+    fun onComponentAdded(id: String, component: Component) {
 
-        if (container.component is GridRenderer) {
-            _gridRenderers.add(container);
+        if (_gridRenderers.contains(id))
+        {
+            throw RuntimeException("two grid renderers with the same ID: ${id}");
+        }
+
+        if (component is GridRenderer) {
+            _gridRenderers[id] = component;
         }
     }
 
-    fun onComponentRemoved(container: ComponentContainer) {
+    fun onComponentRemoved(id: String, component: Component) {
 
         // NOTE: component must not be destroyed yet here,
         // as we need to be able to remove it's reference
@@ -122,7 +124,7 @@ open class Scene() {
         // of components need to be separate parts of the
         // component lifecycle!
 
-        if (container.component is GridRenderer)
+        if (component is GridRenderer)
         {
             // TODO: you probably need to add component IDs so you can
             // find the component by ID and remove it!

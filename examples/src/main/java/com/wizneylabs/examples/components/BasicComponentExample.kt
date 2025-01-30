@@ -2,8 +2,9 @@ package com.wizneylabs.examples.components
 
 import android.util.Log
 import com.wizneylabs.kollie.core.Component
+import com.wizneylabs.kollie.core.Entity
 
-class BasicComponentExample: Component() {
+class BasicComponentExample(entity: Entity): Component(entity) {
 
     val TAG = BasicComponentExample::class.simpleName;
 
