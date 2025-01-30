@@ -2,6 +2,7 @@ package com.wizneylabs.kollie.core
 
 import com.wizneylabs.kollie.physics.PhysicsEngine
 import com.wizneylabs.kollie.input.InputManager
+import kotlin.reflect.KClass
 
 class Game(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
 

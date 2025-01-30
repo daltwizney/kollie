@@ -7,16 +7,16 @@ class Entity(val scene: Scene,
     val Name: String
         get() = _name;
 
-    val Components: MutableList<ComponentContainer>
+    val Components: MutableMap<String, ComponentContainer>
         get() = _components;
 
-    private val _components = mutableListOf<ComponentContainer>();
+    private val _components = mutableMapOf<String, ComponentContainer>();
 
     private val _usedComponentIDs = hashSetOf<Int>();
 
     fun Update(t: Float, dt: Float) {
 
-        this._components.forEach({ c ->
+        this._components.values.forEach({ c ->
 
             if (!c.awake)
             {
@@ -33,19 +33,50 @@ class Entity(val scene: Scene,
         });
     }
 
-    inline fun <reified T: Component> AddComponent(): T {
+    fun <T: Component> AddComponent(componentFactory: () -> T): T {
 
-        val component: Component = T::class.java.getDeclaredConstructor().newInstance();
+        val component = componentFactory();
 
         val container = ComponentContainer(this, component,
-            GetNextAvailableComponentId());
+            _getNextAvailableComponentId());
 
-        this.AddExistingComponent(container);
+        val componentTypeName = component::class.simpleName
+            ?: throw RuntimeException("failed to get component type name!");
 
-        return component as T;
+        _components[componentTypeName] = container;
+
+        this.scene.onComponentAdded(container);
+
+        return component;
     }
 
-    fun GetNextAvailableComponentId(): Int {
+    fun <T: Component> GetComponent(typeName: String?): T? {
+
+        if (typeName == null)
+        {
+            return null;
+        }
+
+        _components.values.forEach({ container ->
+
+            val component = container.component;
+
+            if (component::class.simpleName == typeName)
+            {
+                @Suppress("UNCHECKED_CAST")
+                return component as T;
+            }
+        });
+
+        return null;
+    }
+
+    fun GetComponentName(component: Component): String {
+
+        return component::class.simpleName ?: "";
+    }
+
+    private fun _getNextAvailableComponentId(): Int {
 
         if (_usedComponentIDs.size == Int.MAX_VALUE)
         {
@@ -70,15 +101,6 @@ class Entity(val scene: Scene,
     fun ReleaseComponentId(id: Int) {
 
         _usedComponentIDs.remove(id);
-    }
-
-    fun AddExistingComponent(component: ComponentContainer) {
-
-        // TODO: check if component ID is already reserved, if so throw an error!
-
-        _components.add(component);
-
-        this.scene.onComponentAdded(component);
     }
 
     fun RemoveComponent(component: ComponentContainer) {

@@ -34,18 +34,19 @@ class PathfinderDemoScene: Scene() {
         // entity A
         val entityA = this.AddEntity("basicComponent");
 
-        val componentA = entityA.AddComponent<BasicComponentExample>();
+        val componentA = entityA.AddComponent { BasicComponentExample() };
 
         componentA.name = "bob";
 
         // entity B
         val entityB = this.AddEntity("basicComponent");
 
-        val componentB = entityB.AddComponent<BasicComponentExample>();
+        entityB.AddComponent { BasicComponentExample() };
 
-        componentB.name = "jane";
+        val componentB: BasicComponentExample? =
+            entityB.GetComponent(BasicComponentExample::class.simpleName);
 
-        Log.d(TAG, "about to create maze!");
+        componentB?.name = "jane";
 
         // create maze
         val rows = screenHeight / cellSize;
@@ -59,12 +60,14 @@ class PathfinderDemoScene: Scene() {
         // grid renderer
         val grid = this.AddEntity("grid");
 
-        val gridRenderer = grid.AddComponent<GridRenderer>();
-        gridRenderer.rows = rows;
-        gridRenderer.columns = columns;
-        gridRenderer.cellSize = cellSize;
+        grid.AddComponent { GridRenderer() };
 
-        val mazeRenderer = grid.AddComponent<MazeRenderer>();
+        val gridRenderer: GridRenderer? = grid.GetComponent(GridRenderer::class.simpleName);
+        gridRenderer?.rows = rows;
+        gridRenderer?.columns = columns;
+        gridRenderer?.cellSize = cellSize;
+
+        val mazeRenderer = grid.AddComponent { MazeRenderer() };
         mazeRenderer.gridRenderer = gridRenderer;
         mazeRenderer.maze = maze;
 
@@ -75,7 +78,8 @@ class PathfinderDemoScene: Scene() {
     fun handleTapInput(offset: Offset) {
 
         // TODO: here for testing - remove before flight!
-        val mazeRenderer = this.Game?.CurrentScene?.FindComponentByType<MazeRenderer>();
+        val mazeRenderer = this.Game?.CurrentScene?.
+            FindComponentByType<MazeRenderer>(MazeRenderer::class.simpleName);
 
         var queryInput = GridCollisionQueryInput();
         queryInput.pointX = offset.x.toInt();

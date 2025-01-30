@@ -10,9 +10,6 @@ open class Scene() {
     val Game: Game?
         get() = _game;
 
-    val Entities: MutableList<Entity>
-        get() = _entities;
-
     private var _game: Game? = null;
 
     private val _entities = mutableListOf<Entity>();
@@ -81,22 +78,26 @@ open class Scene() {
         return -1;
     }
 
-    inline fun <reified T> FindComponentByType(): T? {
+    fun <T: Component> FindComponentByType(typeName: String?): T? {
 
-        val entities = this.Entities;
+        if (typeName == null)
+        {
+            return null;
+        }
 
-        entities.forEach({ entity ->
+        _entities.forEach({ entity ->
 
-            val componentContainers = entity.Components;
+            val componentContainers = entity.Components.values;
 
             componentContainers.forEach({ container ->
 
-                if (container.component is T) {
-
+                if (container.component::class.simpleName == typeName)
+                {
+                    @Suppress("UNCHECKED_CAST")
                     return container.component as T;
                 }
-            })
-        })
+            });
+        });
 
         return null;
     }
