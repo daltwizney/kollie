@@ -3,6 +3,8 @@
 
 #include <android/log.h>
 
+#include "glm/glm.hpp"
+
 // Define log tag (use your app name or component name)
 //#define LOG_TAG "KolliePhysics"
 #define LOG_TAG "KollieGameViewModelTapInput"
@@ -30,6 +32,13 @@ struct GridCollisionQueryOutput {
 
 // Helper function to convert native struct to Kotlin object
 jobject createGridCollisionOutput(JNIEnv* env, const GridCollisionQueryOutput& collision) {
+
+    // TODO: glm test - remove before flight!
+    glm::vec3 myVector(42.0f, 69.0f, 23.0f);
+
+    LOGD("my glm vector = (%f, %f, %f)", myVector.x, myVector.y, myVector.z);
+
+
     // Find the Kotlin class
     jclass outputClass = env->FindClass("com/wizneylabs/kollie/collie/GridCollisionQueryOutput");
 
