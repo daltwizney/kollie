@@ -16,10 +16,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.wizneylabs.kollie.pathfinder.GridRenderer
-import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
+import com.wizneylabs.kollie.viewmodels.KollieAppViewModel
 
 @Composable
-fun KollieCanvas(viewModel: KollieGameViewModel) {
+fun KollieCanvas(viewModel: KollieAppViewModel) {
 
     LaunchedEffect(Unit) {
 

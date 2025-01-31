@@ -12,7 +12,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DebugUI(viewModel: com.wizneylabs.kollie.viewmodels.KollieGameViewModel) {
+fun DebugUI(viewModel: com.wizneylabs.kollie.viewmodels.KollieAppViewModel) {
 
     Column(modifier = Modifier
         .offset(x = 0.dp, y = 20.dp)

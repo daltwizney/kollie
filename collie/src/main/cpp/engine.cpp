@@ -17,7 +17,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_wizneylabs_kollie_collie_PhysicsEngine_stringFromJNI(
+Java_com_wizneylabs_kollie_collie_RenderingEngine_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello Kollie from C++!";
@@ -75,8 +75,8 @@ jobject createGridCollisionOutput(JNIEnv* env, const GridCollisionQueryOutput& c
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_com_wizneylabs_kollie_collie_PhysicsEngine_gridCollisionQuery(JNIEnv *env, jobject thiz,
-                                                                    jobject input) {
+Java_com_wizneylabs_kollie_collie_RenderingEngine_gridCollisionQuery(JNIEnv *env, jobject thiz,
+                                                                     jobject input) {
     // TODO: get field IDs once during class init!
     jclass queryInputClass = env->GetObjectClass(input);
 

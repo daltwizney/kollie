@@ -8,20 +8,20 @@ import com.wizneylabs.kollie.utils.SlidingWindow
 import com.wizneylabs.kollie.core.App
 import com.wizneylabs.kollie.core.Scene
 
-class KollieGameViewModelFactory(
+class KollieAppViewModelFactory(
     private val initialScene: Scene,
     private val screenWidth: Int,
     private val screenHeight: Int,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return KollieGameViewModel(initialScene,
+        return KollieAppViewModel(initialScene,
             screenWidth, screenHeight
         ) as T;
     }
 }
 
-class KollieGameViewModel(
+class KollieAppViewModel(
 
     initialScene: Scene,
     screenWidth: Int,
@@ -36,7 +36,7 @@ class KollieGameViewModel(
     val App: App
         get() = _app;
 
-    val TAG = KollieGameViewModel::class.simpleName;
+    val TAG = KollieAppViewModel::class.simpleName;
 
     var frameCounter = mutableStateOf(0L);
 

@@ -53,9 +53,9 @@ fun KollieApp() {
     // you need to have the viewmodel instantiate the demo scene!
     val demoScene = PathfinderDemoScene();
 
-    val viewModel = viewModel<com.wizneylabs.kollie.viewmodels.KollieGameViewModel>(
+    val viewModel = viewModel<com.wizneylabs.kollie.viewmodels.KollieAppViewModel>(
         factory = com.wizneylabs.kollie.viewmodels
-            .KollieGameViewModelFactory(demoScene,
+            .KollieAppViewModelFactory(demoScene,
                 screenWidth, screenHeight
             )
     );

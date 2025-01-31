@@ -14,7 +14,7 @@ class GridCollisionQueryOutput() {
     var column: Int = -1;
 }
 
-class PhysicsEngine {
+class RenderingEngine {
 
     /**
      * A native method that is implemented by the 'physics' native library,
@@ -28,7 +28,7 @@ class PhysicsEngine {
     companion object {
         // Used to load the 'physics' library on application startup.
         init {
-            System.loadLibrary("physics")
+            System.loadLibrary("collie")
         }
     }
 }
