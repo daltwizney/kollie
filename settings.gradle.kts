@@ -21,5 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "kollie"
 include(":examples")
-include(":physics")
+include(":collie")
 include(":kollie")

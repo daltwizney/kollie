@@ -1,18 +1,12 @@
 package com.wizneylabs.kollie.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.wizneylabs.kollie.input.InputManager
-import com.wizneylabs.kollie.pathfinder.Maze
-import com.wizneylabs.kollie.physics.GridCollisionQueryInput
 import com.wizneylabs.kollie.utils.SlidingWindow
 
-import com.wizneylabs.kollie.core.Game
+import com.wizneylabs.kollie.core.App
 import com.wizneylabs.kollie.core.Scene
-import com.wizneylabs.kollie.pathfinder.MazeRenderer
 
 class KollieGameViewModelFactory(
     private val initialScene: Scene,
@@ -39,8 +33,8 @@ class KollieGameViewModel(
      *  General game data
      */
 
-    val Game: Game
-        get() = _game;
+    val App: App
+        get() = _app;
 
     val TAG = KollieGameViewModel::class.simpleName;
 
@@ -58,7 +52,7 @@ class KollieGameViewModel(
 
     private var _debug = true;
 
-    private val _game = Game(screenWidth, screenHeight, initialScene);
+    private val _app = App(screenWidth, screenHeight, initialScene);
 
     init {
     }
@@ -83,7 +77,7 @@ class KollieGameViewModel(
             }
         }
 
-        _game.Tick(_time, _deltaTime);
+        _app.Tick(_time, _deltaTime);
     }
 
     fun setDebugEnabled(enabled: Boolean) {

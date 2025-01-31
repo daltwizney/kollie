@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie.physics
+package com.wizneylabs.kollie.collie
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

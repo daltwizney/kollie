@@ -1,4 +1,4 @@
-package com.wizneylabs.kollie.physics
+package com.wizneylabs.kollie.collie
 
 class GridCollisionQueryInput() {
 

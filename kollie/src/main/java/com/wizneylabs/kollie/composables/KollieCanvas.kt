@@ -1,6 +1,5 @@
 package com.wizneylabs.kollie.composables
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -15,12 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.wizneylabs.kollie.core.Scene
 import com.wizneylabs.kollie.pathfinder.GridRenderer
 import com.wizneylabs.kollie.viewmodels.KollieGameViewModel
 
@@ -47,24 +41,24 @@ fun KollieCanvas(viewModel: KollieGameViewModel) {
             .align(Alignment.Center)
             .pointerInput(Unit) {
                 detectTapGestures (
-                    onTap = { offset -> viewModel.Game.Input.handleTap(offset )},
-                    onDoubleTap = { offset  -> viewModel.Game.Input.handleDoubleTap(offset) },
-                    onPress = { offset -> viewModel.Game.Input.handlePress(offset) },
-                    onLongPress = { offset -> viewModel.Game.Input.handleLongPress(offset) }
+                    onTap = { offset -> viewModel.App.Input.handleTap(offset )},
+                    onDoubleTap = { offset  -> viewModel.App.Input.handleDoubleTap(offset) },
+                    onPress = { offset -> viewModel.App.Input.handlePress(offset) },
+                    onLongPress = { offset -> viewModel.App.Input.handleLongPress(offset) }
                 )
             }
             .pointerInput(Unit) {
                 detectDragGestures(
-                    onDragStart = { offset -> viewModel.Game.Input.handleDragStart(offset) },
-                    onDrag = { change, dragAmount -> viewModel.Game.Input.handleDrag(change, dragAmount) },
-                    onDragEnd = { viewModel.Game.Input.handleDragEnd() },
-                    onDragCancel = { viewModel.Game.Input.handleDragCanceled() }
+                    onDragStart = { offset -> viewModel.App.Input.handleDragStart(offset) },
+                    onDrag = { change, dragAmount -> viewModel.App.Input.handleDrag(change, dragAmount) },
+                    onDragEnd = { viewModel.App.Input.handleDragEnd() },
+                    onDragCancel = { viewModel.App.Input.handleDragCanceled() }
                 )
             }
         ) {
             val frameCount = viewModel.frameCounter.value;
 
-            val game = viewModel.Game;
+            val game = viewModel.App;
 
             val gridRenderers = game.CurrentScene.GridRenderers;
 

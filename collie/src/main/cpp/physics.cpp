@@ -15,7 +15,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_wizneylabs_kollie_physics_PhysicsEngine_stringFromJNI(
+Java_com_wizneylabs_kollie_collie_PhysicsEngine_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello Kollie from C++!";
@@ -31,7 +31,7 @@ struct GridCollisionQueryOutput {
 // Helper function to convert native struct to Kotlin object
 jobject createGridCollisionOutput(JNIEnv* env, const GridCollisionQueryOutput& collision) {
     // Find the Kotlin class
-    jclass outputClass = env->FindClass("com/wizneylabs/kollie/physics/GridCollisionQueryOutput");
+    jclass outputClass = env->FindClass("com/wizneylabs/kollie/collie/GridCollisionQueryOutput");
 
     if (outputClass == nullptr) {
         return nullptr; // Class not found
@@ -66,7 +66,7 @@ jobject createGridCollisionOutput(JNIEnv* env, const GridCollisionQueryOutput& c
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_com_wizneylabs_kollie_physics_PhysicsEngine_gridCollisionQuery(JNIEnv *env, jobject thiz,
+Java_com_wizneylabs_kollie_collie_PhysicsEngine_gridCollisionQuery(JNIEnv *env, jobject thiz,
                                                                     jobject input) {
     // TODO: get field IDs once during class init!
     jclass queryInputClass = env->GetObjectClass(input);

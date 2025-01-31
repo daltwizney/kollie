@@ -8,7 +8,7 @@ import com.wizneylabs.kollie.core.Scene
 import com.wizneylabs.examples.components.BasicComponentExample
 import com.wizneylabs.kollie.pathfinder.Maze
 import com.wizneylabs.kollie.pathfinder.MazeRenderer
-import com.wizneylabs.kollie.physics.GridCollisionQueryInput
+import com.wizneylabs.kollie.collie.GridCollisionQueryInput
 
 class PathfinderDemoScene: Scene() {
 
@@ -26,7 +26,7 @@ class PathfinderDemoScene: Scene() {
 
         Log.d(TAG, "pathfinder demo scene initializing!");
 
-        val game = this.Game!!;
+        val game = this.App!!;
 
         val screenWidth = game.ScreenWidth;
         val screenHeight = game.ScreenHeight;
@@ -74,13 +74,13 @@ class PathfinderDemoScene: Scene() {
         mazeRenderer?.maze = maze;
 
         // setup input handlers
-        this.Game?.Input?.onTap?.add(this::handleTapInput);
+        this.App?.Input?.onTap?.add(this::handleTapInput);
     }
 
     fun handleTapInput(offset: Offset) {
 
         // TODO: here for testing - remove before flight!
-        val mazeRenderer = this.Game?.CurrentScene?.
+        val mazeRenderer = this.App?.CurrentScene?.
             FindComponentByType<MazeRenderer>(MazeRenderer::class.simpleName);
 
         var queryInput = GridCollisionQueryInput();
@@ -88,7 +88,7 @@ class PathfinderDemoScene: Scene() {
         queryInput.pointY = offset.y.toInt();
         queryInput.cellSize = mazeRenderer?.gridRenderer?.cellSize ?: 100;
 
-        val queryResult = this.Game?.Physics?.gridCollisionQuery(queryInput) ?: null;
+        val queryResult = this.App?.Physics?.gridCollisionQuery(queryInput) ?: null;
 
         val row = queryResult?.row ?: -1;
         val column = queryResult?.column ?: -1;

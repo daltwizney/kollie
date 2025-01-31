@@ -6,10 +6,10 @@ open class Scene() {
 
     // TODO: we don't want this to be nullable!  create a SceneContainer
     // so user code doesn't know about implementation details of engine!
-    val Game: Game?
-        get() = _game;
+    val App: App?
+        get() = _app;
 
-    private var _game: Game? = null;
+    private var _app: App? = null;
 
     private val _entities = mutableListOf<Entity>();
 
@@ -27,14 +27,14 @@ open class Scene() {
 
     private val _gridRenderers = HashMap<String, Component>();
 
-    fun Initialize(game: Game) {
+    fun Initialize(app: App) {
 
-        if (_game != null)
+        if (_app != null)
         {
             throw RuntimeException("scene is already initialized!");
         }
 
-        _game = game;
+        _app = app;
     }
 
     open fun Start() {

@@ -1,10 +1,9 @@
 package com.wizneylabs.kollie.core
 
-import com.wizneylabs.kollie.physics.PhysicsEngine
+import com.wizneylabs.kollie.collie.PhysicsEngine
 import com.wizneylabs.kollie.input.InputManager
-import kotlin.reflect.KClass
 
-class Game(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
+class App(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
 
     val CurrentScene: Scene
         get() = _currentScene;
