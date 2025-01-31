@@ -1,5 +1,7 @@
 package com.wizneylabs.kollie.collie
 
+import android.view.Surface
+
 class GridCollisionQueryInput() {
 
     var cellSize: Int = -1;
@@ -24,6 +26,10 @@ class RenderingEngine {
 
     external fun gridCollisionQuery(input: GridCollisionQueryInput)
         : GridCollisionQueryOutput;
+
+    external fun nativeInit(surface: Surface);
+    external fun nativeRender();
+    external fun nativeDestroy();
 
     companion object {
         // Used to load the 'physics' library on application startup.
