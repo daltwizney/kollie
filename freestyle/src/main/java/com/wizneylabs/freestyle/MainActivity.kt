@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wizneylabs.freestyle.ui.theme.KollieTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +24,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KollieTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Freestyle",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+                val viewModel: FreestyleViewModel = viewModel();
+
+                FreestyleEditor(viewModel);
+
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun FreestyleEditor(viewModel: FreestyleViewModel) {
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    KollieTheme {
-        Greeting("Android")
-    }
+    TextField(
+        value = viewModel.text.value,
+        onValueChange = { viewModel.onTextChanged(it) },
+        modifier = Modifier
+            .fillMaxSize(),
+        textStyle = MaterialTheme.typography.bodyLarge,
+        colors = TextFieldDefaults.colors()
+    )
 }
