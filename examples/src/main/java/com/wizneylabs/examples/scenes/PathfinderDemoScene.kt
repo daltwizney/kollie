@@ -8,7 +8,6 @@ import com.wizneylabs.kollie.core.Scene
 import com.wizneylabs.examples.components.BasicComponentExample
 import com.wizneylabs.kollie.pathfinder.Maze
 import com.wizneylabs.kollie.pathfinder.MazeRenderer
-import com.wizneylabs.kollie.collie.GridCollisionQueryInput
 
 class PathfinderDemoScene: Scene() {
 
@@ -79,19 +78,8 @@ class PathfinderDemoScene: Scene() {
 
     fun handleTapInput(offset: Offset) {
 
-        // TODO: here for testing - remove before flight!
-        val mazeRenderer = this.App?.CurrentScene?.
-            FindComponentByType<MazeRenderer>(MazeRenderer::class.simpleName);
-
-        var queryInput = GridCollisionQueryInput();
-        queryInput.pointX = offset.x.toInt();
-        queryInput.pointY = offset.y.toInt();
-        queryInput.cellSize = mazeRenderer?.gridRenderer?.cellSize ?: 100;
-
-        val queryResult = this.App?.Physics?.gridCollisionQuery(queryInput) ?: null;
-
-        val row = queryResult?.row ?: -1;
-        val column = queryResult?.column ?: -1;
+        val row = offset.y / cellSize;
+        val column = offset.x / cellSize;
 
         Log.d(TAG + "TapInput", "clicked cell: (${row}, ${column})");
     }

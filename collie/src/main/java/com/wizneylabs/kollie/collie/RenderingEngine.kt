@@ -18,21 +18,16 @@ class GridCollisionQueryOutput() {
 
 class RenderingEngine {
 
-    /**
-     * A native method that is implemented by the 'physics' native library,
-     * which is packaged with this application.
-     */
     external fun stringFromJNI(): String
 
-    external fun gridCollisionQuery(input: GridCollisionQueryInput)
-        : GridCollisionQueryOutput;
-
-    external fun nativeInit(surface: Surface);
-    external fun nativeRender();
-    external fun nativeDestroy();
+    external fun init();
+    external fun draw();
+    external fun resize(width: Int, height: Int);
+    external fun destroy();
 
     companion object {
-        // Used to load the 'physics' library on application startup.
+
+        // Used to load the 'collie' library on application startup.
         init {
             System.loadLibrary("collie")
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -44,11 +45,12 @@ fun CollieTest() {
 }
 
 @Composable
-fun MyGLView(modifier: Modifier = Modifier) {
+fun MyGLView() {
     AndroidView(
         factory = { context ->
             MyGLSurfaceView(context)
         },
-        modifier = modifier
+        modifier = Modifier
+            .fillMaxSize()
     )
 }

@@ -27,9 +27,9 @@ project("collie")
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         engine.cpp
-        native_renderer.cpp)
+        utils.cpp)
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE glm)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE glm includes)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this

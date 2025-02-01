@@ -1,66 +1,53 @@
 package com.wizneylabs.examples
 
 import android.content.Context
+import android.opengl.EGLConfig
 import android.opengl.GLSurfaceView
-import android.util.AttributeSet
-import android.util.Log
-import android.view.SurfaceHolder
 
 import com.wizneylabs.kollie.collie.RenderingEngine
-
-import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-class MyGLSurfaceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : GLSurfaceView(context, attrs) {
 
-    private var renderer = RendererImpl();
+class MyRenderer: GLSurfaceView.Renderer {
+
+    private val nativeRenderer = RenderingEngine()
+
+    override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
+        nativeRenderer.init()
+    }
+
+    override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
+        nativeRenderer.resize(width, height)
+    }
+
+    override fun onDrawFrame(p0: GL10?) {
+        nativeRenderer.draw()
+    }
+
+    fun destroy() {
+
+        nativeRenderer.destroy();
+    }
+}
+
+class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
+
+    private val renderer = MyRenderer();
 
     init {
-        /*
-         * We do not call setEGLContextClientVersion() because our native code creates its
-         * own EGL context. We still need to set a renderer so that onDrawFrame is called.
-         */
-        setRenderer(renderer)
-        // Choose continuous rendering (or RENDERMODE_WHEN_DIRTY if you prefer to request renders)
-        renderMode = RENDERMODE_CONTINUOUSLY
+
+        // TODO: check for opengl es support!
+
+        setEGLContextClientVersion(3)
+
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0)
+
+        setRenderer(renderer);
+
+        renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY;
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        super.surfaceCreated(holder)
-        // Pass the Surface from the holder to native code.
-        renderer.renderingEngine.nativeInit(holder.surface)
-        renderer.renderingEngine.nativeRender()
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-        renderer.renderingEngine.nativeDestroy()
-        super.surfaceDestroyed(holder)
-    }
-
-    private class RendererImpl : Renderer {
-
-        var renderingEngine = RenderingEngine();
-
-        override fun onSurfaceCreated(
-            gl: javax.microedition.khronos.opengles.GL10?,
-            config: javax.microedition.khronos.egl.EGLConfig?
-        ) {
-            // Nothing to do here – initialization is done in surfaceCreated.
-        }
-
-        override fun onSurfaceChanged(
-            gl: javax.microedition.khronos.opengles.GL10?,
-            width: Int,
-            height: Int
-        ) {
-            // The native code sets the viewport; nothing to do here.
-        }
-
-        override fun onDrawFrame(gl: javax.microedition.khronos.opengles.GL10?) {
-            // Call our native render function to draw the triangle.
-            Log.d("RenderTest", "rendering!");
-            renderingEngine.nativeRender()
-        }
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        renderer.destroy()
     }
 }

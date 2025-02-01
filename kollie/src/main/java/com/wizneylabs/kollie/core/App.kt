@@ -11,8 +11,8 @@ class App(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
     val Input: InputManager
         get() = _input;
 
-    val Physics: RenderingEngine
-        get() = _physics;
+    val Renderer: RenderingEngine
+        get() = _renderer;
 
     val ScreenWidth: Int
         get() = _screenWidth;
@@ -24,7 +24,7 @@ class App(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
     private val _screenHeight: Int = screenHeight;
 
     private val _input: InputManager = InputManager();
-    private val _physics: RenderingEngine = RenderingEngine();
+    private val _renderer: RenderingEngine = RenderingEngine();
     private var _currentScene: Scene;
 
     init {

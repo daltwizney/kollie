@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
                 val viewModel: FreestyleViewModel = viewModel();
 
                 FreestyleEditor(viewModel);
-
             }
         }
     }
