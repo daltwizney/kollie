@@ -1,32 +1,12 @@
 #include <jni.h>
 
-#include <GLES3/gl31.h>
+#include <string>
+
+#include <pthread.h>
 
 #include "collie/log.h"
 
-class Renderer {
-
-public:
-
-    void init();
-    void resize(int width, int height);
-    void draw();
-};
-
-void Renderer::init() {
-
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-    LOGI("OpenGL initialized!");
-}
-
-void Renderer::resize(int width, int height) {
-    glViewport(0, 0, width, height);
-    LOGI("Surface resized to %dx%d", width, height);
-}
-
-void Renderer::draw() {
-    glClear(GL_COLOR_BUFFER_BIT);
-}
+#include "collie/renderer.h"
 
 static Renderer* renderer = nullptr;
 
@@ -34,6 +14,7 @@ extern "C" {
 
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_collie_RenderingEngine_init(JNIEnv* env, jobject obj) {
+
     if (!renderer) {
         renderer = new Renderer();
         renderer->init();
@@ -52,16 +33,28 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_draw(JNIEnv* env, jobject obj)
     if (renderer) {
         renderer->draw();
 
-        LOGD("we're drawing!");
+//        LOGD("frameCounter = %d", renderer->frameCounter());
     }
 }
 
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_collie_RenderingEngine_destroy(JNIEnv* env, jobject obj) {
+
+    LOGD("Renderer destroy() called!");
+
     if (renderer) {
         delete renderer;
         renderer = nullptr;
     }
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_wizneylabs_kollie_collie_RenderingEngine_stringFromJNI(
+        JNIEnv* env,
+        jobject /* this */) {
+    std::string hello = "Hello Kollie from C++!";
+    return env->NewStringUTF(hello.c_str());
 }
 
 }

@@ -26,8 +26,9 @@ project("collie")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        engine.cpp
-        utils.cpp)
+        src/jni/engine.cpp
+        src/collie/utils.cpp
+        src/collie/renderer.cpp)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE glm includes)
 
