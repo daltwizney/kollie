@@ -13,12 +13,22 @@ public:
     void resize(int width, int height);
     void draw();
 
+    void destroy();
+
     int frameCounter();
 
 private:
 
-    int _frameCounter;
-};
+    int _width;
+    int _height;
 
+    int _frameCounter;
+
+    int _resolutionLocation;
+
+    unsigned int _shaderProgram;
+    unsigned int _screenQuadVAO;
+    unsigned int _screenQuadVBO;
+};
 
 #endif //KOLLIE_RENDERER_H

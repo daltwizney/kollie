@@ -43,6 +43,7 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_destroy(JNIEnv* env, jobject o
     LOGD("Renderer destroy() called!");
 
     if (renderer) {
+        renderer->destroy();
         delete renderer;
         renderer = nullptr;
     }
