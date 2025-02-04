@@ -25,6 +25,8 @@ class RenderingEngine {
     external fun resize(width: Int, height: Int);
     external fun destroy();
 
+    external fun setShaderSource(vertexShaderSrc: String, fragmentShaderSrc: String);
+
     companion object {
 
         // Used to load the 'collie' library on application startup.

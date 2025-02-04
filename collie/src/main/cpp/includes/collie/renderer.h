@@ -5,6 +5,8 @@
 #ifndef KOLLIE_RENDERER_H
 #define KOLLIE_RENDERER_H
 
+#include <string>
+
 class Renderer {
 
 public:
@@ -12,6 +14,8 @@ public:
     void init();
     void resize(int width, int height);
     void draw();
+
+    void setShaderSource(std::string& vertexShaderSrc, std::string& fragmentShaderSrc);
 
     void destroy();
 
@@ -25,6 +29,9 @@ private:
     int _frameCounter;
 
     int _resolutionLocation;
+
+    std::string _vertexShaderSrc;
+    std::string _fragmentShaderSrc;
 
     unsigned int _shaderProgram;
     unsigned int _screenQuadVAO;

@@ -170,6 +170,15 @@ void Renderer::draw() {
     _frameCounter++;
 }
 
+void Renderer::setShaderSource(std::string& vertexShaderSrc, std::string& fragmentShaderSrc)
+{
+    _vertexShaderSrc = vertexShaderSrc;
+    _fragmentShaderSrc = fragmentShaderSrc;
+
+    LOGD("vertex shader = %s", _vertexShaderSrc.c_str());
+    LOGD("frag shader = %s", _fragmentShaderSrc.c_str());
+}
+
 int Renderer::frameCounter() {
 
     return _frameCounter;

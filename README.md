@@ -5,7 +5,7 @@
 <h3 align="center">kollie</h3>
 
 <p align="center">
-An Android-first, 2D & 3D rendering engine for Jetpack Compose
+An Android-first, 2D rendering engine for Jetpack Compose
 <br />
 (*under heavy construction*)
 </p>

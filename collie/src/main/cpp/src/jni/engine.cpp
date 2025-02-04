@@ -16,6 +16,9 @@ JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_collie_RenderingEngine_init(JNIEnv* env, jobject obj) {
 
     if (!renderer) {
+
+        LOGE("TODO: we need to separate renderer initialization from shader compilation, so we can pass shaders after initialization happens!");
+
         renderer = new Renderer();
         renderer->init();
     }
@@ -60,3 +63,17 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_stringFromJNI(
 
 }
 
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_collie_RenderingEngine_setShaderSource(JNIEnv *env, jobject thiz,
+                                                            jstring vertex_shader_src,
+                                                            jstring fragment_shader_src) {
+    if (renderer) {
+
+        auto vertSource = std::string(env->GetStringUTFChars(vertex_shader_src, 0));
+        auto fragSource = std::string(env->GetStringUTFChars(fragment_shader_src, 0));
+
+        renderer->setShaderSource(vertSource, fragSource);
+    }
+}
