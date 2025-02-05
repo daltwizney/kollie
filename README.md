@@ -16,7 +16,7 @@ An Android-first, 2D/3D rendering engine for Jetpack Compose + Android XR
 <!-- ABOUT THE PROJECT -->
 ## About kollie
 
-![kollie-logo](./kollie-logo.png)
+![kollie-logo](./kollie-logo-v2.png)
 
 * Focused on procedurally generated 2D/3D UI for on-device workflows.
 * Written in Kotlin & c++, using Jetpack Compose, Android NDK + JNI.
