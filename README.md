@@ -6,15 +6,13 @@
 
 <p align="center">
 An Android-first, 2D/3D rendering engine for Jetpack Compose + Android XR
-<br />
-(*under heavy construction*)
 </p>
 
 </div>
 
 
 <!-- ABOUT THE PROJECT -->
-## About kollie
+## About kollie (*under heavy construction*)
 
 ![kollie-logo](./kollie-logo-v2.png)
 

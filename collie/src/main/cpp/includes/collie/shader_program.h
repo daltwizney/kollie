@@ -13,10 +13,15 @@ class ShaderProgram {
 
 public:
 
+    ShaderProgram();
+
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
 
     void compile();
+
+    bool canUse();
+
     void use();
 
     float getUniform1f(std::string name);
@@ -42,6 +47,8 @@ public:
     // TODO: getUniformMatrix*(...), setUniformMatrix*(...)
 
 private:
+
+    unsigned int _programID;
 
     std::unordered_map<std::string, unsigned int> _uniformLocations;
 };

@@ -1,7 +1,5 @@
 package com.wizneylabs.kollie.collie
 
-import android.view.Surface
-
 class GridCollisionQueryInput() {
 
     var cellSize: Int = -1;
@@ -16,7 +14,30 @@ class GridCollisionQueryOutput() {
     var column: Int = -1;
 }
 
+object KollieLoader {
+
+    init {
+
+        System.loadLibrary("collie");
+    }
+}
+
+class ShaderProgram {
+
+    companion object {
+        init{
+            KollieLoader // ensure library is loaded!
+        }
+    }
+}
+
 class RenderingEngine {
+
+    companion object {
+        init {
+            KollieLoader // ensure library is loaded!
+        }
+    }
 
     external fun stringFromJNI(): String
 
@@ -29,12 +50,4 @@ class RenderingEngine {
     external fun destroy();
 
     external fun compileShader(vertexShaderSrc: String, fragmentShaderSrc: String): Long;
-
-    companion object {
-
-        // Used to load the 'collie' library on application startup.
-        init {
-            System.loadLibrary("collie")
-        }
-    }
 }
