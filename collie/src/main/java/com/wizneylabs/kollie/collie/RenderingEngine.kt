@@ -21,11 +21,11 @@ class RenderingEngine {
     external fun stringFromJNI(): String
 
     external fun init();
-    external fun draw();
+    external fun drawFullScreenQuad(shaderProgramID: Long);
     external fun resize(width: Int, height: Int);
     external fun destroy();
 
-    external fun setShaderSource(vertexShaderSrc: String, fragmentShaderSrc: String);
+    external fun compileShader(vertexShaderSrc: String, fragmentShaderSrc: String): Long;
 
     companion object {
 

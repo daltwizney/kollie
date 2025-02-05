@@ -17,8 +17,6 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_init(JNIEnv* env, jobject obj)
 
     if (!renderer) {
 
-        LOGE("TODO: we need to separate renderer initialization from shader compilation, so we can pass shaders after initialization happens!");
-
         renderer = new Renderer();
         renderer->init();
     }
@@ -28,15 +26,6 @@ JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_collie_RenderingEngine_resize(JNIEnv* env, jobject obj, jint width, jint height) {
     if (renderer) {
         renderer->resize(width, height);
-    }
-}
-
-JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_collie_RenderingEngine_draw(JNIEnv* env, jobject obj) {
-    if (renderer) {
-        renderer->draw();
-
-//        LOGD("frameCounter = %d", renderer->frameCounter());
     }
 }
 
@@ -63,17 +52,28 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_stringFromJNI(
 
 }
 
-
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_collie_RenderingEngine_setShaderSource(JNIEnv *env, jobject thiz,
-                                                            jstring vertex_shader_src,
-                                                            jstring fragment_shader_src) {
+Java_com_wizneylabs_kollie_collie_RenderingEngine_drawFullScreenQuad(JNIEnv *env, jobject thiz,
+                                                                     jlong shader_program_id) {
+    if (renderer)
+    {
+        renderer->drawFullScreenQuad(shader_program_id);
+    }
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_wizneylabs_kollie_collie_RenderingEngine_compileShader(JNIEnv *env, jobject thiz,
+                                                                jstring vertex_shader_src,
+                                                                jstring fragment_shader_src) {
     if (renderer) {
 
-        auto vertSource = std::string(env->GetStringUTFChars(vertex_shader_src, 0));
-        auto fragSource = std::string(env->GetStringUTFChars(fragment_shader_src, 0));
+        std::string vertSource = std::string(env->GetStringUTFChars(vertex_shader_src, 0));
+        std::string fragSource = std::string(env->GetStringUTFChars(fragment_shader_src, 0));
 
-        renderer->setShaderSource(vertSource, fragSource);
+        return static_cast<long>(renderer->compileShader(vertSource, fragSource));
     }
+
+    return -1;
 }

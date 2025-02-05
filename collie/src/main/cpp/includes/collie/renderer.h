@@ -13,25 +13,18 @@ public:
 
     void init();
     void resize(int width, int height);
-    void draw();
+    void drawFullScreenQuad(long shaderProgramID);
 
-    void setShaderSource(std::string& vertexShaderSrc, std::string& fragmentShaderSrc);
+    long compileShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
 
     void destroy();
-
-    int frameCounter();
 
 private:
 
     int _width;
     int _height;
 
-    int _frameCounter;
-
     int _resolutionLocation;
-
-    std::string _vertexShaderSrc;
-    std::string _fragmentShaderSrc;
 
     unsigned int _shaderProgram;
     unsigned int _screenQuadVAO;

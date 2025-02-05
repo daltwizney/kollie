@@ -1,7 +1,6 @@
 package com.wizneylabs.examples
 
 import android.content.Context
-import android.opengl.EGLConfig
 import android.opengl.GLSurfaceView
 import android.util.Log
 
@@ -10,27 +9,46 @@ import javax.microedition.khronos.opengles.GL10
 
 class MyRenderer: GLSurfaceView.Renderer {
 
-    private val nativeRenderer = RenderingEngine()
+    private val TAG = MyRenderer::class.simpleName;
+
+    private val _nativeRenderer = RenderingEngine()
+
+    private var _vertexShaderSource = "";
+    private var _fragmentShaderSource = "";
+
+    private var _shaderProgramID: Long = -1;
 
     fun setShaderSource(vertexShader: String, fragmentShader: String) {
-        nativeRenderer.setShaderSource(vertexShader, fragmentShader);
+
+        _vertexShaderSource = vertexShader;
+        _fragmentShaderSource = fragmentShader;
     }
 
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
-        nativeRenderer.init()
+
+        _nativeRenderer.init();
+        _shaderProgramID = _nativeRenderer.compileShader(_vertexShaderSource, _fragmentShaderSource);
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
-        nativeRenderer.resize(width, height)
+
+        _nativeRenderer.resize(width, height)
     }
 
     override fun onDrawFrame(p0: GL10?) {
-        nativeRenderer.draw()
+
+        if (_shaderProgramID < 0)
+        {
+            Log.e(TAG, "invalid shader program ID - failed to draw!");
+            return;
+        }
+
+        _nativeRenderer.drawFullScreenQuad(_shaderProgramID);
     }
 
     fun destroy() {
 
-        nativeRenderer.destroy();
+        _nativeRenderer.destroy();
     }
 }
 
@@ -49,13 +67,10 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         setEGLConfigChooser(8, 8, 8, 8, 16, 0)
 
         // load shader source
-        val vertexShader = this.loadShaderFromAssets("shaders/2d_passthrough.vert");
-        val fragmentShader = this.loadShaderFromAssets("shaders/circle.frag");
+        val vertexShaderSource = this.loadShaderFromAssets("shaders/2d_passthrough.vert");
+        val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
 
-        Log.d(TAG, "vertexShader = ${vertexShader}");
-        Log.d(TAG, "fragShader = ${fragmentShader}");
-
-        renderer.setShaderSource(vertexShader, fragmentShader);
+        renderer.setShaderSource(vertexShaderSource, fragmentShaderSource);
 
         setRenderer(renderer);
 
@@ -67,7 +82,7 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         var shaderCode = "";
 
         try {
-            shaderCode = context.assets.open("shaders/2d_passthrough.vert")
+            shaderCode = context.assets.open(fileName)
                 .bufferedReader().use { it.readText() };
         }
         catch (e: Exception) {

@@ -9,53 +9,6 @@
 
 #include "collie/renderer.h"
 
-// Vertex shader source
-const char* vertexShaderSource = R"(#version 300 es
-precision mediump float;
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCoord;
-
-out vec2 TexCoord;
-
-void main()
-{
-    gl_Position = vec4(aPos, 1.0);
-    TexCoord = aTexCoord;
-}
-)";
-
-// Fragment shader source
-const char* fragmentShaderSource = R"(#version 300 es
-precision mediump float;
-out vec4 FragColor;
-in vec2 TexCoord;
-
-uniform vec2 resolution;
-
-void main()
-{
-    // scale tex coords based on aspect ratio
-    float aspectRatio = resolution.x / resolution.y;
-
-    vec2 uv = TexCoord * 2.0 - 1.0;
-    uv.x *= aspectRatio;
-
-    // Calculate distance from center
-    vec2 center = vec2(0.0, 0.0);
-    float distance = length(uv - center);
-
-    // Circle radius
-    float radius = 0.2;
-
-    // Smooth edge
-    float smoothWidth = 0.01;
-    float circle = smoothstep(radius + smoothWidth, radius - smoothWidth, distance);
-
-    // Output color (white circle on black background)
-    FragColor = vec4(vec3(circle), 1.0);
-}
-)";
-
 // Function to check shader compilation/linking errors
 void checkShaderErrors(GLuint shader, const std::string& type)
 {
@@ -87,32 +40,6 @@ void Renderer::init() {
     // set clear color
     glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
-    _frameCounter = 0;
-
-    // Create and compile shaders
-    // Vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    checkShaderErrors(vertexShader, "VERTEX");
-
-    // Fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    checkShaderErrors(fragmentShader, "FRAGMENT");
-
-    // Shader program
-    _shaderProgram = glCreateProgram();
-    glAttachShader(_shaderProgram, vertexShader);
-    glAttachShader(_shaderProgram, fragmentShader);
-    glLinkProgram(_shaderProgram);
-    checkShaderErrors(_shaderProgram, "PROGRAM");
-
-    // Delete shaders after linking
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
     // Vertex data for fullscreen quad
     float vertices[] = {
             // positions        // texture coords
@@ -138,10 +65,57 @@ void Renderer::init() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // Setup uniforms
-    _resolutionLocation = glGetUniformLocation(_shaderProgram, "resolution");
-
     LOGI("OpenGL initialized!");
+}
+
+long Renderer::compileShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc) {
+
+    const char* vertShaderSource = vertexShaderSrc.c_str();
+    const char* fragShaderSource = fragmentShaderSrc.c_str();
+
+    // Vertex shader
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertShaderSource, NULL);
+    glCompileShader(vertexShader);
+    checkShaderErrors(vertexShader, "VERTEX");
+
+    // Fragment shader
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    glShaderSource(fragmentShader, 1, &fragShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    checkShaderErrors(fragmentShader, "FRAGMENT");
+
+    // Shader program
+    unsigned int programID = glCreateProgram();
+    glAttachShader(programID, vertexShader);
+    glAttachShader(programID, fragmentShader);
+    glLinkProgram(programID);
+    checkShaderErrors(programID, "PROGRAM");
+
+    // Delete shaders after linking
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // TODO: we don't want to setup uniforms here
+    // Setup uniforms
+    _resolutionLocation = glGetUniformLocation(programID, "resolution");
+
+    return static_cast<long>(programID);
+}
+
+void Renderer::drawFullScreenQuad(long shaderProgramID) {
+
+    // Clear the screen
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw quad
+    glUseProgram(shaderProgramID);
+
+    glUniform2f(_resolutionLocation, (float) _width, (float) _height);
+
+    glBindVertexArray(_screenQuadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void Renderer::resize(int width, int height) {
@@ -152,36 +126,6 @@ void Renderer::resize(int width, int height) {
     _height = height;
 
     LOGI("Surface resized to %dx%d", width, height);
-}
-
-void Renderer::draw() {
-
-    // Clear the screen
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Draw quad
-    glUseProgram(_shaderProgram);
-
-    glUniform2f(_resolutionLocation, (float) _width, (float) _height);
-
-    glBindVertexArray(_screenQuadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    _frameCounter++;
-}
-
-void Renderer::setShaderSource(std::string& vertexShaderSrc, std::string& fragmentShaderSrc)
-{
-    _vertexShaderSrc = vertexShaderSrc;
-    _fragmentShaderSrc = fragmentShaderSrc;
-
-    LOGD("vertex shader = %s", _vertexShaderSrc.c_str());
-    LOGD("frag shader = %s", _fragmentShaderSrc.c_str());
-}
-
-int Renderer::frameCounter() {
-
-    return _frameCounter;
 }
 
 void Renderer::destroy() {
