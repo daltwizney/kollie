@@ -5,7 +5,7 @@
 <h3 align="center">kollie</h3>
 
 <p align="center">
-An Android-first, 2D rendering engine for Jetpack Compose
+An Android-first, 2D/3D rendering engine for Jetpack Compose + Android XR
 <br />
 (*under heavy construction*)
 </p>
@@ -17,6 +17,12 @@ An Android-first, 2D rendering engine for Jetpack Compose
 ## About kollie
 
 ![kollie-logo](./kollie-logo.png)
+
+* Focused on procedurally generated 2D/3D UI for on-device workflows.
+* Written in Kotlin & c++, using Jetpack Compose, Android NDK + JNI.
+* c++ APIs designed for Jetpack Compose, Android XR & ARCore apps.
+* Built on OpenGL ES, designed for real-time and event-driven rendering.
+* Entity-component architecture for extensibility and ease-of-use.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

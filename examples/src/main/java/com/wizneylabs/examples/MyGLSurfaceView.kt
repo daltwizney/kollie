@@ -7,6 +7,23 @@ import android.util.Log
 import com.wizneylabs.kollie.collie.RenderingEngine
 import javax.microedition.khronos.opengles.GL10
 
+class MyShaderProgram(
+    renderer: RenderingEngine,
+    vertexShaderSource: String,
+    fragmentShaderSource: String) {
+
+    private val _renderer = renderer;
+
+    private val _vertexShaderSource = vertexShaderSource;
+    private val _fragmentShaderSource = fragmentShaderSource;
+
+    fun compile() {
+        _renderer.compileShader(_vertexShaderSource, _fragmentShaderSource);
+    }
+
+//    fun
+}
+
 class MyRenderer: GLSurfaceView.Renderer {
 
     private val TAG = MyRenderer::class.simpleName;

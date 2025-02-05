@@ -15,6 +15,9 @@ public:
     void resize(int width, int height);
     void drawFullScreenQuad(long shaderProgramID);
 
+    void initGrid();
+    void drawGrid();
+
     long compileShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
 
     void destroy();
@@ -27,8 +30,12 @@ private:
     int _resolutionLocation;
 
     unsigned int _shaderProgram;
+
     unsigned int _screenQuadVAO;
     unsigned int _screenQuadVBO;
+
+    unsigned int _gridVAO;
+    unsigned int _gridVBO;
 };
 
 #endif //KOLLIE_RENDERER_H

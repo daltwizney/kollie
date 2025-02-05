@@ -77,3 +77,11 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_compileShader(JNIEnv *env, job
 
     return -1;
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_collie_RenderingEngine_drawGrid(JNIEnv *env, jobject thiz) {
+    if (renderer)
+    {
+        renderer->drawGrid();
+    }
+}
