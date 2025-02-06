@@ -1,41 +1,10 @@
 package com.wizneylabs.kollie.collie
 
-class GridCollisionQueryInput() {
-
-    var cellSize: Int = -1;
-
-    var pointX: Int = -1;
-    var pointY: Int = -1;
-}
-
-class GridCollisionQueryOutput() {
-
-    var row: Int = -1;
-    var column: Int = -1;
-}
-
-object KollieLoader {
-
-    init {
-
-        System.loadLibrary("collie");
-    }
-}
-
-class ShaderProgram {
-
-    companion object {
-        init{
-            KollieLoader // ensure library is loaded!
-        }
-    }
-}
-
 class RenderingEngine {
 
     companion object {
         init {
-            KollieLoader // ensure library is loaded!
+            CollieLoader // ensure library is loaded!
         }
     }
 
