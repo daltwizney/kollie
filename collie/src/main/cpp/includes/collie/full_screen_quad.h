@@ -10,8 +10,9 @@ class FullScreenQuad {
 
 public:
 
-    void init();
+    void initBuffers();
     void draw();
+    void destroy();
 
 private:
 

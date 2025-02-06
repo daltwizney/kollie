@@ -19,17 +19,10 @@ Java_com_wizneylabs_kollie_collie_FullScreenQuad__1create(JNIEnv *env, jobject t
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_collie_FullScreenQuad__1init(JNIEnv *env, jobject thiz, jlong ptr) {
+Java_com_wizneylabs_kollie_collie_FullScreenQuad__1initBuffers(JNIEnv *env, jobject thiz, jlong ptr) {
 
 
 }
-
-//extern "C"
-//JNIEXPORT void JNICALL
-//Java_com_wizneylabs_kollie_collie_FullScreenQuad_draw(JNIEnv *env, jobject thiz) {
-//
-
-//}
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -38,6 +31,11 @@ Java_com_wizneylabs_kollie_collie_FullScreenQuad__1draw(JNIEnv *env, jobject thi
     FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
 
     quad->draw();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_collie_FullScreenQuad__1destroy(JNIEnv *env, jobject thiz, jlong ptr) {
 
-    // TODO: get screen quad VAO id from quad object at address stored in 'ptr'
+    FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
+
 }

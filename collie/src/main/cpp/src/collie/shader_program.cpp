@@ -59,6 +59,8 @@ void ShaderProgram::compile() {
 
     success = checkShaderErrors(vertexShader, "VERTEX");
 
+    // TODO: should you delete the vert/frag shaders even on failure?
+
     if (!success)
     {
         _programID = 0;
@@ -96,6 +98,8 @@ void ShaderProgram::compile() {
         _programID = 0;
         return;
     }
+
+    LOGD("Shader program compiled successfully! ID = %d", programID);
 
     _programID = programID;
 }
@@ -177,3 +181,11 @@ void ShaderProgram::setUniform4i(string name, int x, int y, int z, int w) {
 
 }
 
+void ShaderProgram::destroy() {
+
+    if (_programID != 0)
+    {
+        glDeleteProgram(_programID);
+        _programID = 0;
+    }
+}

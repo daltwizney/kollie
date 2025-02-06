@@ -17,6 +17,4 @@ class RenderingEngine {
 
     external fun resize(width: Int, height: Int);
     external fun destroy();
-
-    external fun compileShader(vertexShaderSrc: String, fragmentShaderSrc: String): Long;
 }

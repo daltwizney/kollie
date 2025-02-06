@@ -4,47 +4,27 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 
+import com.wizneylabs.kollie.collie.CollieLoader
+import com.wizneylabs.kollie.collie.FullScreenQuad
 import com.wizneylabs.kollie.collie.RenderingEngine
+import com.wizneylabs.kollie.collie.ShaderProgram
 import javax.microedition.khronos.opengles.GL10
-
-class MyShaderProgram(
-    renderer: RenderingEngine,
-    vertexShaderSource: String,
-    fragmentShaderSource: String) {
-
-    private val _renderer = renderer;
-
-    private val _vertexShaderSource = vertexShaderSource;
-    private val _fragmentShaderSource = fragmentShaderSource;
-
-    fun compile() {
-        _renderer.compileShader(_vertexShaderSource, _fragmentShaderSource);
-    }
-
-//    fun
-}
 
 class MyRenderer: GLSurfaceView.Renderer {
 
     private val TAG = MyRenderer::class.simpleName;
 
-    private val _nativeRenderer = RenderingEngine()
+    var currentShader: ShaderProgram = ShaderProgram();
 
-    private var _vertexShaderSource = "";
-    private var _fragmentShaderSource = "";
+    var quad = FullScreenQuad();
+
+    private val _nativeRenderer = RenderingEngine()
 
     private var _shaderProgramID: Long = -1;
 
-    fun setShaderSource(vertexShader: String, fragmentShader: String) {
-
-        _vertexShaderSource = vertexShader;
-        _fragmentShaderSource = fragmentShader;
-    }
-
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 
-        _nativeRenderer.init();
-        _shaderProgramID = _nativeRenderer.compileShader(_vertexShaderSource, _fragmentShaderSource);
+        quad.initBuffers();
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
@@ -54,17 +34,20 @@ class MyRenderer: GLSurfaceView.Renderer {
 
     override fun onDrawFrame(p0: GL10?) {
 
-        if (_shaderProgramID < 0)
+        if (!currentShader.canUse())
         {
-            Log.e(TAG, "invalid shader program ID - failed to draw!");
+            Log.e(TAG, "Current shader failed to compile!");
             return;
         }
 
-        _nativeRenderer.drawFullScreenQuad(_shaderProgramID);
+        currentShader.use();
+        quad.draw();
     }
 
     fun destroy() {
 
+        currentShader.destroy();
+        quad.destroy();
         _nativeRenderer.destroy();
     }
 }
@@ -77,6 +60,8 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
 
     init {
 
+        CollieLoader // ensures library loaded
+
         // TODO: check for opengl es support!
 
         setEGLContextClientVersion(3)
@@ -87,8 +72,13 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         val vertexShaderSource = this.loadShaderFromAssets("shaders/2d_passthrough.vert");
         val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
 
-        renderer.setShaderSource(vertexShaderSource, fragmentShaderSource);
+        // compile & use shader program
+        renderer.currentShader.vertexShaderSource = vertexShaderSource;
+        renderer.currentShader.fragmentShaderSource = fragmentShaderSource;
 
+        renderer.currentShader.compile();
+
+        // finish setting up surface view
         setRenderer(renderer);
 
         renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY;

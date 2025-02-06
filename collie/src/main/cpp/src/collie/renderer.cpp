@@ -9,32 +9,6 @@
 
 #include "collie/renderer.h"
 
-// Function to check shader compilation/linking errors
-void checkShaderErrors(GLuint shader, const std::string& type)
-{
-    GLint success;
-    GLchar infoLog[1024];
-
-    if (type != "PROGRAM")
-    {
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            LOGE("ERROR::SHADER_COMPILATION_ERROR of type: %s\n%s\n", type.c_str(), infoLog);
-        }
-    }
-    else
-    {
-        glGetProgramiv(shader, GL_LINK_STATUS, &success);
-        if (!success)
-        {
-            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            LOGE("ERROR::PROGRAM_LINKING_ERROR of type: %s\n%s\n", type.c_str(), infoLog);
-        }
-    }
-}
-
 void Renderer::init() {
 
     // set clear color
@@ -66,42 +40,6 @@ void Renderer::init() {
     glEnableVertexAttribArray(1);
 
     LOGI("OpenGL initialized!");
-}
-
-long Renderer::compileShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc) {
-
-    const char* vertShaderSource = vertexShaderSrc.c_str();
-    const char* fragShaderSource = fragmentShaderSrc.c_str();
-
-    // Vertex shader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertShaderSource, NULL);
-    glCompileShader(vertexShader);
-    checkShaderErrors(vertexShader, "VERTEX");
-
-    // Fragment shader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(fragmentShader, 1, &fragShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    checkShaderErrors(fragmentShader, "FRAGMENT");
-
-    // Shader program
-    unsigned int programID = glCreateProgram();
-    glAttachShader(programID, vertexShader);
-    glAttachShader(programID, fragmentShader);
-    glLinkProgram(programID);
-    checkShaderErrors(programID, "PROGRAM");
-
-    // Delete shaders after linking
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    // TODO: we don't want to setup uniforms here
-    // Setup uniforms
-    _resolutionLocation = glGetUniformLocation(programID, "resolution");
-
-    return static_cast<long>(programID);
 }
 
 void Renderer::drawFullScreenQuad(long shaderProgramID) {

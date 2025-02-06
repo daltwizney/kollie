@@ -14,8 +14,17 @@ class FullScreenQuad {
         _nativeHandle = _create();
     }
 
-    fun initialize() {
-        _init(_nativeHandle);
+    fun destroy() {
+
+        if (_nativeHandle > 0)
+        {
+            _destroy(_nativeHandle);
+            _nativeHandle = -1;
+        }
+    }
+
+    fun initBuffers() {
+        _initBuffers(_nativeHandle);
     }
 
     fun draw() {
@@ -24,11 +33,9 @@ class FullScreenQuad {
     }
 
     private external fun _create(): Long;
+    private external fun _destroy(ptr: Long);
 
-    // TODO: call this something other than _init() b.c. of the
-    // meaning init() already has in kotlin... ultimately,
-    // we want to buffer vertex data, so maybe name it accordingly
-    private external fun _init(ptr: Long);
-    
+    private external fun _initBuffers(ptr: Long);
+
     private external fun _draw(ptr: Long);
 }

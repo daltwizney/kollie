@@ -18,8 +18,6 @@ public:
     void initGrid();
     void drawGrid();
 
-    long compileShader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
-
     void destroy();
 
 private:

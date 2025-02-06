@@ -63,21 +63,6 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_drawFullScreenQuad(JNIEnv *env
 }
 
 extern "C"
-JNIEXPORT jlong JNICALL
-Java_com_wizneylabs_kollie_collie_RenderingEngine_compileShader(JNIEnv *env, jobject thiz,
-                                                                jstring vertex_shader_src,
-                                                                jstring fragment_shader_src) {
-    if (renderer) {
-
-        std::string vertSource = std::string(env->GetStringUTFChars(vertex_shader_src, 0));
-        std::string fragSource = std::string(env->GetStringUTFChars(fragment_shader_src, 0));
-
-        return static_cast<long>(renderer->compileShader(vertSource, fragSource));
-    }
-
-    return -1;
-}
-extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_collie_RenderingEngine_drawGrid(JNIEnv *env, jobject thiz) {
     if (renderer)

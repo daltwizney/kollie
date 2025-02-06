@@ -15,7 +15,7 @@ void FullScreenQuad::draw() {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void FullScreenQuad::init() {
+void FullScreenQuad::initBuffers() {
     // set clear color
     glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
@@ -45,4 +45,19 @@ void FullScreenQuad::init() {
     glEnableVertexAttribArray(1);
 
     LOGI("OpenGL initialized!");
+}
+
+void FullScreenQuad::destroy() {
+
+    if (_VAO != GL_INVALID_VALUE)
+    {
+        glDeleteVertexArrays(1, &_VAO);
+        _VAO = GL_INVALID_VALUE;
+    }
+
+    if (_VBO != GL_INVALID_VALUE)
+    {
+        glDeleteBuffers(1, &_VBO);
+        _VBO = GL_INVALID_VALUE;
+    }
 }

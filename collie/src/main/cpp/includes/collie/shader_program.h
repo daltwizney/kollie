@@ -24,6 +24,8 @@ public:
 
     void use();
 
+    void destroy();
+
     float getUniform1f(std::string name);
     glm::vec2 getUniform2f(std::string name);
     glm::vec3 getUniform3f(std::string name);
