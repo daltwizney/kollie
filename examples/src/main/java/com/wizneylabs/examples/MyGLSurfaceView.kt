@@ -18,6 +18,9 @@ class MyRenderer: GLSurfaceView.Renderer {
 
     var quad = FullScreenQuad();
 
+    private var _width: Int = 0;
+    private var _height: Int = 0;
+
     private val _nativeRenderer = RenderingEngine()
 
     private var _shaderProgramID: Long = -1;
@@ -28,6 +31,11 @@ class MyRenderer: GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
+
+        _width = width;
+        _height = height;
+
+        Log.e(TAG, "TODO: update shader 'resolution' uniform!");
 
         _nativeRenderer.resize(width, height)
     }
@@ -77,6 +85,8 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         renderer.currentShader.fragmentShaderSource = fragmentShaderSource;
 
         renderer.currentShader.compile();
+
+        Log.e(TAG, "TODO: need to update shader 'resolution' uniform!");
 
         // finish setting up surface view
         setRenderer(renderer);
