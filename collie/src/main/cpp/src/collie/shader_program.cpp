@@ -12,7 +12,7 @@ using namespace glm;
 using namespace std;
 
 // Function to check shader compilation/linking errors
-bool checkShaderErrors(GLuint shader, const std::string& type)
+bool checkShaderErrors(GLuint shader, const std::string& type, std::string source = "")
 {
     GLint success;
     GLchar infoLog[1024];
@@ -23,7 +23,7 @@ bool checkShaderErrors(GLuint shader, const std::string& type)
         if (!success)
         {
             glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            LOGE("ERROR::SHADER_COMPILATION_ERROR of type: %s\n%s\n", type.c_str(), infoLog);
+            LOGE("ERROR::SHADER_COMPILATION_ERROR of type: %s\n%s\n\n%s", type.c_str(), infoLog, source.c_str());
         }
     }
     else
@@ -32,7 +32,7 @@ bool checkShaderErrors(GLuint shader, const std::string& type)
         if (!success)
         {
             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            LOGE("ERROR::PROGRAM_LINKING_ERROR of type: %s\n%s\n", type.c_str(), infoLog);
+            LOGE("ERROR::PROGRAM_LINKING_ERROR of type: %s\n%s\n\n%s", type.c_str(), infoLog, source.c_str());
         }
     }
 
@@ -57,7 +57,7 @@ void ShaderProgram::compile() {
     glShaderSource(vertexShader, 1, &vertShaderSource, NULL);
     glCompileShader(vertexShader);
 
-    success = checkShaderErrors(vertexShader, "VERTEX");
+    success = checkShaderErrors(vertexShader, "VERTEX", vertexShaderSource);
 
     // TODO: should you delete the vert/frag shaders even on failure?
 
@@ -73,7 +73,7 @@ void ShaderProgram::compile() {
     glShaderSource(fragmentShader, 1, &fragShaderSource, NULL);
     glCompileShader(fragmentShader);
 
-    success = checkShaderErrors(fragmentShader, "FRAGMENT");
+    success = checkShaderErrors(fragmentShader, "FRAGMENT", fragmentShaderSource);
 
     if (!success)
     {
@@ -155,6 +155,9 @@ void ShaderProgram::setUniform1f(string name, float x) {
 
 void ShaderProgram::setUniform2f(string name, float x, float y) {
 
+    GLint uniformLocation = glGetUniformLocation(_programID, name.c_str());
+
+    glUniform2f(uniformLocation, x, y);
 }
 
 void ShaderProgram::setUniform3f(string name, float x, float y, float z) {

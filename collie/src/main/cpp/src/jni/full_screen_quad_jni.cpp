@@ -21,7 +21,9 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_collie_FullScreenQuad__1initBuffers(JNIEnv *env, jobject thiz, jlong ptr) {
 
+    FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
 
+    quad->initBuffers();
 }
 
 extern "C"
@@ -38,4 +40,7 @@ Java_com_wizneylabs_kollie_collie_FullScreenQuad__1destroy(JNIEnv *env, jobject 
 
     FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
 
+    quad->destroy();
+
+    delete quad;
 }

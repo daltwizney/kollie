@@ -23,10 +23,10 @@ class MyRenderer: GLSurfaceView.Renderer {
 
     private val _nativeRenderer = RenderingEngine()
 
-    private var _shaderProgramID: Long = -1;
-
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 
+        _nativeRenderer.init();
+        currentShader.compile();
         quad.initBuffers();
     }
 
@@ -34,8 +34,6 @@ class MyRenderer: GLSurfaceView.Renderer {
 
         _width = width;
         _height = height;
-
-        Log.e(TAG, "TODO: update shader 'resolution' uniform!");
 
         _nativeRenderer.resize(width, height)
     }
@@ -49,6 +47,9 @@ class MyRenderer: GLSurfaceView.Renderer {
         }
 
         currentShader.use();
+
+        currentShader.setUniform2f("resolution", 1.0f * _width, 1.0f * _height);
+
         quad.draw();
     }
 
@@ -83,10 +84,6 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         // compile & use shader program
         renderer.currentShader.vertexShaderSource = vertexShaderSource;
         renderer.currentShader.fragmentShaderSource = fragmentShaderSource;
-
-        renderer.currentShader.compile();
-
-        Log.e(TAG, "TODO: need to update shader 'resolution' uniform!");
 
         // finish setting up surface view
         setRenderer(renderer);

@@ -18,7 +18,6 @@ Java_com_wizneylabs_kollie_collie_RenderingEngine_init(JNIEnv* env, jobject obj)
     if (!renderer) {
 
         renderer = new Renderer();
-        renderer->init();
     }
 }
 

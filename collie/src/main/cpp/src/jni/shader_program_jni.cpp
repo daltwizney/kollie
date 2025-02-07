@@ -17,9 +17,13 @@ Java_com_wizneylabs_kollie_collie_ShaderProgram__1create(JNIEnv *env, jobject th
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_collie_ShaderProgram__1compile(JNIEnv *env, jobject thiz, jlong ptr) {
+Java_com_wizneylabs_kollie_collie_ShaderProgram__1compile(JNIEnv *env, jobject thiz, jlong ptr,
+    jstring vertex_shader_source, jstring fragment_shader_source) {
 
     ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
+
+    program->vertexShaderSource = env->GetStringUTFChars(vertex_shader_source, nullptr);
+    program->fragmentShaderSource = env->GetStringUTFChars(fragment_shader_source, nullptr);
 
     program->compile();
 }
@@ -49,4 +53,18 @@ Java_com_wizneylabs_kollie_collie_ShaderProgram__1destroy(JNIEnv *env, jobject t
     ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
 
     program->destroy();
+
+    delete program;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_collie_ShaderProgram__1setUniform2f(JNIEnv *env, jobject thiz, jlong ptr,
+                                                               jstring name, jfloat x, jfloat y) {
+
+    ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
+
+    std::string uniformName = std::string(env->GetStringUTFChars(name, nullptr));
+
+    program->setUniform2f(uniformName, x, y);
 }
