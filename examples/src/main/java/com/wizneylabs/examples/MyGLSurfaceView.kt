@@ -1,7 +1,6 @@
 package com.wizneylabs.examples
 
 import android.content.Context
-import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import android.util.Log
 
@@ -15,16 +14,18 @@ class MyRenderer: GLSurfaceView.Renderer {
 
     private val TAG = MyRenderer::class.simpleName;
 
-    var currentShader: ShaderProgram? = ShaderProgram();
-    var quad: FullScreenQuad? = FullScreenQuad();
+    var fullScreenShader: ShaderProgram? = ShaderProgram();
+    var fullScreenQuad: FullScreenQuad? = FullScreenQuad();
+
+    var gridShader: ShaderProgram? = ShaderProgram();
 
     private var _width: Int = 0;
     private var _height: Int = 0;
 
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 
-        currentShader?.compile();
-        quad?.initBuffers();
+        fullScreenShader?.compile();
+        fullScreenQuad?.initBuffers();
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
@@ -39,23 +40,23 @@ class MyRenderer: GLSurfaceView.Renderer {
 
         RenderingEngine.clearColorBuffer();
 
-        currentShader?.let { shader ->
+        fullScreenShader?.let { shader ->
 
             shader.use();
 
             shader.setUniform2f("resolution", 1.0f * _width, 1.0f * _height);
 
-            quad?.draw();
+            fullScreenQuad?.draw();
         }
     }
 
     fun destroy() {
 
-        currentShader?.destroy(false);
-        quad?.destroy(false);
+        fullScreenShader?.destroy(false);
+        fullScreenQuad?.destroy(false);
 
-        currentShader = null;
-        quad = null;
+        fullScreenShader = null;
+        fullScreenQuad = null;
     }
 }
 
@@ -80,8 +81,8 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
 
         // compile & use shader program
-        renderer.currentShader?.vertexShaderSource = vertexShaderSource;
-        renderer.currentShader?.fragmentShaderSource = fragmentShaderSource;
+        renderer.fullScreenShader?.vertexShaderSource = vertexShaderSource;
+        renderer.fullScreenShader?.fragmentShaderSource = fragmentShaderSource;
 
         // finish setting up surface view
         setRenderer(renderer);
