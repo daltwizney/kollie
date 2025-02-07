@@ -10,7 +10,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/collie" />
             <option value="$PROJECT_DIR$/examples" />
             <option value="$PROJECT_DIR$/freestyle" />
             <option value="$PROJECT_DIR$/kollie" />

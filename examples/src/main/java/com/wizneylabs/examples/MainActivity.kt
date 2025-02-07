@@ -31,14 +31,14 @@ class MainActivity : ComponentActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
             KollieTheme {
-                CollieTest()
+                KollieTest()
             }
         }
     }
 }
 
 @Composable
-fun CollieTest() {
+fun KollieTest() {
     // TODO: make the composable with an AndroidView that wraps the
     // GLSurfaceView with a custom GLSurfaceView.Renderer!
     MyGLView();
