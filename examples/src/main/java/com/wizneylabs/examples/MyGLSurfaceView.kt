@@ -4,10 +4,11 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 
-import com.wizneylabs.kollie.collie.CollieLoader
-import com.wizneylabs.kollie.collie.FullScreenQuad
-import com.wizneylabs.kollie.collie.RenderingEngine
-import com.wizneylabs.kollie.collie.ShaderProgram
+import com.wizneylabs.kollie.FullScreenQuad
+import com.wizneylabs.kollie.KollieLoader
+import com.wizneylabs.kollie.RenderingEngine
+import com.wizneylabs.kollie.ShaderProgram
+
 import javax.microedition.khronos.opengles.GL10
 
 class MyRenderer: GLSurfaceView.Renderer {
@@ -68,7 +69,7 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
 
     init {
 
-        CollieLoader // ensures library loaded
+        KollieLoader // ensures library loaded
 
         // TODO: check for opengl es support!
 

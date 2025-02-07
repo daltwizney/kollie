@@ -1,6 +1,6 @@
 package com.wizneylabs.kollie.core
 
-import com.wizneylabs.kollie.collie.RenderingEngine
+import com.wizneylabs.kollie.RenderingEngine
 import com.wizneylabs.kollie.input.InputManager
 
 class App(screenWidth: Int, screenHeight: Int, initialScene: Scene? = null) {
