@@ -184,11 +184,15 @@ void ShaderProgram::setUniform4i(string name, int x, int y, int z, int w) {
 
 }
 
-void ShaderProgram::destroy() {
+void ShaderProgram::destroy(bool freeGLResources) {
 
     if (_programID != 0)
     {
-        glDeleteProgram(_programID);
+        if (freeGLResources)
+        {
+            glDeleteProgram(_programID);
+        }
+
         _programID = 0;
     }
 }

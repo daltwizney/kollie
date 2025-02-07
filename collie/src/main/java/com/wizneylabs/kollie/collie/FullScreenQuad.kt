@@ -14,11 +14,11 @@ class FullScreenQuad {
         _nativeHandle = _create();
     }
 
-    fun destroy() {
+    fun destroy(freeGLResources: Boolean = true) {
 
         if (_nativeHandle > 0)
         {
-            _destroy(_nativeHandle);
+            _destroy(_nativeHandle, freeGLResources);
             _nativeHandle = -1;
         }
     }
@@ -33,7 +33,7 @@ class FullScreenQuad {
     }
 
     private external fun _create(): Long;
-    private external fun _destroy(ptr: Long);
+    private external fun _destroy(ptr: Long, freeGLResources: Boolean);
 
     private external fun _initBuffers(ptr: Long);
 

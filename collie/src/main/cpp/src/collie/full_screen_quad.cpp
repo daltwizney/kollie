@@ -47,17 +47,20 @@ void FullScreenQuad::initBuffers() {
     LOGI("OpenGL initialized!");
 }
 
-void FullScreenQuad::destroy() {
+void FullScreenQuad::destroy(bool freeGLResources) {
 
-    if (_VAO != GL_INVALID_VALUE)
+    if (freeGLResources)
     {
-        glDeleteVertexArrays(1, &_VAO);
-        _VAO = GL_INVALID_VALUE;
-    }
+        if (_VAO != GL_INVALID_VALUE)
+        {
+            glDeleteVertexArrays(1, &_VAO);
+            _VAO = GL_INVALID_VALUE;
+        }
 
-    if (_VBO != GL_INVALID_VALUE)
-    {
-        glDeleteBuffers(1, &_VBO);
-        _VBO = GL_INVALID_VALUE;
+        if (_VBO != GL_INVALID_VALUE)
+        {
+            glDeleteBuffers(1, &_VBO);
+            _VBO = GL_INVALID_VALUE;
+        }
     }
 }

@@ -36,11 +36,11 @@ Java_com_wizneylabs_kollie_collie_FullScreenQuad__1draw(JNIEnv *env, jobject thi
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_collie_FullScreenQuad__1destroy(JNIEnv *env, jobject thiz, jlong ptr) {
+Java_com_wizneylabs_kollie_collie_FullScreenQuad__1destroy(JNIEnv *env, jobject thiz, jlong ptr, jboolean freeGLResources) {
 
     FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
 
-    quad->destroy();
+    quad->destroy(freeGLResources);
 
     delete quad;
 }

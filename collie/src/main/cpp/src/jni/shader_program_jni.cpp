@@ -48,11 +48,11 @@ Java_com_wizneylabs_kollie_collie_ShaderProgram__1use(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_collie_ShaderProgram__1destroy(JNIEnv *env, jobject thiz, jlong ptr) {
+Java_com_wizneylabs_kollie_collie_ShaderProgram__1destroy(JNIEnv *env, jobject thiz, jlong ptr, jboolean freeGLResources) {
 
     ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
 
-    program->destroy();
+    program->destroy(freeGLResources);
 
     delete program;
 }

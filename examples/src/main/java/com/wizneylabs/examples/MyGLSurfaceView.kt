@@ -1,6 +1,7 @@
 package com.wizneylabs.examples
 
 import android.content.Context
+import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import android.util.Log
 
@@ -14,20 +15,16 @@ class MyRenderer: GLSurfaceView.Renderer {
 
     private val TAG = MyRenderer::class.simpleName;
 
-    var currentShader: ShaderProgram = ShaderProgram();
-
-    var quad = FullScreenQuad();
+    var currentShader: ShaderProgram? = ShaderProgram();
+    var quad: FullScreenQuad? = FullScreenQuad();
 
     private var _width: Int = 0;
     private var _height: Int = 0;
 
-    private val _nativeRenderer = RenderingEngine()
-
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 
-        _nativeRenderer.init();
-        currentShader.compile();
-        quad.initBuffers();
+        currentShader?.compile();
+        quad?.initBuffers();
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
@@ -35,29 +32,30 @@ class MyRenderer: GLSurfaceView.Renderer {
         _width = width;
         _height = height;
 
-        _nativeRenderer.resize(width, height)
+        RenderingEngine.resize(width, height);
     }
 
     override fun onDrawFrame(p0: GL10?) {
 
-        if (!currentShader.canUse())
-        {
-            Log.e(TAG, "Current shader failed to compile!");
-            return;
+        RenderingEngine.clearColorBuffer();
+
+        currentShader?.let { shader ->
+
+            shader.use();
+
+            shader.setUniform2f("resolution", 1.0f * _width, 1.0f * _height);
+
+            quad?.draw();
         }
-
-        currentShader.use();
-
-        currentShader.setUniform2f("resolution", 1.0f * _width, 1.0f * _height);
-
-        quad.draw();
     }
 
     fun destroy() {
 
-        currentShader.destroy();
-        quad.destroy();
-        _nativeRenderer.destroy();
+        currentShader?.destroy(false);
+        quad?.destroy(false);
+
+        currentShader = null;
+        quad = null;
     }
 }
 
@@ -82,8 +80,8 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
         val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
 
         // compile & use shader program
-        renderer.currentShader.vertexShaderSource = vertexShaderSource;
-        renderer.currentShader.fragmentShaderSource = fragmentShaderSource;
+        renderer.currentShader?.vertexShaderSource = vertexShaderSource;
+        renderer.currentShader?.fragmentShaderSource = fragmentShaderSource;
 
         // finish setting up surface view
         setRenderer(renderer);
@@ -108,7 +106,9 @@ class MyGLSurfaceView(private val context: Context) : GLSurfaceView(context) {
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
+
         renderer.destroy()
+
+        super.onDetachedFromWindow()
     }
 }

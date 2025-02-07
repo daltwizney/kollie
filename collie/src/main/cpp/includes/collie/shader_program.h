@@ -24,7 +24,7 @@ public:
 
     void use();
 
-    void destroy();
+    void destroy(bool freeGLResources = true);
 
     float getUniform1f(std::string name);
     glm::vec2 getUniform2f(std::string name);

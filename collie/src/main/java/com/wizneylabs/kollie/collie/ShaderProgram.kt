@@ -24,11 +24,11 @@ class ShaderProgram {
     fun canUse(): Boolean { return _canUse(_nativeHandle) }
     fun use() { _use(_nativeHandle) }
 
-    fun destroy() {
+    fun destroy(freeGLResources: Boolean = true) {
 
         if (_nativeHandle > 0)
         {
-            _destroy(_nativeHandle);
+            _destroy(_nativeHandle, freeGLResources);
             _nativeHandle = -1;
         }
     }
@@ -38,7 +38,7 @@ class ShaderProgram {
     }
 
     private external fun _create(): Long;
-    private external fun _destroy(ptr: Long);
+    private external fun _destroy(ptr: Long, freeGLResources: Boolean);
 
     private external fun _canUse(ptr: Long): Boolean;
     private external fun _use(ptr: Long);

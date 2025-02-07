@@ -12,7 +12,7 @@ public:
 
     void initBuffers();
     void draw();
-    void destroy();
+    void destroy(bool freeGLResources = true);
 
 private:
 

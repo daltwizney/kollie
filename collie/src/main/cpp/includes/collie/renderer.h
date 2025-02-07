@@ -11,29 +11,11 @@ class Renderer {
 
 public:
 
-    void init();
-    void resize(int width, int height);
-    void drawFullScreenQuad(long shaderProgramID);
+    static void resize(int width, int height);
 
-    void initGrid();
-    void drawGrid();
+    static void clearColorBuffer();
 
-    void destroy();
-
-private:
-
-    int _width;
-    int _height;
-
-    int _resolutionLocation;
-
-    unsigned int _shaderProgram;
-
-    unsigned int _screenQuadVAO;
-    unsigned int _screenQuadVBO;
-
-    unsigned int _gridVAO;
-    unsigned int _gridVBO;
+    static bool isContextValid();
 };
 
 #endif //KOLLIE_RENDERER_H
