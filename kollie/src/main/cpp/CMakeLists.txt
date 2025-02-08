@@ -32,14 +32,16 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/kollie/renderer.cpp
         src/kollie/shader_program.cpp
         src/kollie/full_screen_quad.cpp
+        src/kollie/grid_2d.cpp
 
         # JNI interfaces
         src/jni/shader_program_jni.cpp
         src/jni/full_screen_quad_jni.cpp
         src/jni/engine_jni.cpp
+        src/jni/grid_2d_jni.cpp
 )
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE glm includes)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE includes)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
