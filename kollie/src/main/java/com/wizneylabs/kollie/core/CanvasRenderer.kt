@@ -4,11 +4,14 @@ import android.opengl.GLSurfaceView
 import com.wizneylabs.kollie.FullScreenQuad
 import com.wizneylabs.kollie.RenderingEngine
 import com.wizneylabs.kollie.ShaderProgram
+import com.wizneylabs.kollie.jni.Camera2D
 import javax.microedition.khronos.opengles.GL10
 
 class CanvasRenderer: GLSurfaceView.Renderer {
 
     private val TAG = CanvasRenderer::class.simpleName;
+
+    var camera2D: Camera2D? = null;
 
     var fullScreenShader: ShaderProgram? = null;
     var fullScreenQuad: FullScreenQuad? = null;
@@ -21,6 +24,8 @@ class CanvasRenderer: GLSurfaceView.Renderer {
     init {
 
         RenderingEngine.load();
+
+        camera2D = Camera2D();
 
         fullScreenShader = ShaderProgram();
         fullScreenQuad = FullScreenQuad();
@@ -47,6 +52,9 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         RenderingEngine.clearColorBuffer();
 
         fullScreenShader?.let { shader ->
+
+            shader.updateViewMatrix2D(camera2D!!);
+            shader.updateProjectionMatrix2D(camera2D!!, _width, _height);
 
             shader.use();
 

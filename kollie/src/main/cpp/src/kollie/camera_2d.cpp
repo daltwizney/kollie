@@ -31,14 +31,17 @@ glm::mat4 Camera2D::getProjectionMatrix() const {
 Camera2D::Camera2D(float left, float right, float bottom, float top, float nearPlane,
                    float farPlane): _left(left), _right(right), _bottom(bottom), _top(top),
                                     _nearPlane(nearPlane), _farPlane(farPlane) {
+    _updateViewMatrix();
     _updateProjectionMatrix();
 }
 
 void Camera2D::_updateViewMatrix() {
+
     _viewMatrix = glm::lookAt(_position, _position + _front, _up);
 }
 
 void Camera2D::_updateProjectionMatrix() {
+
     _projectionMatrix = glm::ortho(
             _left, _right, _bottom, _top, _nearPlane, _farPlane);
 }

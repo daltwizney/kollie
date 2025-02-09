@@ -9,6 +9,7 @@
 #include "kollie/full_screen_quad.h"
 
 void FullScreenQuad::draw() {
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     glBindVertexArray(_VAO);
@@ -16,16 +17,31 @@ void FullScreenQuad::draw() {
 }
 
 void FullScreenQuad::initBuffers() {
+    
     // set clear color
     glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
     // Vertex data for fullscreen quad
+//    float vertices[] = {
+//            // positions        // texture coords
+//            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,   // top left
+//            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
+//            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,   // top right
+//            1.0f, -1.0f, 0.0f, 1.0f, 0.0f    // bottom right
+//    };
+
+    LOGW("need to update vertex buffer positions dynamically on screen size change!");
+
+    // TODO: here for testing
+    const int screenHeight = 2400.0f;
+    const int screenWidth = 1080.0f;
+
     float vertices[] = {
             // positions        // texture coords
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,   // top left
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
-            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,   // top right
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f    // bottom right
+            0.0f,  0.0f, 0.0f, 0.0f, 1.0f,   // top left
+            0.0f, screenHeight, 0.0f, 0.0f, 0.0f,   // bottom left
+            screenWidth,  0.0f, 0.0f, 1.0f, 1.0f,   // top right
+            screenWidth, screenHeight, 0.0f, 1.0f, 0.0f    // bottom right
     };
 
     // Create VAO and VBO

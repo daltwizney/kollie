@@ -102,6 +102,11 @@ void ShaderProgram::compile() {
     LOGD("Shader program compiled successfully! ID = %d", programID);
 
     _programID = programID;
+
+    // get standard uniform locations
+    _uniformLocations["model"] = glGetUniformLocation(_programID, "model");
+    _uniformLocations["view"] = glGetUniformLocation(_programID, "view");
+    _uniformLocations["projection"] = glGetUniformLocation(_programID, "projection");
 }
 
 bool ShaderProgram::canUse() {
@@ -182,6 +187,20 @@ void ShaderProgram::setUniform3i(string name, int x, int y, int z) {
 
 void ShaderProgram::setUniform4i(string name, int x, int y, int z, int w) {
 
+}
+
+void ShaderProgram::setUniformMatrix4fv(
+        std::string name,
+        unsigned int count,
+        bool transpose,
+        const float *value) {
+
+    int location = _uniformLocations[name];
+
+    if (location != -1)
+    {
+        glUniformMatrix4fv(location, count, transpose, value);
+    }
 }
 
 void ShaderProgram::destroy(bool freeGLResources) {

@@ -19,7 +19,7 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
         setEGLConfigChooser(8, 8, 8, 8, 16, 0)
 
         // load shader source
-        val vertexShaderSource = this.loadShaderFromAssets("shaders/2d_passthrough.vert");
+        val vertexShaderSource = this.loadShaderFromAssets("shaders/circle.vert");
         val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
 
         // compile & use shader program

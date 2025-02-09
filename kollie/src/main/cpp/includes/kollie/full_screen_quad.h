@@ -5,7 +5,6 @@
 #ifndef KOLLIE_FULL_SCREEN_QUAD_H
 #define KOLLIE_FULL_SCREEN_QUAD_H
 
-
 class FullScreenQuad {
 
 public:

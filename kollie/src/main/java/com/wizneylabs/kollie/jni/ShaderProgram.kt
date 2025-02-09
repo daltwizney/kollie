@@ -1,5 +1,7 @@
 package com.wizneylabs.kollie
 
+import com.wizneylabs.kollie.jni.Camera2D
+
 class ShaderProgram {
 
     var vertexShaderSource: String = "";
@@ -30,6 +32,19 @@ class ShaderProgram {
         _setUniform2f(_nativeHandle, name, x, y);
     }
 
+    fun updateViewMatrix2D(camera: Camera2D) {
+
+        _updateViewMatrix2D(_nativeHandle, camera.nativeHandle);
+    }
+
+    fun updateProjectionMatrix2D(camera: Camera2D,
+                                 screenWidth: Int,
+                                 screenHeight: Int) {
+
+        _updateProjectionMatrix2D(_nativeHandle, camera.nativeHandle,
+            screenWidth, screenHeight);
+    }
+
     private external fun _create(): Long;
     private external fun _destroy(ptr: Long, freeGLResources: Boolean);
 
@@ -38,6 +53,11 @@ class ShaderProgram {
     private external fun _compile(ptr: Long,
                                   vertexShaderSource: String,
                                   fragmentShaderSource: String);
+
+    private external fun _updateViewMatrix2D(ptr: Long, cameraPtr: Long);
+    private external fun _updateProjectionMatrix2D(ptr: Long, cameraPtr: Long,
+                                                   screenWidth: Int,
+                                                   screenHeight: Int);
 
     private external fun _setUniform2f(ptr: Long, name: String, x: Float, y: Float);
 }

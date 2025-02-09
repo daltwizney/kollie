@@ -47,12 +47,16 @@ public:
     void setUniform4i(std::string name, int x, int y, int z, int w);
 
     // TODO: getUniformMatrix*(...), setUniformMatrix*(...)
+    void setUniformMatrix4fv(std::string name,
+                             unsigned int count,
+                             bool transpose,
+                             const float* value);
 
 private:
 
     unsigned int _programID;
 
-    std::unordered_map<std::string, unsigned int> _uniformLocations;
+    std::unordered_map<std::string, int> _uniformLocations;
 };
 
 
