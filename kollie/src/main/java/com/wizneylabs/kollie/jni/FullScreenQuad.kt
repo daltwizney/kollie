@@ -2,12 +2,6 @@ package com.wizneylabs.kollie
 
 class FullScreenQuad {
 
-    companion object {
-        init {
-            KollieLoader
-        }
-    }
-
     private var _nativeHandle: Long;
 
     init {

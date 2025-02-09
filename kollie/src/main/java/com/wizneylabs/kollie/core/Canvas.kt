@@ -4,9 +4,6 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.Log
 
-import com.wizneylabs.kollie.KollieLoader
-
-
 class Canvas(private val context: Context) : GLSurfaceView(context) {
 
     val TAG = Canvas::class.simpleName;
@@ -14,8 +11,6 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
     private val renderer = CanvasRenderer();
 
     init {
-
-        KollieLoader // ensures library loaded
 
         // TODO: check for opengl es support!
 

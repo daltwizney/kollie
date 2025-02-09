@@ -3,8 +3,16 @@ package com.wizneylabs.kollie
 class RenderingEngine {
 
     companion object {
-        init {
-            KollieLoader // ensure library is loaded!
+
+        private var _loaded = false;
+
+        fun load() {
+
+            if (!_loaded)
+            {
+                System.loadLibrary("kollie");
+                _loaded = true;
+            }
         }
 
         external fun resize(width: Int, height: Int);

@@ -10,13 +10,23 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
     private val TAG = CanvasRenderer::class.simpleName;
 
-    var fullScreenShader: ShaderProgram? = ShaderProgram();
-    var fullScreenQuad: FullScreenQuad? = FullScreenQuad();
+    var fullScreenShader: ShaderProgram? = null;
+    var fullScreenQuad: FullScreenQuad? = null;
 
-    var gridShader: ShaderProgram? = ShaderProgram();
+    var gridShader: ShaderProgram? = null;
 
     private var _width: Int = 0;
     private var _height: Int = 0;
+
+    init {
+
+        RenderingEngine.load();
+
+        fullScreenShader = ShaderProgram();
+        fullScreenQuad = FullScreenQuad();
+
+        gridShader = ShaderProgram();
+    }
 
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 

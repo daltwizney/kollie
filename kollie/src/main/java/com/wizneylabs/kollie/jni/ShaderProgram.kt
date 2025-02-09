@@ -2,13 +2,6 @@ package com.wizneylabs.kollie
 
 class ShaderProgram {
 
-    companion object {
-        init{
-
-            KollieLoader // ensure library is loaded!
-        }
-    }
-
     var vertexShaderSource: String = "";
     var fragmentShaderSource: String = "";
 
