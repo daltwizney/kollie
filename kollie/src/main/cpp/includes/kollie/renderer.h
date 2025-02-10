@@ -11,6 +11,8 @@ class Renderer {
 
 public:
 
+    static void init();
+
     static void resize(int width, int height);
 
     static void clearColorBuffer();

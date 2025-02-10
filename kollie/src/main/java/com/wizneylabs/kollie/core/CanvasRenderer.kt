@@ -24,8 +24,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
     init {
 
-        RenderingEngine.load();
-
+        RenderingEngine.initialize();
 
         fullScreenShader = ShaderProgram();
         gridShader = ShaderProgram();

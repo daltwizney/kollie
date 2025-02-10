@@ -9,6 +9,12 @@
 
 #include "kollie/renderer.h"
 
+void Renderer::init() {
+
+    // set clear color
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+}
+
 void Renderer::resize(int width, int height) {
 
     glViewport(0, 0, width, height);
@@ -18,13 +24,10 @@ void Renderer::resize(int width, int height) {
 
 void Renderer::clearColorBuffer() {
 
-    // TODO: move the glClearColor() call to a static 'init()' method for renderer
-    // set clear color
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
 bool Renderer::isContextValid() {
     return glGetError() == GL_NO_ERROR;
 }
+

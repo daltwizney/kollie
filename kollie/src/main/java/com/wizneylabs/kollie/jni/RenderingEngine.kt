@@ -6,11 +6,14 @@ class RenderingEngine {
 
         private var _loaded = false;
 
-        fun load() {
+        fun initialize() {
 
             if (!_loaded)
             {
                 System.loadLibrary("kollie");
+
+                _init();
+
                 _loaded = true;
             }
         }
@@ -20,5 +23,7 @@ class RenderingEngine {
         external fun clearColorBuffer();
 
         external fun isContextValid(): Boolean;
+
+        private external fun _init();
     }
 }
