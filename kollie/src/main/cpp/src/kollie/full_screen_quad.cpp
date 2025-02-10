@@ -45,25 +45,6 @@ void FullScreenQuad::draw() {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void initBuffers() {
-    
-    // Vertex data for fullscreen quad
-    LOGW("need to update vertex buffer positions dynamically on screen size change!");
-
-    // TODO: here for testing
-    const int screenHeight = 2400.0f;
-    const int screenWidth = 1080.0f;
-
-    float vertices[] = {
-            // positions        // texture coords
-            0.0f,  0.0f, 0.0f, 0.0f, 1.0f,   // top left
-            0.0f, screenHeight, 0.0f, 0.0f, 0.0f,   // bottom left
-            screenWidth,  0.0f, 0.0f, 1.0f, 1.0f,   // top right
-            screenWidth, screenHeight, 0.0f, 1.0f, 0.0f    // bottom right
-    };
-
-}
-
 void FullScreenQuad::destroy(bool freeGLResources) {
 
     if (freeGLResources)

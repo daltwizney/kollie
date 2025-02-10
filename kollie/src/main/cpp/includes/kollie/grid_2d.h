@@ -12,21 +12,27 @@
 class Grid2D {
 public:
 
-    void initBuffers();
+    Grid2D();
+
     void draw();
     void destroy(bool freeGLResources = true);
 
 private:
 
-    // flattened 2D array of cell colors, row-major
-    std::vector<glm::vec4> _cellColors;
-
-    // VAO has 3 VBOs - colors are dynamic, but vertex & cell positions don't change between frames
     unsigned int _VAO;
+    unsigned int _VBO;
 
-    unsigned int _vertexBuffer;
-    unsigned int _positionBuffer;
-    unsigned int _colorBuffer;
+    float* _vertices;
+
+//    // flattened 2D array of cell colors, row-major
+//    std::vector<glm::vec4> _cellColors;
+//
+//    // VAO has 3 VBOs - colors are dynamic, but vertex & cell positions don't change between frames
+//    unsigned int _VAO;
+//
+//    unsigned int _vertexBuffer;
+//    unsigned int _positionBuffer;
+//    unsigned int _colorBuffer;
 };
 
 

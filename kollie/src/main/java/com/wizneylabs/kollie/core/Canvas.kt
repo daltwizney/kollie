@@ -18,15 +18,7 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
 
         setEGLConfigChooser(8, 8, 8, 8, 16, 0)
 
-        // load full screen quad shader source
-        val vertexShaderSource = this.loadShaderFromAssets("shaders/circle.vert");
-        val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
-
-        val fullScreenShaderSource = Pair(vertexShaderSource, fragmentShaderSource);
-
-        renderer.shaderSources["fullScreenQuad"] = fullScreenShaderSource;
-
-        // load grid shader source
+        _loadShaders();
 
         // finish setting up surface view
         setRenderer(renderer);
@@ -34,7 +26,22 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
         renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY;
     }
 
-    fun loadShaderFromAssets(fileName: String): String {
+    private fun _loadShaders() {
+
+        // load full screen quad shader source
+        var vertexShaderSource = this._loadShaderFromAssets("shaders/circle.vert");
+        var fragmentShaderSource = this._loadShaderFromAssets("shaders/circle.frag");
+
+        renderer.shaderSources["fullScreenQuad"] = Pair(vertexShaderSource, fragmentShaderSource);
+
+        // load grid shader source
+        vertexShaderSource = this._loadShaderFromAssets("shaders/grid2D.vert");
+        fragmentShaderSource = this._loadShaderFromAssets("shaders/grid2D.frag");
+
+        renderer.shaderSources["grid2D"] = Pair(vertexShaderSource, fragmentShaderSource);
+    }
+
+    private fun _loadShaderFromAssets(fileName: String): String {
 
         var shaderCode = "";
 

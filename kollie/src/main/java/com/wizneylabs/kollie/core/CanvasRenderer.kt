@@ -1,11 +1,11 @@
 package com.wizneylabs.kollie.core
 
 import android.opengl.GLSurfaceView
-import android.util.Log
 import com.wizneylabs.kollie.FullScreenQuad
 import com.wizneylabs.kollie.RenderingEngine
 import com.wizneylabs.kollie.ShaderProgram
 import com.wizneylabs.kollie.jni.Camera2D
+import com.wizneylabs.kollie.jni.Grid2D
 import javax.microedition.khronos.opengles.GL10
 
 class CanvasRenderer: GLSurfaceView.Renderer {
@@ -19,32 +19,43 @@ class CanvasRenderer: GLSurfaceView.Renderer {
     private var _fullScreenShader: ShaderProgram? = null;
     private var _fullScreenQuad: FullScreenQuad? = null;
 
-    var gridShader: ShaderProgram? = null;
+    private var _gridShader: ShaderProgram? = null;
+    private var _grid: Grid2D? = null;
 
     private var _width: Int = 0;
     private var _height: Int = 0;
 
     init {
-
-        RenderingEngine.initialize();
-
-        _fullScreenShader = ShaderProgram();
-        gridShader = ShaderProgram();
     }
 
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 
-        val fullScreenShaderSource = shaderSources["fullScreenQuad"];
+        RenderingEngine.initialize();
 
-        if (fullScreenShaderSource != null)
+        _grid = Grid2D();
+
+        _fullScreenShader = ShaderProgram();
+
+        _gridShader = ShaderProgram();
+
+        // compile full screen quad shader
+        var shaderSource = shaderSources["fullScreenQuad"];
+
+        if (shaderSource != null)
         {
-            _fullScreenShader?.vertexShaderSource = fullScreenShaderSource.first;
-            _fullScreenShader?.fragmentShaderSource = fullScreenShaderSource.second;
+            _fullScreenShader?.vertexShaderSource = shaderSource.first;
+            _fullScreenShader?.fragmentShaderSource = shaderSource.second;
             _fullScreenShader?.compile();
         }
-        else
+
+        // compile grid shader
+        shaderSource = shaderSources["grid2D"];
+
+        if (shaderSource != null)
         {
-            throw RuntimeException("Unable to load full screen quad shader!");
+            _gridShader?.vertexShaderSource = shaderSource.first;
+            _gridShader?.fragmentShaderSource = shaderSource.second;
+            _gridShader?.compile();
         }
     }
 
@@ -67,8 +78,6 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
         _fullScreenQuad?.resize(width, height);
 
-        Log.d(TAG, "surface changed, size = ${width}, ${height}");
-
         RenderingEngine.resize(width, height);
     }
 
@@ -87,14 +96,30 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
             _fullScreenQuad?.draw();
         }
+
+        _gridShader?.let { shader ->
+
+            shader.use();
+
+            shader.updateViewMatrix2D(camera2D!!);
+            shader.updateProjectionMatrix2D(camera2D!!, _width, _height);
+
+            _grid?.draw();
+        }
     }
 
     fun destroy() {
 
         _fullScreenShader?.destroy(false);
-        _fullScreenQuad?.destroy(false);
-
         _fullScreenShader = null;
+
+        _fullScreenQuad?.destroy(false);
         _fullScreenQuad = null;
+
+        _gridShader?.destroy(false);
+        _gridShader = null;
+
+        _grid?.destroy(false);
+        _grid = null;
     }
 }
