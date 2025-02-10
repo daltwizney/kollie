@@ -18,6 +18,10 @@ void Renderer::resize(int width, int height) {
 
 void Renderer::clearColorBuffer() {
 
+    // TODO: move the glClearColor() call to a static 'init()' method for renderer
+    // set clear color
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+
     glClear(GL_COLOR_BUFFER_BIT);
 }
 

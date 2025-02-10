@@ -9,7 +9,9 @@ class FullScreenQuad {
 
 public:
 
-    void initBuffers();
+    FullScreenQuad();
+
+    void resize(int screenWidth, int screenHeight);
     void draw();
     void destroy(bool freeGLResources = true);
 
@@ -17,6 +19,8 @@ private:
 
     unsigned int _VAO;
     unsigned int _VBO;
+
+    float _vertices[20];
 };
 
 

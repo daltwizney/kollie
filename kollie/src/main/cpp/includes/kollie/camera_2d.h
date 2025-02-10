@@ -15,14 +15,12 @@ public:
 
     // TODO: constructor
 
-    Camera2D(
-            float left = -10.0f, float right = 10.0f,
-            float bottom = -10.0f, float top = 10.0f,
-            float nearPlane = 0.1f, float farPlane = 100.0f
-    );
+    Camera2D(const int screenWidth, const int screenHeight);
 
     void setPosition(const glm::vec3& pos);
     void lookAt(const glm::vec3& target);
+
+    void setScreenSize(const int screenWidth, const int screenHeight);
 
     glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix() const;
@@ -33,18 +31,14 @@ public:
 
 private:
 
-    // glm::ortho frustum params
-    float _left;
-    float _right;
-    float _bottom;
-    float _top;
-    float _nearPlane;
-    float _farPlane;
+    // screen dims
+    int _screenWidth;
+    int _screenHeight;
 
     // glm::lookat params
     glm::vec3 _position;
-    glm::vec3 _up;
     glm::vec3 _front;
+    glm::vec3 _up;
 
     glm::mat4 _viewMatrix;
     glm::mat4 _projectionMatrix;

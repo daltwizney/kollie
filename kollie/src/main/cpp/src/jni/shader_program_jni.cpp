@@ -78,21 +78,12 @@ Java_com_wizneylabs_kollie_ShaderProgram__1setUniform2f(JNIEnv *env, jobject thi
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_ShaderProgram__1updateProjectionMatrix2D(JNIEnv *env, jobject thiz,
-                                                                    jlong ptr, jlong camera_ptr,
-                                                                    jint screenWidth,
-                                                                    jint screenHeight) {
+                                                                    jlong ptr, jlong camera_2D_ptr) {
     // TODO: implement _updateProjectionMatrix2D()
     ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
-    Camera2D* camera = reinterpret_cast<Camera2D*>(camera_ptr);
+    Camera2D* camera = reinterpret_cast<Camera2D*>(camera_2D_ptr);
 
-//    glm::mat4 projectionMatrix = camera->getProjectionMatrix();
-
-    LOGE("TODO: this works only when screenHeight and screenWidth are flipped... seems to be b.c. we force landscape orientation at activity level...");
-
-    glm::mat4 projectionMatrix = glm::ortho(
-            0.0f, screenHeight * 1.0f, 0.0f, screenWidth * 1.0f, -1.0f, 1.0f);
-
-//    LOGD("screen size = (%d, %d)", screenWidth, screenHeight);
+    glm::mat4 projectionMatrix = camera->getProjectionMatrix();
 
     program->setUniformMatrix4fv("projection", 1, false,
                                  glm::value_ptr(projectionMatrix));
@@ -101,18 +92,12 @@ Java_com_wizneylabs_kollie_ShaderProgram__1updateProjectionMatrix2D(JNIEnv *env,
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_ShaderProgram__1updateViewMatrix2D(JNIEnv *env, jobject thiz, jlong ptr,
-                                                              jlong camera_ptr) {
+                                                              jlong camera_2D_ptr) {
     // TODO: implement _updateViewMatrix2D()
     ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
-    Camera2D* camera = reinterpret_cast<Camera2D*>(camera_ptr);
+    Camera2D* camera = reinterpret_cast<Camera2D*>(camera_2D_ptr);
 
-//    glm::mat4 viewMatrix = camera->getViewMatrix();
-
-    glm::mat4 viewMatrix = glm::lookAt(
-            glm::vec3(0.0f, 0.0f, 0.0f),  // camera position (at origin)
-            glm::vec3(0.0f, 0.0f, -1.0f), // looking down -Z axis
-            glm::vec3(0.0f, 1.0f, 0.0f)   // up vector
-    );
+    glm::mat4 viewMatrix = camera->getViewMatrix();
 
     program->setUniformMatrix4fv("view", 1, false,
                                  glm::value_ptr(viewMatrix));

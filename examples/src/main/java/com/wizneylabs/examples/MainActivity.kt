@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+//            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
             KollieTheme {
                 KollieCanvas()

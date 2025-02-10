@@ -19,21 +19,13 @@ Java_com_wizneylabs_kollie_FullScreenQuad__1create(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_FullScreenQuad__1initBuffers(JNIEnv *env, jobject thiz, jlong ptr) {
-
-    FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
-
-    quad->initBuffers();
-}
-
-extern "C"
-JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_FullScreenQuad__1draw(JNIEnv *env, jobject thiz, jlong ptr) {
 
     FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
 
     quad->draw();
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_FullScreenQuad__1destroy(JNIEnv *env, jobject thiz, jlong ptr, jboolean freeGLResources) {
@@ -43,4 +35,14 @@ Java_com_wizneylabs_kollie_FullScreenQuad__1destroy(JNIEnv *env, jobject thiz, j
     quad->destroy(freeGLResources);
 
     delete quad;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_FullScreenQuad__1resize(JNIEnv *env, jobject thiz, jlong ptr,
+                                                   jint screen_width, jint screen_height) {
+
+    FullScreenQuad* quad = reinterpret_cast<FullScreenQuad*>(ptr);
+
+    quad->resize(screen_width, screen_height);
 }

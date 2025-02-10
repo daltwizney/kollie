@@ -17,8 +17,9 @@ class FullScreenQuad {
         }
     }
 
-    fun initBuffers() {
-        _initBuffers(_nativeHandle);
+    fun resize(screenWidth: Int, screenHeight: Int) {
+
+        _resize(_nativeHandle, screenWidth, screenHeight);
     }
 
     fun draw() {
@@ -29,7 +30,7 @@ class FullScreenQuad {
     private external fun _create(): Long;
     private external fun _destroy(ptr: Long, freeGLResources: Boolean);
 
-    private external fun _initBuffers(ptr: Long);
+    private external fun _resize(ptr: Long, screenWidth: Int, screenHeight: Int);
 
     private external fun _draw(ptr: Long);
 }

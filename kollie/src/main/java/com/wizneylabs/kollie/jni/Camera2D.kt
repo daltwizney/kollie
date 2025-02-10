@@ -1,6 +1,6 @@
 package com.wizneylabs.kollie.jni
 
-class Camera2D {
+class Camera2D(screenWidth: Int, screenHeight: Int) {
 
     val nativeHandle: Long
         get() = _nativeHandle
@@ -9,7 +9,7 @@ class Camera2D {
 
     init {
 
-        _nativeHandle = _create();
+        _nativeHandle = _create(screenWidth, screenHeight);
     }
 
     fun destroy(freeGLResources: Boolean = true) {
@@ -21,6 +21,10 @@ class Camera2D {
         }
     }
 
+    fun setScreenDimensions(screenWidth: Int, screenHeight: Int) {
+
+    }
+
     fun setPosition(x: Float, y: Float, z: Float) {
         _setPosition(_nativeHandle, x, y, z);
     }
@@ -29,8 +33,9 @@ class Camera2D {
         _lookAt(_nativeHandle, x, y, z);
     }
 
-    private external fun _create(): Long;
+    private external fun _create(screenWidth: Int, screenHeight: Int): Long;
     private external fun _destroy(ptr: Long, freeGLResources: Boolean);
+    private external fun _setScreenDimensions(ptr: Long, screenWidth: Int, screenHeight: Int);
     private external fun _setPosition(ptr: Long, x: Float, y: Float, z: Float);
     private external fun _lookAt(ptr: Long, x: Float, y: Float, z: Float);
 }

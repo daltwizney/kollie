@@ -41,8 +41,7 @@ class ShaderProgram {
                                  screenWidth: Int,
                                  screenHeight: Int) {
 
-        _updateProjectionMatrix2D(_nativeHandle, camera.nativeHandle,
-            screenWidth, screenHeight);
+        _updateProjectionMatrix2D(_nativeHandle, camera.nativeHandle);
     }
 
     private external fun _create(): Long;
@@ -54,10 +53,8 @@ class ShaderProgram {
                                   vertexShaderSource: String,
                                   fragmentShaderSource: String);
 
-    private external fun _updateViewMatrix2D(ptr: Long, cameraPtr: Long);
-    private external fun _updateProjectionMatrix2D(ptr: Long, cameraPtr: Long,
-                                                   screenWidth: Int,
-                                                   screenHeight: Int);
+    private external fun _updateViewMatrix2D(ptr: Long, camera2DPtr: Long);
+    private external fun _updateProjectionMatrix2D(ptr: Long, camera2DPtr: Long);
 
     private external fun _setUniform2f(ptr: Long, name: String, x: Float, y: Float);
 }

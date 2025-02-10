@@ -8,9 +8,11 @@
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_wizneylabs_kollie_jni_Camera2D__1create(JNIEnv *env, jobject thiz) {
+Java_com_wizneylabs_kollie_jni_Camera2D__1create(JNIEnv *env, jobject thiz,
+                                                 jint screenWidth,
+                                                 jint screenHeight) {
 
-    Camera2D *camera = new Camera2D();
+    Camera2D *camera = new Camera2D(screenWidth, screenHeight);
 
     return reinterpret_cast<jlong>(camera);
 }
@@ -43,4 +45,16 @@ Java_com_wizneylabs_kollie_jni_Camera2D__1lookAt(JNIEnv *env, jobject thiz, jlon
     Camera2D* camera = reinterpret_cast<Camera2D*>(ptr);
 
     camera->lookAt(glm::vec3(x, y, z));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_jni_Camera2D__1setScreenDimensions(JNIEnv *env, jobject thiz,
+                                                              jlong ptr,
+                                                              jint screen_width,
+                                                              jint screen_height) {
+
+    Camera2D* camera = reinterpret_cast<Camera2D*>(ptr);
+
+    camera->setScreenSize(screen_width, screen_height);
 }
