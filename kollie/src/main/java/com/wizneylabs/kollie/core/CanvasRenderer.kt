@@ -14,8 +14,10 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
     var camera2D: Camera2D? = null;
 
-    var fullScreenShader: ShaderProgram? = null;
-    var fullScreenQuad: FullScreenQuad? = null;
+    val shaderSources = hashMapOf<String, Pair<String, String>>();
+
+    private var _fullScreenShader: ShaderProgram? = null;
+    private var _fullScreenQuad: FullScreenQuad? = null;
 
     var gridShader: ShaderProgram? = null;
 
@@ -26,13 +28,24 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
         RenderingEngine.initialize();
 
-        fullScreenShader = ShaderProgram();
+        _fullScreenShader = ShaderProgram();
         gridShader = ShaderProgram();
     }
 
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
 
-        fullScreenShader?.compile();
+        val fullScreenShaderSource = shaderSources["fullScreenQuad"];
+
+        if (fullScreenShaderSource != null)
+        {
+            _fullScreenShader?.vertexShaderSource = fullScreenShaderSource.first;
+            _fullScreenShader?.fragmentShaderSource = fullScreenShaderSource.second;
+            _fullScreenShader?.compile();
+        }
+        else
+        {
+            throw RuntimeException("Unable to load full screen quad shader!");
+        }
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
@@ -45,14 +58,14 @@ class CanvasRenderer: GLSurfaceView.Renderer {
             camera2D = Camera2D(width, height);
         }
 
-        if (fullScreenQuad == null)
+        if (_fullScreenQuad == null)
         {
-            fullScreenQuad = FullScreenQuad();
+            _fullScreenQuad = FullScreenQuad();
         }
 
         camera2D?.setScreenDimensions(width, height);
 
-        fullScreenQuad?.resize(width, height);
+        _fullScreenQuad?.resize(width, height);
 
         Log.d(TAG, "surface changed, size = ${width}, ${height}");
 
@@ -63,7 +76,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
         RenderingEngine.clearColorBuffer();
 
-        fullScreenShader?.let { shader ->
+        _fullScreenShader?.let { shader ->
 
             shader.use();
 
@@ -72,16 +85,16 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
             shader.setUniform2f("resolution", 1.0f * _width, 1.0f * _height);
 
-            fullScreenQuad?.draw();
+            _fullScreenQuad?.draw();
         }
     }
 
     fun destroy() {
 
-        fullScreenShader?.destroy(false);
-        fullScreenQuad?.destroy(false);
+        _fullScreenShader?.destroy(false);
+        _fullScreenQuad?.destroy(false);
 
-        fullScreenShader = null;
-        fullScreenQuad = null;
+        _fullScreenShader = null;
+        _fullScreenQuad = null;
     }
 }

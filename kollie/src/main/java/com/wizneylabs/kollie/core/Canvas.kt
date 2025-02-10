@@ -18,13 +18,15 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
 
         setEGLConfigChooser(8, 8, 8, 8, 16, 0)
 
-        // load shader source
+        // load full screen quad shader source
         val vertexShaderSource = this.loadShaderFromAssets("shaders/circle.vert");
         val fragmentShaderSource = this.loadShaderFromAssets("shaders/circle.frag");
 
-        // compile & use shader program
-        renderer.fullScreenShader?.vertexShaderSource = vertexShaderSource;
-        renderer.fullScreenShader?.fragmentShaderSource = fragmentShaderSource;
+        val fullScreenShaderSource = Pair(vertexShaderSource, fragmentShaderSource);
+
+        renderer.shaderSources["fullScreenQuad"] = fullScreenShaderSource;
+
+        // load grid shader source
 
         // finish setting up surface view
         setRenderer(renderer);
