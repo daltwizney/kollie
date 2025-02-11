@@ -24,7 +24,10 @@ private:
     unsigned int _VAO;
     unsigned int _VBO;
 
-    unsigned int _instanceVBO;
+    unsigned int _positionVBO;
+    unsigned int _colorVBO;
+
+    unsigned int _nInstances = 3;
 
     float* _vertices;
 

@@ -12,19 +12,36 @@ void Grid2D::setPerInstanceAttributes() {
 
     float positions[] = {
     cellSize * 1.0f, cellSize * 1.0f, 0.0f,
-        400.0f, 300.0f, 0.0f
+        400.0f, 300.0f, 0.0f,
+        800.0f, 300.0f, 0.0f
+    };
+
+    float colors[] = {
+        1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f
     };
 
     glBindVertexArray(_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, _instanceVBO);
+
+    // per-instance positions
+    glBindBuffer(GL_ARRAY_BUFFER, _positionVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 
     glVertexAttribDivisor(1, 1);
-}
 
+    // per-instance colors
+    glBindBuffer(GL_ARRAY_BUFFER, _colorVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+
+    glVertexAttribDivisor(2, 1);
+}
 
 Grid2D::Grid2D() {
 
@@ -39,7 +56,8 @@ Grid2D::Grid2D() {
     // create & bind VAO and VBO
     glGenVertexArrays(1, &_VAO);
     glGenBuffers(1, &_VBO);
-    glGenBuffers(1, &_instanceVBO);
+    glGenBuffers(1, &_positionVBO);
+    glGenBuffers(1, &_colorVBO);
 
     glBindVertexArray(_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
@@ -56,7 +74,7 @@ Grid2D::Grid2D() {
 void Grid2D::draw() {
 
     glBindVertexArray(_VAO);
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 2);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, _nInstances);
 }
 
 void Grid2D::destroy(bool freeGLResources) {
