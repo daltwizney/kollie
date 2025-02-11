@@ -6,27 +6,40 @@
 
 #include "kollie/grid_2d.h"
 
+static int cellSize = 100;
+
+void Grid2D::setPerInstanceAttributes() {
+
+    float positions[] = {
+    cellSize * 1.0f, cellSize * 1.0f, 0.0f,
+        400.0f, 300.0f, 0.0f
+    };
+
+    glBindVertexArray(_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, _instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+
+    glVertexAttribDivisor(1, 1);
+}
+
+
 Grid2D::Grid2D() {
 
     _vertices = new float[12] {
             // positions
-            100.0f,  100.0f, 0.0f, // top left
-            100.0f, 200.0f, 0.0f,    // bottom left
-            200.0f,  100.0f, 0.0f,     // top right
-            200.0f, 200.0f, 0.0f,   // bottom right
+            -cellSize / 2.0f,  -cellSize / 2.0f, 0.0f, // top left
+            -cellSize / 2.0f, cellSize / 2.0f, 0.0f,    // bottom left
+            cellSize / 2.0f,  -cellSize / 2.0f, 0.0f,     // top right
+            cellSize / 2.0f, cellSize / 2.0f, 0.0f,   // bottom right
     };
-
-//    _vertices = new float[12] {
-//            // positions
-//            0.5f,  0.5f, 0.0f, // top left
-//            0.5f, 1.0f, 0.0f,    // bottom left
-//            0.5f,  1.0f, 0.0f,     // top right
-//            1.0f, 1.0f, 0.0f,   // bottom right
-//    };
 
     // create & bind VAO and VBO
     glGenVertexArrays(1, &_VAO);
     glGenBuffers(1, &_VBO);
+    glGenBuffers(1, &_instanceVBO);
 
     glBindVertexArray(_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
@@ -36,14 +49,14 @@ Grid2D::Grid2D() {
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    this->setPerInstanceAttributes();
 }
 
 void Grid2D::draw() {
 
-//    glClear(GL_COLOR_BUFFER_BIT);
-
     glBindVertexArray(_VAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 2);
 }
 
 void Grid2D::destroy(bool freeGLResources) {

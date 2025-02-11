@@ -19,8 +19,12 @@ public:
 
 private:
 
+    void setPerInstanceAttributes();
+
     unsigned int _VAO;
     unsigned int _VBO;
+
+    unsigned int _instanceVBO;
 
     float* _vertices;
 
