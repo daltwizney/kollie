@@ -20,6 +20,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
     private var _fullScreenQuad: FullScreenQuad? = null;
 
     private var _gridShader: ShaderProgram? = null;
+    private var _lineShader: ShaderProgram? = null;
     private var _grid: Grid2D? = null;
 
     private var _width: Int = 0;
@@ -37,6 +38,8 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         _fullScreenShader = ShaderProgram();
 
         _gridShader = ShaderProgram();
+
+        _lineShader = ShaderProgram();
 
         // compile full screen quad shader
         var shaderSource = shaderSources["fullScreenQuad"];
@@ -56,6 +59,16 @@ class CanvasRenderer: GLSurfaceView.Renderer {
             _gridShader?.vertexShaderSource = shaderSource.first;
             _gridShader?.fragmentShaderSource = shaderSource.second;
             _gridShader?.compile();
+        }
+
+        // compile line shader
+        shaderSource = shaderSources["line2D"];
+
+        if (shaderSource != null)
+        {
+            _lineShader?.vertexShaderSource = shaderSource.first;
+            _lineShader?.fragmentShaderSource = shaderSource.second;
+            _lineShader?.compile();
         }
     }
 
@@ -105,6 +118,11 @@ class CanvasRenderer: GLSurfaceView.Renderer {
             shader.updateProjectionMatrix2D(camera2D!!, _width, _height);
 
             _grid?.draw();
+        }
+
+        _lineShader?.let { shader ->
+
+            shader.use();
         }
     }
 

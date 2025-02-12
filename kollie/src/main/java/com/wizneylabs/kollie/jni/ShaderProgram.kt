@@ -4,6 +4,9 @@ import com.wizneylabs.kollie.jni.Camera2D
 
 class ShaderProgram {
 
+    val nativeHandle: Long
+        get() = _nativeHandle
+
     var vertexShaderSource: String = "";
     var fragmentShaderSource: String = "";
 

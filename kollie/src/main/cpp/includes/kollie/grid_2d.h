@@ -14,6 +14,9 @@ public:
 
     Grid2D();
 
+    void setGridCellShader(unsigned int shaderID);
+    void setLineShader(unsigned int shaderID);
+
     void draw();
     void destroy(bool freeGLResources = true);
 

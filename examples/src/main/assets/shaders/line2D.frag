@@ -3,10 +3,10 @@ precision mediump float;
 
 out vec4 FragColor;
 
-in vec3 quadColor;
+in vec3 lineColor;
 
 void main()
 {
     // FragColor = color;
-    FragColor = vec4(quadColor, 1.0);
+    FragColor = vec4(lineColor, 1.0);
 }
