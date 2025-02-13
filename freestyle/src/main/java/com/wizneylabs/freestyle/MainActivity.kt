@@ -1,6 +1,7 @@
 package com.wizneylabs.freestyle
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -110,37 +111,48 @@ class LanguageKeywordColorTransformation() : VisualTransformation {
 
         val textString = text.toString();
 
-        val myAnnotatedString = AnnotatedString(textString,
-            spanStyles = listOf(
-                AnnotatedString.Range(
-                    SpanStyle(color = Color.Green),
-                    start = 0,
-                    end = 6
-                )
-            )
-        );
-
         return TransformedText(
 
-            myAnnotatedString,
-            // TODO: this can be in a function...
-//            buildAnnotatedString {
-//
-//                appendLine(textString);
-//
-////                withStyle(SpanStyle(color = Color.Green)) {
-////                    appendLine(textString);
-////                }
-////                appendLine("==========");
-////                withStyle(SpanStyle(color = Color.Red)) {
-////                    append("Hello ");
-////                    appendLine("World");
-////                }
-////                appendLine("----")
-////                withStyle(SpanStyle(color = Color.Blue)) {
-////                    appendLine("it's about to go down");
-////                }
-//            },
+            // TODO: move this to a function (maybe in viewmodel)
+            buildAnnotatedString {
+
+                /**
+                 *  NOTE: seems we need to keep the length of the input string equal to the length
+                 *  of the output string for this transformation or app will crash on recomposition...
+                 */
+
+                for (i in 0..textString.length - 1)
+                {
+                    val c = textString[i];
+
+                    if (c == 'r')
+                    {
+                        withStyle(SpanStyle(color = Color.Red)) {
+                            append(c);
+                        }
+                    }
+                    else if (c == 'g')
+                    {
+                        withStyle(SpanStyle(color = Color.Green)) {
+                            append(c);
+                        }
+                    }
+                    else if (c == 'b')
+                    {
+                        withStyle(SpanStyle(color = Color.Blue)) {
+                            append(c);
+                        }
+                    }
+                    else if (c == 'n')
+                    {
+                        append("\n");
+                    }
+                    else
+                    {
+                        append(c);
+                    }
+                }
+            },
 
             OffsetMapping.Identity
         );
