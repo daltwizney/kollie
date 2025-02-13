@@ -98,7 +98,8 @@ fun FreestyleEditor(navController: NavHostController, viewModel: FreestyleViewMo
         modifier = Modifier
             .fillMaxSize(),
         textStyle = MaterialTheme.typography.bodyLarge,
-        colors = TextFieldDefaults.colors()
+        colors = TextFieldDefaults.colors(),
+        visualTransformation = LanguageKeywordColorTransformation()
     )
 }
 
@@ -109,24 +110,37 @@ class LanguageKeywordColorTransformation() : VisualTransformation {
 
         val textString = text.toString();
 
+        val myAnnotatedString = AnnotatedString(textString,
+            spanStyles = listOf(
+                AnnotatedString.Range(
+                    SpanStyle(color = Color.Green),
+                    start = 0,
+                    end = 6
+                )
+            )
+        );
+
         return TransformedText(
 
+            myAnnotatedString,
             // TODO: this can be in a function...
-            buildAnnotatedString {
-
-                withStyle(SpanStyle(color = Color.Green)) {
-                    appendLine(textString);
-                }
-                appendLine("==========");
-                withStyle(SpanStyle(color = Color.Red)) {
-                    append("Hello ");
-                    appendLine("World");
-                }
-                appendLine("----")
-                withStyle(SpanStyle(color = Color.Blue)) {
-                    appendLine("it's about to go down");
-                }
-            },
+//            buildAnnotatedString {
+//
+//                appendLine(textString);
+//
+////                withStyle(SpanStyle(color = Color.Green)) {
+////                    appendLine(textString);
+////                }
+////                appendLine("==========");
+////                withStyle(SpanStyle(color = Color.Red)) {
+////                    append("Hello ");
+////                    appendLine("World");
+////                }
+////                appendLine("----")
+////                withStyle(SpanStyle(color = Color.Blue)) {
+////                    appendLine("it's about to go down");
+////                }
+//            },
 
             OffsetMapping.Identity
         );
