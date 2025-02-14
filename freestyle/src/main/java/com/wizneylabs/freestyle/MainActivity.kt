@@ -78,13 +78,24 @@ fun MainMenu(navController: NavHostController, viewModel: FreestyleViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
-        Text("Item 1")
-        Text("Item 2")
-        Text("Item 3")
+        viewModel.shaderIDs.forEach { id ->
 
-        Button(onClick = { navController.navigate("editor") }) {
-            Text("Editor");
+            Button(onClick = {
+
+                viewModel.editShader(id);
+                navController.navigate("editor");
+            }) {
+                Text(id);
+            }
         }
+
+//        Text("Item 1")
+//        Text("Item 2")
+//        Text("Item 3")
+//
+//        Button(onClick = { navController.navigate("editor") }) {
+//            Text("Editor");
+//        }
     }
 }
 

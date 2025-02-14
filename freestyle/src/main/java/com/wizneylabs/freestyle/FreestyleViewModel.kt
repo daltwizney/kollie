@@ -16,21 +16,63 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+import java.util.UUID;
+
 class FreestyleViewModel: ViewModel() {
 
     val TAG = FreestyleViewModel::class.simpleName;
 
+    val shaderIDs: List<String>
+        get() {
+            return _shaderMap.keys.toList();
+        }
+
+    private val _shaderMap = hashMapOf<String, MutableStateFlow<String>>();
+
+    private var _currentShaderID = "";
+
+    var editorText: StateFlow<String>;
+
+    private val _shaderTemplate =
+        "void main() {\n" +
+        "    gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n" +
+        "}";
+
     init {
 
         Log.d(TAG, "viewmodel created!");
+
+        _currentShaderID = createNewShader();
+
+        createNewShader();
+        createNewShader();
+
+        editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
     }
 
-    private val _editorText = MutableStateFlow("");
+    fun createNewShader(): String {
 
-    val editorText: StateFlow<String> = _editorText.asStateFlow();
+        val shaderID = UUID.randomUUID().toString();
+
+        _shaderMap[shaderID] = MutableStateFlow(_shaderTemplate);
+
+        return shaderID;
+    }
+
+    fun editShader(id: String) {
+
+        if (!_shaderMap.contains(id))
+        {
+            Log.w(TAG, "no shader map with ID: ${id}");
+            return;
+        }
+
+        _currentShaderID = id;
+        editorText = _shaderMap[id]!!.asStateFlow();
+    }
 
     fun onEditorTextChanged(newText: String) {
 
-        _editorText.value = newText;
+        _shaderMap[_currentShaderID]!!.value = newText;
     }
 }
