@@ -103,7 +103,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         if (perspectiveCamera == null)
         {
             perspectiveCamera = PerspectiveCamera(45.0f, aspectRatio, 0.1f, 100.0f);
-            perspectiveCamera?.setPosition(0.0f, 10.0f, 10.0f);
+            perspectiveCamera?.setPosition(0.0f, 3.0f, 3.0f);
             perspectiveCamera?.lookAt(0.0f, 0.0f, 0.0f);
         }
 

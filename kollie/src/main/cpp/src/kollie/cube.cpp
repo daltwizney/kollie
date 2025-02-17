@@ -75,6 +75,10 @@ Cube::Cube()
 
 void Cube::draw(ShaderProgram *program) {
 
+    // TODO:
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     // Update model matrix to rotate cube
     _model = glm::rotate(_model, glm::radians(1.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 

@@ -7,7 +7,9 @@
 #include "glm/ext.hpp"
 
 PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float nearPlane,
-                                     float farPlane) {
+                                     float farPlane):
+    _fov(fov), _aspectRatio(aspectRatio), _nearPlane(nearPlane), _farPlane(farPlane)
+ {
 
     _position = glm::vec3(0.0f, 0.0f, 10.0f);
     _front = glm::vec3(0.0f, 0.0f, -1.0f);
