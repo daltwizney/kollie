@@ -34,6 +34,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/kollie/full_screen_quad.cpp
         src/kollie/grid_2d.cpp
         src/kollie/camera_2d.cpp
+        src/kollie/perspective_camera.cpp
+        src/kollie/cube.cpp
 
         # JNI interfaces
         src/jni/shader_program_jni.cpp
@@ -41,6 +43,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         src/jni/engine_jni.cpp
         src/jni/grid_2d_jni.cpp
         src/jni/camera_2d_jni.cpp
+        src/jni/cube_jni.cpp
+        src/jni/perspective_camera_jni.cpp
 )
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE includes)

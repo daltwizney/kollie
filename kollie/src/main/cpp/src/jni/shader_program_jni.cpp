@@ -8,6 +8,8 @@
 
 #include "kollie/camera_2d.h"
 
+#include "kollie/perspective_camera.h"
+
 #include "kollie/log.h"
 
 #include "glm/ext.hpp"
@@ -101,4 +103,30 @@ Java_com_wizneylabs_kollie_ShaderProgram__1updateViewMatrix2D(JNIEnv *env, jobje
 
     program->setUniformMatrix4fv("view", 1, false,
                                  glm::value_ptr(viewMatrix));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_ShaderProgram__1updateViewMatrix(JNIEnv *env, jobject thiz, jlong ptr,
+                                                            jlong camera_ptr) {
+    ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
+    PerspectiveCamera* camera = reinterpret_cast<PerspectiveCamera*>(camera_ptr);
+
+    glm::mat4 viewMatrix = camera->getViewMatrix();
+
+    program->setUniformMatrix4fv("view", 1, false,
+                                 glm::value_ptr(viewMatrix));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_ShaderProgram__1updateProjectionMatrix(JNIEnv *env, jobject thiz,
+                                                                  jlong ptr, jlong camera_ptr) {
+    ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
+    PerspectiveCamera* camera = reinterpret_cast<PerspectiveCamera*>(camera_ptr);
+
+    glm::mat4 projectionMatrix = camera->getProjectionMatrix();
+
+    program->setUniformMatrix4fv("projection", 1, false,
+                                 glm::value_ptr(projectionMatrix));
 }

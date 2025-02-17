@@ -7,6 +7,7 @@
 #include "kollie/shader_program.h"
 
 #include "kollie/log.h"
+#include <jni.h>
 
 using namespace glm;
 using namespace std;

@@ -1,6 +1,7 @@
 package com.wizneylabs.kollie
 
 import com.wizneylabs.kollie.jni.Camera2D
+import com.wizneylabs.kollie.jni.PerspectiveCamera
 
 class ShaderProgram {
 
@@ -35,6 +36,16 @@ class ShaderProgram {
         _setUniform2f(_nativeHandle, name, x, y);
     }
 
+    fun updateViewMatrix(camera: PerspectiveCamera) {
+
+        _updateViewMatrix(_nativeHandle, camera.nativeHandle);
+    }
+
+    fun updateProjectionMatrix(camera: PerspectiveCamera) {
+
+        _updateProjectionMatrix(_nativeHandle, camera.nativeHandle);
+    }
+
     fun updateViewMatrix2D(camera: Camera2D) {
 
         _updateViewMatrix2D(_nativeHandle, camera.nativeHandle);
@@ -55,6 +66,11 @@ class ShaderProgram {
     private external fun _compile(ptr: Long,
                                   vertexShaderSource: String,
                                   fragmentShaderSource: String);
+
+    // TODO: need APIs for passing model matrix
+
+    private external fun _updateViewMatrix(ptr: Long, cameraPtr: Long);
+    private external fun _updateProjectionMatrix(ptr: Long, cameraPtr: Long);
 
     private external fun _updateViewMatrix2D(ptr: Long, camera2DPtr: Long);
     private external fun _updateProjectionMatrix2D(ptr: Long, camera2DPtr: Long);
