@@ -216,3 +216,7 @@ void ShaderProgram::destroy(bool freeGLResources) {
         _programID = 0;
     }
 }
+
+unsigned int ShaderProgram::id() {
+    return _programID;
+}

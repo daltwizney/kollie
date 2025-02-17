@@ -18,6 +18,8 @@ public:
     std::string vertexShaderSource;
     std::string fragmentShaderSource;
 
+    unsigned int id();
+
     void compile();
 
     bool canUse();

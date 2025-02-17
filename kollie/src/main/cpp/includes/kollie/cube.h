@@ -27,7 +27,7 @@ private:
     unsigned int _EBO;
 
     float _vertices[48];
-    float _indices[36];
+    unsigned int _indices[36];
 
     // TODO: here for testing for now - but move this to kotlin app code!
     glm::mat4 _model;
