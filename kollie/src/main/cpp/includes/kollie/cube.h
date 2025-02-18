@@ -23,10 +23,13 @@ public:
 private:
 
     unsigned int _VAO;
-    unsigned int _VBO;
+    unsigned int _positionVBO;
+    unsigned int _colorVBO;
     unsigned int _EBO;
 
-    float _vertices[48];
+    float _positions[48];
+    float _colors[24];
+
     unsigned int _indices[36];
 
     // TODO: here for testing for now - but move this to kotlin app code!
