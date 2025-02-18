@@ -58,5 +58,5 @@ void PerspectiveCamera::_updateViewMatrix() {
 void PerspectiveCamera::_updateProjectionMatrix() {
 
     _projectionMatrix = glm::perspective(
-            _fov, _aspectRatio, _nearPlane, _farPlane);
+            glm::radians(_fov), _aspectRatio, _nearPlane, _farPlane);
 }

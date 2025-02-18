@@ -17,6 +17,7 @@ Java_com_wizneylabs_kollie_jni_PerspectiveCamera__1create(JNIEnv *env, jobject t
 
     return reinterpret_cast<jlong>(camera);
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_jni_PerspectiveCamera__1destroy(JNIEnv *env, jobject thiz, jlong ptr,
@@ -26,6 +27,7 @@ Java_com_wizneylabs_kollie_jni_PerspectiveCamera__1destroy(JNIEnv *env, jobject 
 
     delete camera;
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_jni_PerspectiveCamera__1setAspectRatio(JNIEnv *env, jobject thiz,
