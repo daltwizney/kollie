@@ -77,5 +77,6 @@ void FullScreenQuad::resize(int screenWidth, int screenHeight) {
     _vertices[16] = screenHeight;
 
     // update VBO
+    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_vertices), _vertices);
 }
