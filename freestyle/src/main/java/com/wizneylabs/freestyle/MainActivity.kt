@@ -1,12 +1,10 @@
 package com.wizneylabs.freestyle
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +27,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -43,7 +42,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             KollieTheme {
 
-                val viewModel: FreestyleViewModel = viewModel();
+                val viewModel: FreestyleViewModel = viewModel(
+                    factory = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+                );
 
                 FreeStyleApp(viewModel);
             }
@@ -110,62 +111,114 @@ fun FreestyleEditor(navController: NavHostController, viewModel: FreestyleViewMo
         modifier = Modifier
             .fillMaxSize(),
         textStyle = MaterialTheme.typography.bodyLarge,
-        colors = TextFieldDefaults.colors(),
-        visualTransformation = LanguageKeywordColorTransformation()
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color(0xFF6482AD),
+            focusedContainerColor = Color(0xFF6482AD),
+            disabledContainerColor = Color(0xFF6482AD)
+        ),
+        visualTransformation = SyntaxHighlightVisualTransformation()
     )
 }
 
 // TODO: using this with a TextField composable causes crash...
-class LanguageKeywordColorTransformation() : VisualTransformation {
+class SyntaxHighlightVisualTransformation() : VisualTransformation {
+
+    private val keywords = mapOf(
+        "in" to SpanStyle(color = Color.Blue),
+        "vec2" to SpanStyle(color = Color.Green),
+        "float" to SpanStyle(color = Color.Green),
+        "return" to SpanStyle(color = Color.Magenta)
+    );
+
+    // styles for comments
+    private val stringStyle = SpanStyle(color = Color.Yellow);
+    private val commentStyle = SpanStyle(color = Color.Yellow);
+
+    // comment regex patterns
+    private val singleLineComment = Regex("""//.*$""", RegexOption.MULTILINE)
+    private val multiLineComment = Regex("""/\*\*.*?\*/""", RegexOption.DOT_MATCHES_ALL)
+
+    // base token regex to match words, whitespace, and special characters
+    private val tokenPattern = Regex("""\w+|\s+|[-=+*/(){};,]|"[^"]*"""");
+
+    private fun highlightSyntax(input: String): AnnotatedString {
+        return buildAnnotatedString {
+            var remainingText = input
+            var lastProcessedIndex = 0
+
+            // Process comments first (they take precedence)
+            while (remainingText.isNotEmpty()) {
+                val singleLineMatch = singleLineComment.find(remainingText)
+                val multiLineMatch = multiLineComment.find(remainingText)
+
+                // Find the earliest match
+                val earliestMatch = when {
+                    singleLineMatch == null -> multiLineMatch
+                    multiLineMatch == null -> singleLineMatch
+                    else -> if (singleLineMatch.range.first <= multiLineMatch.range.first)
+                        singleLineMatch else multiLineMatch
+                }
+
+                if (earliestMatch == null) {
+                    // No more comments, process remaining tokens
+                    processTokens(remainingText, 0)
+                    break
+                }
+
+                val matchStart = earliestMatch.range.first
+                val matchEnd = earliestMatch.range.last + 1
+
+                // Process tokens before the comment
+                if (matchStart > 0) {
+                    processTokens(remainingText.substring(0, matchStart), lastProcessedIndex)
+                }
+
+                // Append the comment with style
+                withStyle(commentStyle) {
+                    append(earliestMatch.value)
+                }
+
+                // Update remaining text and index
+                lastProcessedIndex += matchEnd
+                remainingText = if (matchEnd < remainingText.length) {
+                    remainingText.substring(matchEnd)
+                } else {
+                    ""
+                }
+            }
+        }
+    }
+
+    // Helper to process non-comment tokens
+    private fun AnnotatedString.Builder.processTokens(text: String, offset: Int) {
+        val matches = tokenPattern.findAll(text)
+        var lastEnd = 0
+
+        matches.forEach { match ->
+            if (match.range.first > lastEnd) {
+                append(text.substring(lastEnd, match.range.first))
+            }
+
+            val token = match.value
+            when {
+                token.startsWith("\"") -> withStyle(stringStyle) { append(token) }
+                token in keywords -> withStyle(keywords[token]!!) { append(token) }
+                else -> append(token)
+            }
+
+            lastEnd = match.range.last + 1
+        }
+
+        if (lastEnd < text.length) {
+            append(text.substring(lastEnd))
+        }
+    }
 
     override fun filter(text: AnnotatedString): TransformedText {
 
-        val textString = text.toString();
-
         return TransformedText(
-
-            // TODO: move this to a function (maybe in viewmodel)
-            buildAnnotatedString {
-
-                /**
-                 *  NOTE: seems we need to keep the length of the input string equal to the length
-                 *  of the output string for this transformation or app will crash on recomposition...
-                 */
-
-                for (i in 0..textString.length - 1)
-                {
-                    val c = textString[i];
-
-                    if (c == 'r')
-                    {
-                        withStyle(SpanStyle(color = Color.Red)) {
-                            append(c);
-                        }
-                    }
-                    else if (c == 'g')
-                    {
-                        withStyle(SpanStyle(color = Color.Green)) {
-                            append(c);
-                        }
-                    }
-                    else if (c == 'b')
-                    {
-                        withStyle(SpanStyle(color = Color.Blue)) {
-                            append(c);
-                        }
-                    }
-                    else if (c == 'n')
-                    {
-                        append("\n");
-                    }
-                    else
-                    {
-                        append(c);
-                    }
-                }
-            },
-
-            OffsetMapping.Identity
-        );
+            text = highlightSyntax(text.text),
+            offsetMapping = OffsetMapping.Identity
+        )
     }
 }

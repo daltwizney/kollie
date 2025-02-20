@@ -1,5 +1,6 @@
 package com.wizneylabs.freestyle
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -11,6 +12,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 import java.util.UUID;
 
-class FreestyleViewModel: ViewModel() {
+class FreestyleViewModel(private val application: Application): AndroidViewModel(application) {
 
     val TAG = FreestyleViewModel::class.simpleName;
 
@@ -33,10 +35,7 @@ class FreestyleViewModel: ViewModel() {
 
     var editorText: StateFlow<String>;
 
-    private val _shaderTemplate =
-        "void main() {\n" +
-        "    gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n" +
-        "}";
+    private var _shaderTemplate = _loadShaderFromAssets("shaders/test.frag");
 
     init {
 
@@ -48,6 +47,24 @@ class FreestyleViewModel: ViewModel() {
         createNewShader();
 
         editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
+    }
+
+    private fun _loadShaderFromAssets(fileName: String): String {
+
+        Log.d(TAG, "fileName: $fileName");
+
+        var shaderCode = "";
+
+        try {
+            shaderCode = application.assets.open(fileName)
+                .bufferedReader().use { it.readText() };
+        }
+        catch (e: Exception) {
+
+            Log.e(TAG, "failed to load shader: ${fileName}");
+        }
+
+        return shaderCode;
     }
 
     fun createNewShader(): String {
