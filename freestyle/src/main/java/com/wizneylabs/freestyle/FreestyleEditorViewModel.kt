@@ -2,27 +2,16 @@ package com.wizneylabs.freestyle
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.UUID
 
-import java.util.UUID;
 
-class FreestyleViewModel(private val application: Application): AndroidViewModel(application) {
+class FreestyleEditorViewModel(private val application: Application): AndroidViewModel(application) {
 
-    val TAG = FreestyleViewModel::class.simpleName;
+    val TAG = FreestyleEditorViewModel::class.simpleName;
 
     val shaderIDs: List<String>
         get() {
