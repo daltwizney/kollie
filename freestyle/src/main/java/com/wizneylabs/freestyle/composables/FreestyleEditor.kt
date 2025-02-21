@@ -1,5 +1,6 @@
 package com.wizneylabs.freestyle.composables
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +29,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.wizneylabs.freestyle.FreestyleEditorViewModel
+import kotlinx.serialization.Serializable
+
+/********************************************************************
+ ************************* Navigation Routes ************************
+ ********************************************************************/
+
+@Serializable
+object HomeRoute;
+
+@Serializable
+data class FreestyleEditorRoute(val shaderID: String);
+
+/********************************************************************
+ *************************** Composables ****************************
+ ********************************************************************/
 
 @Composable
 fun FreestyleEditorApp() {
@@ -38,12 +56,17 @@ fun FreestyleEditorApp() {
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = HomeRoute
     ) {
-        composable("home") {
+        composable<HomeRoute>() {
             MainMenu(navController, viewModel);
         }
-        composable("editor") {
+        composable<FreestyleEditorRoute>() { backStackEntry ->
+
+            val route: FreestyleEditorRoute = backStackEntry.toRoute();
+
+            viewModel.editShader(route.shaderID);
+
             FreestyleEditor(navController, viewModel);
         }
     }
@@ -62,25 +85,19 @@ fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewMod
 
             Button(onClick = {
 
-                viewModel.editShader(id);
-                navController.navigate("editor");
+                Log.d("Freestyle Route Test", "shader ID chosen = $id");
+
+                navController.navigate(FreestyleEditorRoute(id));
             }) {
                 Text(id);
             }
         }
-
-//        Text("Item 1")
-//        Text("Item 2")
-//        Text("Item 3")
-//
-//        Button(onClick = { navController.navigate("editor") }) {
-//            Text("Editor");
-//        }
     }
 }
 
 @Composable
-fun FreestyleEditor(navController: NavHostController, viewModel: FreestyleEditorViewModel) {
+fun FreestyleEditor(navController: NavHostController,
+                    viewModel: FreestyleEditorViewModel) {
 
     val editorText = viewModel.editorText.collectAsState();
 

@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wizneylabs.freestyle.composables.FreestyleEditor
+import com.wizneylabs.freestyle.composables.FreestyleEditorApp
 import com.wizneylabs.freestyle.ui.theme.KollieTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +26,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             KollieTheme {
 
-                FreestyleCanvas();
+                FreestyleEditorApp();
+//                FreestyleCanvas();
             }
         }
     }
@@ -47,8 +50,6 @@ fun FreestyleCanvas() {
     val circleData = canvasViewModel.circleData.collectAsState().value;
 
     Canvas(modifier = Modifier.fillMaxSize()) {
-
-        Log.d("radius", "canvas refreshing!");
 
         drawCircle(
             color = circleData.color,
