@@ -6,7 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,8 +30,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             KollieTheme {
 
-                FreestyleEditorApp();
+                Surface(modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)) // Pushes content below status bar
+                {
+                    FreestyleEditorApp();
 //                FreestyleCanvas();
+                }
             }
         }
     }

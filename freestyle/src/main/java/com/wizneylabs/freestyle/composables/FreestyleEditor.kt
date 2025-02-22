@@ -1,6 +1,7 @@
 package com.wizneylabs.freestyle.composables
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Help
@@ -77,9 +79,11 @@ fun FreestyleEditorApp() {
 
     val navController = rememberNavController();
 
-    DetailedDrawerExample(navController) {
+    DetailedDrawerExample(navController) { innerPadding ->
 
         NavHost(
+            modifier = Modifier
+                .padding(innerPadding),
             navController = navController,
             startDestination = HomeRoute
         ) {
@@ -198,13 +202,14 @@ fun DetailedDrawerExample(
                                 }
                             }
                         }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
-                        }
+                            Icon(Icons.Default.Menu,
+                                contentDescription = "Menu");
+                        };
                     }
                 )
             }
         ) { innerPadding ->
-            content(innerPadding)
+            content(innerPadding);
         }
     }
 }
