@@ -3,11 +3,53 @@ package com.wizneylabs.freestyle
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.UUID
 
+@Entity(tableName = "items")
+data class Item(
+
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+
+    val name: String,
+    val age: Int
+);
+
+@Dao
+interface ItemDao {
+
+    @Upsert
+    suspend fun insert(item: Item);
+
+    @Delete
+    suspend fun deleteItem(item: Item);
+
+    @Query("SELECT * FROM items")
+    suspend fun getAll(): List<Item>;
+}
+
+@Database(
+    entities = [Item::class],
+    version = 1
+)
+abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun itemDao(): ItemDao;
+}
 
 class FreestyleEditorViewModel(private val application: Application): AndroidViewModel(application) {
 
@@ -36,6 +78,40 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
         createNewShader();
 
         editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
+
+        // TODO: remove before flight - Room test
+        val database = Room.databaseBuilder(
+            application,
+            AppDatabase::class.java,
+            "my-items-db"
+        ).build();
+
+        val dao = database.itemDao();
+
+        viewModelScope.launch {
+
+            // write data
+            val age = (0..42).random();
+            val name = "MyItem" + age.toString();
+
+//            // tests updating existing item at id = 2
+//            val item = Item(id = 2, name = name, age = age);
+
+            val item = Item(name = name, age = age);
+
+            dao.insert(item);
+
+            // read data
+            var items = dao.getAll();
+
+            Log.d("RoomTest", "Items in db before delete: $items");
+
+            dao.deleteItem(items.last());
+
+            items = dao.getAll();
+
+            Log.d("RoomTest", "Items in db before delete: $items");
+        }
     }
 
     private fun _loadShaderFromAssets(fileName: String): String {
