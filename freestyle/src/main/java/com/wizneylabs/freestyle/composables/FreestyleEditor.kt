@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -32,6 +33,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -112,15 +114,44 @@ fun FreestyleEditorApp() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuShaderDropDownMenu(expanded: Boolean) {
+fun DeleteShaderDialog(title: String, text: String, resultHandler: ((Boolean) -> Unit)) {
 
+    var openDialog by remember { mutableStateOf(true) };
+
+    if (openDialog)
+    {
+        AlertDialog(
+            onDismissRequest = { openDialog = false },
+            title = { Text(title) },
+            text = { Text(text) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        resultHandler(true);
+                    }
+                ) {
+                    Text("Delete");
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    resultHandler(false);
+                }) {
+                    Text("Cancel");
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewModel) {
 
     var expandedDropdownId by remember { mutableStateOf("") };
+
+    var showDeleteShaderDialog by remember { mutableStateOf(false) };
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -167,24 +198,35 @@ fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewMod
                                     contentDescription = "More options"
                                 )
 
-                                DropdownMenu(
-                                    expanded = expandedDropdownId == id,
-                                    onDismissRequest = { expandedDropdownId = "" },
-                                ) {
-                                    DropdownMenuItem(
-                                        text = { Text("Delete") },
-                                        onClick = {
+                                if (showDeleteShaderDialog &&
+                                    id == expandedDropdownId)
+                                {
+                                    DeleteShaderDialog(
+                                        "Confirm Shader Deletion",
+                                        "Delete shader ID?\n ${id}"
+                                    ) { doDelete ->
+
+                                        if (doDelete)
+                                        {
                                             viewModel.deleteShader(id);
-                                        });
-//                                        for (i in 0..3)
-//                                        {
-//                                            DropdownMenuItem(
-//                                                text = { Text("option $i")},
-//                                                onClick = {
-//                                                    Log.d("Button", "option $i clicked!");
-//                                                }
-//                                            );
-//                                        }
+                                        }
+
+                                        showDeleteShaderDialog = false;
+                                        expandedDropdownId = "";
+                                    }
+                                }
+                                else
+                                {
+                                    DropdownMenu(
+                                        expanded = expandedDropdownId == id,
+                                        onDismissRequest = { expandedDropdownId = "" },
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("Delete") },
+                                            onClick = {
+                                                showDeleteShaderDialog = true;
+                                            });
+                                    }
                                 }
                             }
                         }
