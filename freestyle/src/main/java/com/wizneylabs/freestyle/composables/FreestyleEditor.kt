@@ -1,23 +1,27 @@
 package com.wizneylabs.freestyle.composables
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,12 +37,16 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -46,17 +54,19 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.google.rpc.Help
 import com.wizneylabs.freestyle.FreestyleEditorViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.math.exp
 
 /********************************************************************
  ************************* Navigation Routes ************************
@@ -103,31 +113,99 @@ fun FreestyleEditorApp() {
 }
 
 @Composable
+fun MainMenuShaderDropDownMenu(expanded: Boolean) {
+
+}
+
+@Composable
 fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewModel) {
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
+    var expandedDropdownId by remember { mutableStateOf("") };
 
-        if (viewModel.isLoading.value == false)
-        {
-            viewModel.shaderIDs.forEach { id ->
+    Box(modifier = Modifier.fillMaxSize()) {
 
-                Button(onClick = {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)) {
 
-                    Log.d("Freestyle Route Test", "shader ID chosen = $id");
+            if (viewModel.isFullyLoaded.value)
+            {
+                val shaderIDs = viewModel.shaderIDFlow.collectAsState();
 
-                    navController.navigate(FreestyleEditorRoute(id));
-                }) {
-                    Text(id);
+                if (shaderIDs.value.size == 0)
+                {
+                    Text("No shaders available!");
+                }
+                else
+                {
+                    shaderIDs.value.forEach { id ->
+
+                        Button(
+                            onClick = {
+
+                                Log.d("Freestyle Route Test", "shader ID chosen = $id");
+
+                                navController.navigate(FreestyleEditorRoute(id));
+                            },
+                            modifier = Modifier
+                                .pointerInput(Unit) {
+                                }) {
+                            Text(id);
+
+                            Spacer(modifier = Modifier.width(8.dp));
+
+                            IconButton(
+                                onClick = {
+                                    expandedDropdownId = id;
+                                    Log.d("Button", "3 dot button clicked! id = $id") },
+                                modifier = Modifier.height(24.dp).width(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "More options"
+                                )
+
+                                DropdownMenu(
+                                    expanded = expandedDropdownId == id,
+                                    onDismissRequest = { expandedDropdownId = "" },
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Delete") },
+                                        onClick = {
+                                            viewModel.deleteShader(id);
+                                        });
+//                                        for (i in 0..3)
+//                                        {
+//                                            DropdownMenuItem(
+//                                                text = { Text("option $i")},
+//                                                onClick = {
+//                                                    Log.d("Button", "option $i clicked!");
+//                                                }
+//                                            );
+//                                        }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            else
+            {
+                Text("loading...");
+            }
         }
-        else
+
+        if (viewModel.isFullyLoaded.value)
         {
-            Text("loading...");
+            Button(
+                onClick = { viewModel.createNewShader() },
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .padding(horizontal = 20.dp),
+            ) {
+                Text("+", fontSize = 16.sp);
+            }
         }
     }
 }
