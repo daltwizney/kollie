@@ -111,16 +111,23 @@ fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewMod
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
 
-        viewModel.shaderIDs.forEach { id ->
+        if (viewModel.isLoading.value == false)
+        {
+            viewModel.shaderIDs.forEach { id ->
 
-            Button(onClick = {
+                Button(onClick = {
 
-                Log.d("Freestyle Route Test", "shader ID chosen = $id");
+                    Log.d("Freestyle Route Test", "shader ID chosen = $id");
 
-                navController.navigate(FreestyleEditorRoute(id));
-            }) {
-                Text(id);
+                    navController.navigate(FreestyleEditorRoute(id));
+                }) {
+                    Text(id);
+                }
             }
+        }
+        else
+        {
+            Text("loading...");
         }
     }
 }

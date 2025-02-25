@@ -2,54 +2,20 @@ package com.wizneylabs.freestyle
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Dao
-import androidx.room.Database
-import androidx.room.Delete
-import androidx.room.Entity
-import androidx.room.Insert
-import androidx.room.PrimaryKey
-import androidx.room.Query
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.Upsert
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-@Entity(tableName = "items")
-data class Item(
-
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-
-    val name: String,
-    val age: Int
-);
-
-@Dao
-interface ItemDao {
-
-    @Upsert
-    suspend fun insert(item: Item);
-
-    @Delete
-    suspend fun deleteItem(item: Item);
-
-    @Query("SELECT * FROM items")
-    suspend fun getAll(): List<Item>;
-}
-
-@Database(
-    entities = [Item::class],
-    version = 1
-)
-abstract class AppDatabase : RoomDatabase() {
-
-    abstract fun itemDao(): ItemDao;
-}
+import com.wizneylabs.freestyle.database.FreestyleDatabase;
+import com.wizneylabs.freestyle.database.ShaderEntity;
+import com.wizneylabs.freestyle.utils.ApplicationUtils
 
 class FreestyleEditorViewModel(private val application: Application): AndroidViewModel(application) {
 
@@ -66,77 +32,141 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
 
     var editorText: StateFlow<String>;
 
-    private var _shaderTemplate = _loadShaderFromAssets("shaders/test.frag");
+    private var _shaderTemplate = ApplicationUtils.loadShaderFromAssets(application, "shaders/test.frag");
+
+    private var _database: FreestyleDatabase? = null;
+
+    var isLoading = mutableStateOf(true);
 
     init {
 
         Log.d(TAG, "viewmodel created!");
 
-        _currentShaderID = createNewShader();
+        editorText = MutableStateFlow<String>("").asStateFlow();
 
-        createNewShader();
-        createNewShader();
-
-        editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
-
-        // TODO: remove before flight - Room test
-        val database = Room.databaseBuilder(
-            application,
-            AppDatabase::class.java,
-            "my-items-db"
-        ).build();
-
-        val dao = database.itemDao();
+        this.openDatabase();
 
         viewModelScope.launch {
 
-            // write data
-            val age = (0..42).random();
-            val name = "MyItem" + age.toString();
+            val dao = _database!!.shaderDao();
 
-//            // tests updating existing item at id = 2
-//            val item = Item(id = 2, name = name, age = age);
+            val shaderEntities = dao.getAll();
 
-            val item = Item(name = name, age = age);
+            if (shaderEntities.size == 0)
+            {
+                _currentShaderID = createNewShader();
 
-            dao.insert(item);
+                editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
+            }
+            else
+            {
+                val shaderEntity = shaderEntities.first();
 
-            // read data
-            var items = dao.getAll();
+                _currentShaderID = shaderEntity.id;
 
-            Log.d("RoomTest", "Items in db before delete: $items");
+                _shaderMap[_currentShaderID] = MutableStateFlow<String>(shaderEntity.fragmentShader);
 
-            dao.deleteItem(items.last());
+                editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
+            }
 
-            items = dao.getAll();
+            isLoading.value = false;
+        }
 
-            Log.d("RoomTest", "Items in db before delete: $items");
+        // TODO: remove before flight - Room test
+        if (false && _database != null)
+        {
+            viewModelScope.launch {
+
+                val dao = _database!!.shaderDao();
+
+                // write data
+                val shaderSource = "MyShader" + (0..42).random();
+
+//            // tests updating existing shader at id = 2
+//            val entity = ShaderEntity(id = 2, fragmentShader = shaderSource);
+
+                val entity = ShaderEntity(id = UUID.randomUUID().toString(), fragmentShader = shaderSource);
+
+                dao.insert(entity);
+
+                // read data
+                var entities = dao.getAll();
+
+                Log.d("RoomTest", "Shaders in db before delete: $entities");
+            }
+            .invokeOnCompletion {
+
+                viewModelScope.launch {
+
+                    val dao = _database!!.shaderDao();
+
+                    // delete data
+                    var entities = dao.getAll();
+
+                    dao.delete(entities.last());
+
+                    entities = dao.getAll();
+
+                    Log.d("RoomTest", "Shaders in db before delete: $entities");
+                }
+            }
         }
     }
 
-    private fun _loadShaderFromAssets(fileName: String): String {
+    fun deleteDatabase() {
 
-        Log.d(TAG, "fileName: $fileName");
-
-        var shaderCode = "";
-
-        try {
-            shaderCode = application.assets.open(fileName)
-                .bufferedReader().use { it.readText() };
-        }
-        catch (e: Exception) {
-
-            Log.e(TAG, "failed to load shader: ${fileName}");
+        if (_database == null)
+        {
+            Log.e(TAG, "_database is null!");
+            return;
         }
 
-        return shaderCode;
+        _database?.close();
+
+        application.applicationContext.deleteDatabase("freestyle-db");
+
+        _database = null;
     }
 
-    fun createNewShader(): String {
+    fun openDatabase() {
+
+        if (_database != null)
+        {
+            this.deleteDatabase();
+        }
+
+        _database = Room.databaseBuilder(
+            application,
+            FreestyleDatabase::class.java,
+            "freestyle-db"
+        ).build();
+    }
+
+    suspend fun createNewShader(): String {
+
+        val dao = _database!!.shaderDao();
 
         val shaderID = UUID.randomUUID().toString();
 
-        _shaderMap[shaderID] = MutableStateFlow(_shaderTemplate);
+        var shaderSource: String;
+
+        if (dao.entityExists(shaderID))
+        {
+            val shaderEntity = dao.getById(shaderID);
+
+            shaderSource = shaderEntity?.fragmentShader ?: "";
+        }
+        else
+        {
+            shaderSource = _shaderTemplate;
+
+            dao.insert(ShaderEntity(
+                id = shaderID,
+                fragmentShader = shaderSource
+            ));
+        }
+
+        _shaderMap[shaderID] = MutableStateFlow(shaderSource);
 
         return shaderID;
     }
