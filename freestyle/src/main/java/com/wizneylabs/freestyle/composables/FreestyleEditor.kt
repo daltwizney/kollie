@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -56,7 +55,6 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -68,7 +66,6 @@ import androidx.navigation.toRoute
 import com.wizneylabs.freestyle.FreestyleEditorViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlin.math.exp
 
 /********************************************************************
  ************************* Navigation Routes ************************
@@ -114,7 +111,6 @@ fun FreestyleEditorApp() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeleteShaderDialog(title: String, text: String, resultHandler: ((Boolean) -> Unit)) {
 
@@ -153,16 +149,20 @@ fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewMod
 
     var showDeleteShaderDialog by remember { mutableStateOf(false) };
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    if (!viewModel.isFullyLoaded.value)
+    {
+        FreestyleEditorLoadingScreen();
+    }
+    else
+    {
+        Box(modifier = Modifier.fillMaxSize()) {
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)) {
 
-            if (viewModel.isFullyLoaded.value)
-            {
                 val shaderIDs = viewModel.shaderIDFlow.collectAsState();
 
                 if (shaderIDs.value.size == 0)
@@ -233,14 +233,7 @@ fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewMod
                     }
                 }
             }
-            else
-            {
-                Text("loading...");
-            }
-        }
 
-        if (viewModel.isFullyLoaded.value)
-        {
             Button(
                 onClick = { viewModel.createNewShader() },
                 modifier = Modifier.align(Alignment.BottomEnd)
@@ -347,22 +340,41 @@ fun FreestyleEditor(navController: NavHostController,
 
     val editorText = viewModel.editorText.collectAsState();
 
-    TextField(
-        value = editorText.value,
-        onValueChange = { viewModel.onEditorTextChanged(it) },
-        modifier = Modifier
-            .fillMaxSize(),
-        textStyle = MaterialTheme.typography.bodyLarge,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFF6482AD),
-            focusedContainerColor = Color(0xFF6482AD),
-            disabledContainerColor = Color(0xFF6482AD)
-        ),
-        visualTransformation = SyntaxHighlightVisualTransformation()
-    )
+    if (!viewModel.isFullyLoaded.value)
+    {
+        FreestyleEditorLoadingScreen();
+    }
+    else
+    {
+        TextField(
+            value = editorText.value,
+            onValueChange = { viewModel.onEditorTextChanged(it) },
+            modifier = Modifier
+                .fillMaxSize(),
+            textStyle = MaterialTheme.typography.bodyLarge,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color(0xFF6482AD),
+                focusedContainerColor = Color(0xFF6482AD),
+                disabledContainerColor = Color(0xFF6482AD)
+            ),
+            visualTransformation = SyntaxHighlightVisualTransformation()
+        )
+    }
 }
 
-// TODO: using this with a TextField composable causes crash...
+@Composable
+fun FreestyleEditorLoadingScreen() {
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
+
+        Text("loading...");
+    }
+}
+
 class SyntaxHighlightVisualTransformation() : VisualTransformation {
 
     private val keywords = mapOf(

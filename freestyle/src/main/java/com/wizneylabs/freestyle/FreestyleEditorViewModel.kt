@@ -20,14 +20,13 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
 
     val TAG = FreestyleEditorViewModel::class.simpleName;
 
-    private val _shaderMap = hashMapOf<String, MutableStateFlow<String>>();
-
-    private val _shaderIDFlow = MutableStateFlow(_shaderMap.keys.toList());
-    val shaderIDFlow: StateFlow<List<String>> = _shaderIDFlow.asStateFlow();
+    private val _shaderIDs = MutableStateFlow<MutableList<String>>(mutableListOf<String>());
+    val shaderIDFlow = _shaderIDs.asStateFlow();
 
     private var _currentShaderID = "";
 
-    var editorText: StateFlow<String>;
+    private val _editorText = MutableStateFlow<String>("");
+    var editorText: StateFlow<String> = _editorText.asStateFlow();
 
     private var _shaderTemplate = ApplicationUtils.loadShaderFromAssets(application, "shaders/test.frag");
 
@@ -38,8 +37,6 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
     init {
 
         Log.d(TAG, "viewmodel created!");
-
-        editorText = MutableStateFlow<String>("").asStateFlow();
 
         this.openDatabase();
 
@@ -52,67 +49,16 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
             if (shaderEntities.size == 0)
             {
                 _currentShaderID = _createNewShader();
-
-                editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
             }
             else
             {
-                val shaderEntity = shaderEntities.first();
-
                 shaderEntities.forEach({ entity ->
 
-                    _shaderMap[entity.id] = MutableStateFlow<String>(shaderEntity.fragmentShader);
+                    _shaderIDs.value += entity.id;
                 });
-
-                _currentShaderID = shaderEntities.first().id;
-
-                // send shader ID flow update to observers
-                _shaderIDFlow.value = _shaderMap.keys.toList();
-
-                editorText = _shaderMap[_currentShaderID]!!.asStateFlow();
             }
 
             isFullyLoaded.value = true;
-        }
-
-        // TODO: remove before flight - Room test
-        if (false && _database != null)
-        {
-            viewModelScope.launch {
-
-                val dao = _database!!.shaderDao();
-
-                // write data
-                val shaderSource = "MyShader" + (0..42).random();
-
-//            // tests updating existing shader at id = 2
-//            val entity = ShaderEntity(id = 2, fragmentShader = shaderSource);
-
-                val entity = ShaderEntity(id = UUID.randomUUID().toString(), fragmentShader = shaderSource);
-
-                dao.insert(entity);
-
-                // read data
-                var entities = dao.getAll();
-
-                Log.d("RoomTest", "Shaders in db before delete: $entities");
-            }
-            .invokeOnCompletion {
-
-                viewModelScope.launch {
-
-                    val dao = _database!!.shaderDao();
-
-                    // delete data
-                    var entities = dao.getAll();
-
-                    dao.delete(entities.last());
-
-                    entities = dao.getAll();
-
-                    Log.d("RoomTest", "Shaders in db before delete: $entities");
-                }
-            }
         }
     }
 
@@ -159,28 +105,12 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
 
         val shaderID = UUID.randomUUID().toString();
 
-        var shaderSource: String;
+        dao.insert(ShaderEntity(
+            id = shaderID,
+            fragmentShader = _shaderTemplate
+        ));
 
-        if (dao.entityExists(shaderID))
-        {
-            val shaderEntity = dao.getById(shaderID);
-
-            shaderSource = shaderEntity?.fragmentShader ?: "";
-        }
-        else
-        {
-            shaderSource = _shaderTemplate;
-
-            dao.insert(ShaderEntity(
-                id = shaderID,
-                fragmentShader = shaderSource
-            ));
-        }
-
-        _shaderMap[shaderID] = MutableStateFlow(shaderSource);
-
-        // send shader ID flow update to observers
-        _shaderIDFlow.value = _shaderMap.keys.toList();
+        _shaderIDs.value.add(shaderID);
 
         return shaderID;
     }
@@ -203,26 +133,51 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
             dao.delete(entity);
         }
 
-        _shaderMap.remove(id);
-
-        // send shader ID flow update to observers
-        _shaderIDFlow.value = _shaderMap.keys.toList();
+        _shaderIDs.value = _shaderIDs.value.filter({ it != id }).toMutableList();
     }
 
     fun editShader(id: String) {
 
-        if (!_shaderMap.contains(id))
+        if (!_shaderIDs.value.contains(id))
         {
             Log.w(TAG, "no shader map with ID: ${id}");
             return;
         }
 
+        if (_currentShaderID == id)
+        {
+            return;
+        }
+
+        Log.d(TAG, "calling editShader!");
+
         _currentShaderID = id;
-        editorText = _shaderMap[id]!!.asStateFlow();
+
+        isFullyLoaded.value = false;
+
+        _editorText.value = "";
+
+        val dao = _database!!.shaderDao();
+
+        viewModelScope.launch {
+
+            val entity = dao.getById(id);
+
+            if (entity == null)
+            {
+                // TODO: tell user shader failed to load
+            }
+
+            val shaderSource = entity?.fragmentShader ?: "";
+
+            _editorText.value = shaderSource;
+
+            isFullyLoaded.value = true;
+        }
     }
 
     fun onEditorTextChanged(newText: String) {
 
-        _shaderMap[_currentShaderID]!!.value = newText;
+        _editorText.value = newText;
     }
 }
