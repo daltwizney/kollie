@@ -20,7 +20,7 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
 
     val TAG = FreestyleEditorViewModel::class.simpleName;
 
-    private val _shaderIDs = MutableStateFlow<MutableList<String>>(mutableListOf<String>());
+    private val _shaderIDs = MutableStateFlow(listOf<String>());
     val shaderIDFlow = _shaderIDs.asStateFlow();
 
     private var _currentShaderID = "";
@@ -110,7 +110,7 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
             fragmentShader = _shaderTemplate
         ));
 
-        _shaderIDs.value.add(shaderID);
+        _shaderIDs.value = _shaderIDs.value + shaderID;
 
         return shaderID;
     }

@@ -1,7 +1,6 @@
 package com.wizneylabs.freestyle
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,10 +16,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.wizneylabs.freestyle.composables.FreestyleEditor
-import com.wizneylabs.freestyle.composables.FreestyleEditorApp
+import com.wizneylabs.freestyle.composables.FreestyleApp
 import com.wizneylabs.freestyle.ui.theme.KollieTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier
                     .windowInsetsPadding(WindowInsets.statusBars)) // Pushes content below status bar
                 {
-                    FreestyleEditorApp();
+                    FreestyleApp();
 //                FreestyleCanvas();
                 }
             }
