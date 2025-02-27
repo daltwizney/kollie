@@ -29,10 +29,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.wizneylabs.freestyle.FreestyleEditorViewModel
+import com.wizneylabs.freestyle.FreestyleAppViewModel
 
 @Composable
-fun MainMenu(navController: NavHostController, viewModel: FreestyleEditorViewModel) {
+fun MainMenu(navController: NavHostController, viewModel: FreestyleAppViewModel) {
 
     var expandedDropdownId by remember { mutableStateOf("") };
 

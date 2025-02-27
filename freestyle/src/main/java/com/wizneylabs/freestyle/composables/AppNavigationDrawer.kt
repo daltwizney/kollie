@@ -9,8 +9,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Help
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -25,15 +28,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.wizneylabs.freestyle.FreestyleAppViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigationDrawer(
+    viewModel: FreestyleAppViewModel,
     navController: NavHostController,
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -106,10 +114,25 @@ fun AppNavigationDrawer(
                                 Icons.Default.Menu,
                                 contentDescription = "Menu");
                         };
+                    },
+                    actions = {
+
+                        if (viewModel.isEditingShader.value &&
+                            viewModel.shaderHasUnsavedValues.value)
+                        {
+                            IconButton(onClick = {
+                                viewModel.saveCurrentShader();
+                            }) {
+                                Icon(Icons.Filled.Check,
+                                    contentDescription = "Save Shader",
+                                    tint = Color.Green);
+                            }
+                        }
                     }
                 )
             }
         ) { innerPadding ->
+
             content(innerPadding);
         }
     }

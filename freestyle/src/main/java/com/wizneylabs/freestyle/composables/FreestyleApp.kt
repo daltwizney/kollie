@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.wizneylabs.freestyle.FreestyleEditorViewModel
+import com.wizneylabs.freestyle.FreestyleAppViewModel
 
 /********************************************************************
  *************************** Composables ****************************
@@ -18,11 +18,11 @@ import com.wizneylabs.freestyle.FreestyleEditorViewModel
 @Composable
 fun FreestyleApp() {
 
-    val viewModel: FreestyleEditorViewModel = viewModel();
+    val viewModel: FreestyleAppViewModel = viewModel();
 
     val navController = rememberNavController();
 
-    AppNavigationDrawer(navController) { innerPadding ->
+    AppNavigationDrawer(viewModel, navController) { innerPadding ->
 
         NavHost(
             modifier = Modifier
@@ -31,6 +31,9 @@ fun FreestyleApp() {
             startDestination = HomeRoute
         ) {
             composable<HomeRoute>() {
+
+                viewModel.endEditingShader();
+
                 MainMenu(navController, viewModel);
             }
             composable<FreestyleEditorRoute>() { backStackEntry ->

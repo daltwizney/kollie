@@ -9,12 +9,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import com.wizneylabs.freestyle.FreestyleEditorViewModel
+import com.wizneylabs.freestyle.FreestyleAppViewModel
 import com.wizneylabs.freestyle.utils.SyntaxHighlightVisualTransformation
 
 @Composable
 fun CodeEditor(navController: NavHostController,
-               viewModel: FreestyleEditorViewModel
+               viewModel: FreestyleAppViewModel
 ) {
     val editorText = viewModel.editorText.collectAsState();
 

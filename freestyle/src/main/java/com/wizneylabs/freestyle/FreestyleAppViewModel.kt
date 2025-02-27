@@ -16,14 +16,17 @@ import com.wizneylabs.freestyle.database.FreestyleDatabase;
 import com.wizneylabs.freestyle.database.ShaderEntity;
 import com.wizneylabs.freestyle.utils.ApplicationUtils
 
-class FreestyleEditorViewModel(private val application: Application): AndroidViewModel(application) {
+class FreestyleAppViewModel(private val application: Application): AndroidViewModel(application) {
 
-    val TAG = FreestyleEditorViewModel::class.simpleName;
+    val TAG = FreestyleAppViewModel::class.simpleName;
 
     private val _shaderIDs = MutableStateFlow(listOf<String>());
     val shaderIDFlow = _shaderIDs.asStateFlow();
 
     private var _currentShaderID = "";
+
+    val isEditingShader = mutableStateOf(false);
+    val shaderHasUnsavedValues = mutableStateOf(false);
 
     private val _editorText = MutableStateFlow<String>("");
     var editorText: StateFlow<String> = _editorText.asStateFlow();
@@ -157,6 +160,8 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
 
         _editorText.value = "";
 
+        shaderHasUnsavedValues.value = false;
+
         val dao = _database!!.shaderDao();
 
         viewModelScope.launch {
@@ -172,12 +177,46 @@ class FreestyleEditorViewModel(private val application: Application): AndroidVie
 
             _editorText.value = shaderSource;
 
+            isEditingShader.value = true;
+
             isFullyLoaded.value = true;
+        }
+    }
+
+    fun endEditingShader() {
+
+        _currentShaderID = "";
+
+        shaderHasUnsavedValues.value = false;
+
+        isEditingShader.value = false;
+    }
+
+    fun saveCurrentShader() {
+
+        val dao = _database!!.shaderDao();
+
+        val shaderID = _currentShaderID;
+
+        val shaderSource = _editorText.value;
+
+        shaderHasUnsavedValues.value = false;
+
+        viewModelScope.launch {
+
+            val entity = ShaderEntity(shaderID, shaderSource);
+
+            dao.insert(entity);
         }
     }
 
     fun onEditorTextChanged(newText: String) {
 
         _editorText.value = newText;
+
+        if (!shaderHasUnsavedValues.value)
+        {
+            shaderHasUnsavedValues.value = true;
+        }
     }
 }
