@@ -29,10 +29,13 @@ Java_com_wizneylabs_kollie_jni_Cube__1destroy(JNIEnv *env, jobject thiz, jlong p
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_wizneylabs_kollie_jni_Cube__1draw(JNIEnv *env, jobject thiz, jlong ptr, jlong shader_program_ptr) {
+Java_com_wizneylabs_kollie_jni_Cube__1draw(JNIEnv *env, jobject thiz, jlong ptr,
+                                           jlong shader_program_ptr,
+                                           jlong camera_ptr) {
 
     Cube* cube = reinterpret_cast<Cube*>(ptr);
     ShaderProgram *program = reinterpret_cast<ShaderProgram*>(shader_program_ptr);
+    PerspectiveCamera *camera = reinterpret_cast<PerspectiveCamera*>(camera_ptr);
 
-    cube->draw(program);
+    cube->draw(program, camera);
 }

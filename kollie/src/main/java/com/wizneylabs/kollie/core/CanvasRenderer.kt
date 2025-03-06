@@ -1,6 +1,7 @@
 package com.wizneylabs.kollie.core
 
 import android.opengl.GLSurfaceView
+import android.util.Log
 import com.wizneylabs.kollie.FullScreenQuad
 import com.wizneylabs.kollie.RenderingEngine
 import com.wizneylabs.kollie.ShaderProgram
@@ -37,6 +38,8 @@ class CanvasRenderer: GLSurfaceView.Renderer {
     }
 
     override fun onSurfaceCreated(p0: GL10?, p1: javax.microedition.khronos.egl.EGLConfig?) {
+
+        Log.d(TAG, "Kollie surface created!");
 
         RenderingEngine.initialize();
 
@@ -139,7 +142,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
             shader.use();
 
-            shader.setUniform1f("ambient", 0.2f);
+            shader.setUniform1f("ambient", 0.1f);
 
             shader.updateViewMatrix(perspectiveCamera!!);
             shader.updateProjectionMatrix(perspectiveCamera!!);
@@ -147,7 +150,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
             // TODO: setting "model" uniform inside draw call for now,
             // but need to update shader JNI to accept mat4's from kotlin!
 
-            _cube?.draw(shader);
+            _cube?.draw(shader, perspectiveCamera!!);
         }
     }
 

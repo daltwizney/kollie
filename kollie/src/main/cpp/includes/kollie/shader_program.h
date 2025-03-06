@@ -49,6 +49,12 @@ public:
     void setUniform4i(std::string name, int x, int y, int z, int w);
 
     // TODO: getUniformMatrix*(...), setUniformMatrix*(...)
+
+    void setUniformMatrix3fv(std::string name,
+                             unsigned int count,
+                             bool transpose,
+                             const float* value);
+
     void setUniformMatrix4fv(std::string name,
                              unsigned int count,
                              bool transpose,

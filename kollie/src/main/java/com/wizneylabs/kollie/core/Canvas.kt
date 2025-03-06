@@ -2,7 +2,54 @@ package com.wizneylabs.kollie.core
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.opengl.GLSurfaceView.EGLConfigChooser
 import android.util.Log
+import javax.microedition.khronos.egl.EGL10
+import javax.microedition.khronos.egl.EGLConfig
+import javax.microedition.khronos.egl.EGLDisplay
+
+internal class MultisampleConfigChooser : EGLConfigChooser {
+    override fun chooseConfig(egl: EGL10, display: EGLDisplay?): EGLConfig? {
+        // Define the configuration attributes for OpenGL ES 3.1
+        val configSpec = intArrayOf(
+            EGL10.EGL_RED_SIZE, 8,
+            EGL10.EGL_GREEN_SIZE, 8,
+            EGL10.EGL_BLUE_SIZE, 8,
+            EGL10.EGL_ALPHA_SIZE, 8,
+            EGL10.EGL_DEPTH_SIZE, 16,
+            EGL10.EGL_RENDERABLE_TYPE, 0x40,  // EGL_OPENGL_ES3_BIT
+            EGL10.EGL_SAMPLE_BUFFERS, 1,  // Enable sample buffers
+            EGL10.EGL_SAMPLES, 4,  // 4x MSAA (can try 2 or 8)
+            EGL10.EGL_NONE
+        )
+
+        val configs: Array<EGLConfig?> = arrayOfNulls<EGLConfig>(1)
+        val numConfigs = IntArray(1)
+
+        // Try to find a config with MSAA
+        val success = egl.eglChooseConfig(display, configSpec, configs, 1, numConfigs)
+        if (!success || numConfigs[0] <= 0) {
+            Log.w("GLSurfaceView", "No MSAA config found, falling back to non-MSAA config")
+            // Fallback config without MSAA, based on your original working setup
+            val fallbackSpec = intArrayOf(
+                EGL10.EGL_RED_SIZE, 8,
+                EGL10.EGL_GREEN_SIZE, 8,
+                EGL10.EGL_BLUE_SIZE, 8,
+                EGL10.EGL_ALPHA_SIZE, 8,
+                EGL10.EGL_DEPTH_SIZE, 16,
+                EGL10.EGL_STENCIL_SIZE, 0,
+                EGL10.EGL_RENDERABLE_TYPE, 0x40, // EGL_OPENGL_ES3_BIT
+                EGL10.EGL_NONE
+            )
+            egl.eglChooseConfig(display, fallbackSpec, configs, 1, numConfigs)
+            if (!success || numConfigs[0] <= 0) {
+                throw RuntimeException("No suitable EGL config found")
+            }
+        }
+
+        return configs[0]!!
+    }
+}
 
 class Canvas(private val context: Context) : GLSurfaceView(context) {
 
@@ -16,7 +63,12 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
 
         setEGLContextClientVersion(3)
 
-        setEGLConfigChooser(8, 8, 8, 8, 16, 0)
+        setEGLConfigChooser(MultisampleConfigChooser());
+
+//        setEGLConfigChooser(
+//            8, 8, 8, 8,
+//            16,
+//            0);
 
         _loadShaders();
 

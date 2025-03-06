@@ -19,13 +19,13 @@ class Cube {
         }
     }
 
-    fun draw(shader: ShaderProgram) {
+    fun draw(shader: ShaderProgram, camera: PerspectiveCamera) {
 
-        _draw(_nativeHandle, shader.nativeHandle);
+        _draw(_nativeHandle, shader.nativeHandle, camera.nativeHandle);
     }
 
     private external fun _create(): Long;
     private external fun _destroy(ptr: Long, freeGLResources: Boolean);
 
-    private external fun _draw(ptr: Long, shaderProgramPtr: Long);
+    private external fun _draw(ptr: Long, shaderProgramPtr: Long, cameraPtr: Long);
 }

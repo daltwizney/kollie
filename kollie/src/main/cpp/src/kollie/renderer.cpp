@@ -13,6 +13,10 @@ void Renderer::init() {
 
     // set clear color
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    GLint samples;
+    glGetIntegerv(GL_SAMPLES, &samples);
+    LOGI("GLES31 - Number of samples: %d", samples);
 }
 
 void Renderer::resize(int width, int height) {
