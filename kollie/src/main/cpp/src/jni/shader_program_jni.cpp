@@ -67,6 +67,18 @@ Java_com_wizneylabs_kollie_ShaderProgram__1destroy(JNIEnv *env, jobject thiz, jl
 
 extern "C"
 JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_ShaderProgram__1setUniform1f(JNIEnv *env, jobject thiz, jlong ptr,
+                                                        jstring name, jfloat x) {
+
+    ShaderProgram* program = reinterpret_cast<ShaderProgram*>(ptr);
+
+    std::string uniformName = std::string(env->GetStringUTFChars(name, nullptr));
+
+    program->setUniform1f(uniformName, x);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
 Java_com_wizneylabs_kollie_ShaderProgram__1setUniform2f(JNIEnv *env, jobject thiz, jlong ptr,
                                                                jstring name, jfloat x, jfloat y) {
 

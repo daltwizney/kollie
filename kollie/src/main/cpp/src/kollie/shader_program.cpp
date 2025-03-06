@@ -157,6 +157,9 @@ ivec4 ShaderProgram::getUniform4i(string name) {
 
 void ShaderProgram::setUniform1f(string name, float x) {
 
+    GLint uniformLocation = glGetUniformLocation(_programID, name.c_str());
+
+    glUniform1f(uniformLocation, x);
 }
 
 void ShaderProgram::setUniform2f(string name, float x, float y) {

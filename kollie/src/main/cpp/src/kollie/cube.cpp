@@ -115,12 +115,11 @@ Cube::Cube()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
 
-    // Unbind VAO
-
     // TODO: we shouldn't need to unbind GL_ARRAY_BUFFER, but this won't work without it,
     // so there may be a bug in our code upstream/downstream of this, or in the driver...
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // Unbind VAO
     glBindVertexArray(0);
 }
 

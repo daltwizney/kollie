@@ -27,7 +27,7 @@ private:
     unsigned int _colorVBO;
     unsigned int _EBO;
 
-    float _positions[48];
+    float _positions[24];
     float _colors[24];
 
     unsigned int _indices[36];

@@ -32,6 +32,10 @@ class ShaderProgram {
         }
     }
 
+    fun setUniform1f(name: String, x: Float) {
+        _setUniform1f(_nativeHandle, name, x);
+    }
+
     fun setUniform2f(name: String, x: Float, y: Float) {
         _setUniform2f(_nativeHandle, name, x, y);
     }
@@ -75,5 +79,6 @@ class ShaderProgram {
     private external fun _updateViewMatrix2D(ptr: Long, camera2DPtr: Long);
     private external fun _updateProjectionMatrix2D(ptr: Long, camera2DPtr: Long);
 
+    private external fun _setUniform1f(ptr: Long, name: String, x: Float);
     private external fun _setUniform2f(ptr: Long, name: String, x: Float, y: Float);
 }

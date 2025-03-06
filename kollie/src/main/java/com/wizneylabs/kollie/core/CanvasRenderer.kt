@@ -139,6 +139,8 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
             shader.use();
 
+            shader.setUniform1f("ambient", 0.2f);
+
             shader.updateViewMatrix(perspectiveCamera!!);
             shader.updateProjectionMatrix(perspectiveCamera!!);
 
