@@ -307,10 +307,11 @@ void Cube::draw(ShaderProgram *program, PerspectiveCamera *camera) {
     GLint viewLoc = glGetUniformLocation(program->id(), "view");
     GLint projLoc = glGetUniformLocation(program->id(), "projection");
 
-    GLint normalMatrixLoc = glGetUniformLocation(program->id(), "normalMatrix");
+//    GLint normalMatrixLoc = glGetUniformLocation(program->id(), "normalMatrix");
+    GLint normalMatrixLoc = program->getUniformLocation("normalMatrix");
 
     if (modelLoc == -1 || viewLoc == -1 || projLoc == -1 || normalMatrixLoc == -1) {
-        LOGE("Failed to get uniform locations!");
+         LOGE("Failed to get uniform locations! normalLoc = %d", normalMatrixLoc);
     }
 
     // Update model matrix to rotate cube

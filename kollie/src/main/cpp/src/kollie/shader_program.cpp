@@ -199,9 +199,13 @@ void ShaderProgram::setUniformMatrix3fv(std::string name, unsigned int count, bo
 
     int location = _uniformLocations[name];
 
-    if (location == -1)
+    if (location != -1)
     {
         glUniformMatrix3fv(location, count, transpose, value);
+    }
+    else
+    {
+        LOGE("Failed to set mat3fv - invalid uniform location!");
     }
 }
 
@@ -234,4 +238,8 @@ void ShaderProgram::destroy(bool freeGLResources) {
 
 unsigned int ShaderProgram::id() {
     return _programID;
+}
+
+int ShaderProgram::getUniformLocation(std::string name) {
+    return _uniformLocations[name];
 }

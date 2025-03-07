@@ -22,10 +22,4 @@ void main() {
     vec3 ambientColor = ambient * vColor;
 
     fragColor = vec4(ambientColor + diffuseColor, 1.0);
-
-    // fragColor = vec4(vNormal, 0);
-
-    // fragColor = vec4(vec3(diffuseFactor), 1.0);
-
-    // fragColor = vec4(vNormal, 1.0);
 }

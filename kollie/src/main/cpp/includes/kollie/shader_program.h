@@ -60,6 +60,8 @@ public:
                              bool transpose,
                              const float* value);
 
+    int getUniformLocation(std::string name);
+
 private:
 
     unsigned int _programID;

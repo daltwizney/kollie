@@ -20,9 +20,5 @@ void main() {
 
     vColor = aColor;
 
-    // TODO: the normalMatrix is broken - need to investigate why!
-    // vNormal = normalize(normalMatrix * aNormal);
-
-    vNormal = normalize(mat3(view * model) * aNormal);
-    // vNormal = aNormal;
+    vNormal = normalize(normalMatrix * aNormal);
 }
