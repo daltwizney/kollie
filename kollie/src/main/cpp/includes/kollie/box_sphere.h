@@ -12,6 +12,8 @@ class BoxSphere {
 
 public:
 
+    BoxSphere();
+
     void draw(ShaderProgram* program, PerspectiveCamera *camera);
 
     void destroy(bool freeGLResources);
@@ -38,6 +40,8 @@ private:
     // TODO: here for testing for now - but move this to kotlin app code!
     glm::mat4 _model;
     glm::mat3 _normalMatrix;
+
+    void _generateSphere();
 };
 
 #endif //KOLLIE_BOX_SPHERE_H
