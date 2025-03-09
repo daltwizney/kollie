@@ -2,17 +2,17 @@
 // Created by daltw on 3/6/2025.
 //
 
-#ifndef KOLLIE_BOX_SPHERE_H
-#define KOLLIE_BOX_SPHERE_H
+#ifndef KOLLIE_UV_SPHERE_H
+#define KOLLIE_UV_SPHERE_H
 
 #include "kollie/shader_program.h"
 #include "kollie/perspective_camera.h"
 
-class BoxSphere {
+class UvSphere {
 
 public:
 
-    BoxSphere();
+    UvSphere();
 
     void draw(ShaderProgram* program, PerspectiveCamera *camera);
 
@@ -44,4 +44,4 @@ private:
     void _generateSphere();
 };
 
-#endif //KOLLIE_BOX_SPHERE_H
+#endif //KOLLIE_UV_SPHERE_H

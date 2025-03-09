@@ -11,6 +11,13 @@
 
 #include "kollie/perspective_camera.h"
 
+struct CubeFace {
+
+    glm::vec3 vertexPositions[4];
+    glm::vec3 faceNormal;
+    glm::vec3 vertexColors[4];
+};
+
 class Cube {
 
 public:
@@ -30,15 +37,20 @@ private:
     unsigned int _normalVBO;
     unsigned int _EBO;
 
-    float _positions[108];
-    float _colors[108];
-    float _normals[108];
+    glm::vec3 _positions[36];
+    glm::vec3 _normals[36];
+    glm::vec3 _colors[36];
 
     unsigned int _indices[36];
 
     // TODO: here for testing for now - but move this to kotlin app code!
     glm::mat4 _model;
     glm::mat3 _normalMatrix;
+
+    CubeFace *_faces;
+
+    void _generateFaces();
+    void _generateTriangleMesh();
 };
 
 

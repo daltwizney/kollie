@@ -4,11 +4,11 @@
 
 #include <GLES3/gl31.h>
 
-#include "kollie/box_sphere.h"
+#include "kollie/uv_sphere.h"
 
 #include "glm/ext.hpp"
 
-BoxSphere::BoxSphere() {
+UvSphere::UvSphere() {
 
     // generate sphere vertex data
     _generateSphere();
@@ -65,15 +65,15 @@ BoxSphere::BoxSphere() {
     glBindVertexArray(0);
 }
 
-void BoxSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
+void UvSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
 
 }
 
-void BoxSphere::destroy(bool freeGLResources) {
+void UvSphere::destroy(bool freeGLResources) {
 
 }
 
-void BoxSphere::_generateSphere() {
+void UvSphere::_generateSphere() {
 
     // initialize array sizes
 

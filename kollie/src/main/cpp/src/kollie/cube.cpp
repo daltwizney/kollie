@@ -12,239 +12,15 @@
 #include "kollie/cube.h"
 
 #include "kollie/log.h"
-//
-//std::string mat4ToString(const glm::mat4& matrix, int precision = 6) {
-//    std::stringstream ss;
-//    ss << std::fixed << std::setprecision(precision) << "\n";
-//
-//    // Get raw data pointer
-//    const float* data = glm::value_ptr(matrix);
-//
-//    // GLM matrices are column-major, but we'll print in row-major for readability
-//    for (int row = 0; row < 4; row++) {
-//        ss << "| ";
-//        for (int col = 0; col < 4; col++) {
-//            // Convert from column-major to row-major index
-//            float value = data[col * 4 + row];
-//            ss << std::setw(precision + 4) << value;
-//            if (col < 3) ss << "  ";
-//        }
-//        ss << " |\n";
-//    }
-//
-//    return ss.str();
-//}
 
 Cube::Cube()
-    : _positions {
-
-        /** front face */
-        -0.5f, -0.5f,  0.5f, // front bottom left
-        0.5f, -0.5f,  0.5f, // front bottom right
-        0.5f,  0.5f,  0.5f, // front top right
-        0.5f,  0.5f,  0.5f, // front top right
-        -0.5f,  0.5f,  0.5f, // front top left
-        -0.5f, -0.5f,  0.5f, // front bottom left
-
-        /** back face */
-        -0.5f, -0.5f, -0.5f, // back bottom left
-        0.5f,  0.5f, -0.5f, // back top right
-        0.5f, -0.5f, -0.5f, // back bottom right
-        0.5f,  0.5f, -0.5f, // back top right
-        -0.5f, -0.5f, -0.5f, // back bottom left
-        -0.5f,  0.5f, -0.5f, // back top left
-
-        /** top face */
-        -0.5f,  0.5f,  0.5f, // front top left
-        0.5f,  0.5f,  0.5f, // front top right
-        0.5f,  0.5f, -0.5f, // back top right
-        0.5f,  0.5f, -0.5f, // back top right
-        -0.5f,  0.5f, -0.5f, // back top left
-        -0.5f,  0.5f,  0.5f, // front top left
-
-
-        /** bottom face */
-        -0.5f, -0.5f,  0.5f, // front bottom left
-        0.5f, -0.5f, -0.5f, // back bottom right
-        0.5f, -0.5f,  0.5f, // front bottom right
-        0.5f, -0.5f, -0.5f, // back bottom right
-        -0.5f, -0.5f,  0.5f, // front bottom left
-        -0.5f, -0.5f, -0.5f, // back bottom left
-
-
-        /** right face */
-        0.5f, -0.5f,  0.5f, // front bottom right
-        0.5f, -0.5f, -0.5f, // back bottom right
-        0.5f,  0.5f, -0.5f, // back top right
-        0.5f,  0.5f, -0.5f, // back top right
-        0.5f,  0.5f,  0.5f, // front top right
-        0.5f, -0.5f,  0.5f, // front bottom right
-
-
-        /** left face */
-        -0.5f, -0.5f,  0.5f, // front bottom left
-        -0.5f,  0.5f, -0.5f, // back top left
-        -0.5f, -0.5f, -0.5f, // back bottom left
-        -0.5f,  0.5f, -0.5f, // back top left
-        -0.5f, -0.5f,  0.5f, // front bottom left
-        -0.5f,  0.5f,  0.5f, // front top left
-
-
-//        -0.5f, -0.5f,  0.5f, // front bottom left
-//        0.5f, -0.5f,  0.5f, // front bottom right
-//        0.5f,  0.5f,  0.5f, // front top right
-//        -0.5f,  0.5f,  0.5f, // front top left
-//
-//        -0.5f, -0.5f, -0.5f, // back bottom left
-//        0.5f, -0.5f, -0.5f, // back bottom right
-//        0.5f,  0.5f, -0.5f, // back top right
-//        -0.5f,  0.5f, -0.5f, // back top left
-    },
-
-    _colors {
-
-            /** front face */
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-
-
-            /** back face */
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-
-
-            /** top face */
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-
-            /** bottom face */
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-
-            /** right face */
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-
-
-            /** left face */
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (144 / 255.0f), (213/255.0f), (1.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-            (128 / 255.0f), (0/255.0f), (128/255.0f),
-
-
-//            // Front face (purple)
-//        (128 / 255.0f), (0/255.0f), (128/255.0f),
-//        (128 / 255.0f), (0/255.0f), (128/255.0f),
-//        (128 / 255.0f), (0/255.0f), (128/255.0f),
-//        (128 / 255.0f), (0/255.0f), (128/255.0f),
-//
-//        // Back face (green)
-//        (144 / 255.0f), (213/255.0f), (1.0f),
-//        (144 / 255.0f), (213/255.0f), (1.0f),
-//        (144 / 255.0f), (213/255.0f), (1.0f),
-//        (144 / 255.0f), (213/255.0f), (1.0f),
-    },
-
-    _normals {
-
-            /** front face */
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-
-            /** back face */
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-
-            /** top face */
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-
-            /** bottom face */
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-
-            /** right face */
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-
-            /** left face */
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-    },
-
-//    // indices for drawing cube using triangles
-//    _indices {
-//
-//            // Front face
-//            0, 1, 2,
-//            2, 3, 0,
-//            // Back face
-//            4, 6, 5,
-//            6, 4, 7,
-//            // Top face
-//            3, 2, 6,
-//            6, 7, 3,
-//            // Bottom face
-//            0, 5, 1,
-//            5, 0, 4,
-//            // Right face
-//            1, 5, 6,
-//            6, 2, 1,
-//            // Left face
-//            0, 7, 4,
-//            7, 0, 3
-//    },
-
-    _model(glm::mat4(1.0))
+    : _model(glm::mat4(1.0))
 {
-    // initial index data
+    // initialize vertex data
+    _generateFaces();
+    _generateTriangleMesh();
+
+    // initialize index data
     for (int i = 0; i < 36; ++i)
     {
         _indices[i] = i;
@@ -267,19 +43,26 @@ Cube::Cube()
 
     // bind position VBO and buffer data
     glBindBuffer(GL_ARRAY_BUFFER, _positionVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_positions), _positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 36 * sizeof(glm::vec3),
+                 _positions, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(0);
 
     // Create and bind color VBO
     glBindBuffer(GL_ARRAY_BUFFER, _colorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_colors), _colors, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 36 * sizeof(glm::vec3), _colors, GL_STATIC_DRAW);
+
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
 
     // bind normal VBO and buffer data
     glBindBuffer(GL_ARRAY_BUFFER, _normalVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_normals), _normals, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 36 * sizeof(glm::vec3), _normals, GL_STATIC_DRAW);
+
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(2);
 
@@ -289,6 +72,153 @@ Cube::Cube()
 
     // Unbind VAO
     glBindVertexArray(0);
+}
+
+void Cube::_generateFaces() {
+
+    // cube vertices
+    glm::vec3 frontBottomLeft(-0.5f, -0.5f, 0.5f);
+    glm::vec3 frontBottomRight(0.5f, -0.5f, 0.5f);
+    glm::vec3 frontTopRight(0.5f, 0.5f, 0.5f);
+    glm::vec3 frontTopLeft(-0.5f, 0.5f, 0.5f);
+
+    glm::vec3 backBottomLeft(-0.5f, -0.5f, -0.5f);
+    glm::vec3 backTopLeft(-0.5f, 0.5f, -0.5f);
+    glm::vec3 backTopRight(0.5f, 0.5f, -0.5f);
+    glm::vec3 backBottomRight(0.5f, -0.5f, -0.5f);
+
+    // vertex colors
+    glm::vec3 purple((128 / 255.0f), (0/255.0f), (128/255.0f));
+    glm::vec3 lightBlue((144 / 255.0f), (213/255.0f), (1.0f));
+
+    // define cube faces
+    _faces = new CubeFace[6] {
+            CubeFace { // front face
+                {
+                    frontBottomLeft,
+                    frontBottomRight,
+                    frontTopRight,
+                    frontTopLeft
+                },
+                glm::vec3(0.0, 0.0, 1.0),
+                {
+                    purple,
+                    purple,
+                    purple,
+                    purple
+                },
+            },
+            CubeFace { // back face
+                {
+                    backBottomLeft,
+                    backTopLeft,
+                    backTopRight,
+                    backBottomRight
+                },
+                glm::vec3(0.0, 0.0, -1.0),
+                {
+                    lightBlue,
+                    lightBlue,
+                    lightBlue,
+                    lightBlue
+                }
+            },
+            CubeFace { // top face
+                {
+                    frontTopLeft,
+                    frontTopRight,
+                    backTopRight,
+                    backTopLeft
+                },
+                glm::vec3(0.0, 1.0, 0.0),
+                {
+                    purple,
+                    purple,
+                    lightBlue,
+                    lightBlue
+                }
+            },
+            CubeFace { // bottom face
+                {
+                    frontBottomLeft,
+                    backBottomLeft,
+                    backBottomRight,
+                    frontBottomRight
+                },
+                glm::vec3(0.0, -1.0, 0.0),
+                {
+                    purple,
+                    lightBlue,
+                    lightBlue,
+                    purple
+                }
+            },
+            CubeFace { // right face
+                {
+                    frontBottomRight,
+                    backBottomRight,
+                    backTopRight,
+                    frontTopRight
+                },
+                glm::vec3(1.0, 0.0, 0.0),
+                {
+                    purple,
+                    lightBlue,
+                    lightBlue,
+                    purple
+                }
+            },
+            CubeFace { // front face
+                {
+                    frontBottomLeft,
+                    frontTopLeft,
+                    backTopLeft,
+                    backBottomLeft
+                },
+                glm::vec3(-1.0, 0.0, 0.0),
+                {
+                    purple,
+                    purple,
+                    lightBlue,
+                    lightBlue
+                }
+            },
+    };
+}
+
+void Cube::_generateTriangleMesh() {
+
+    // calculate triangle _positions, _colors and _normals from faces
+    for (int i = 0; i < 6; ++i)
+    {
+        CubeFace face = _faces[i];
+
+        // first triangle
+        _positions[6 * i + 0] = face.vertexPositions[0];
+        _positions[6 * i + 1] = face.vertexPositions[1];
+        _positions[6 * i + 2] = face.vertexPositions[2];
+
+        _normals[6 * i + 0] = face.faceNormal;
+        _normals[6 * i + 1] = face.faceNormal;
+        _normals[6 * i + 2] = face.faceNormal;
+
+        _colors[6 * i + 0] = face.vertexColors[0];
+        _colors[6 * i + 1] = face.vertexColors[1];
+        _colors[6 * i + 2] = face.vertexColors[2];
+
+        // second triangle
+        _positions[6 * i + 3] = face.vertexPositions[2];
+        _positions[6 * i + 4] = face.vertexPositions[3];
+        _positions[6 * i + 5] = face.vertexPositions[0];
+
+        _normals[6 * i + 3] = face.faceNormal;
+        _normals[6 * i + 4] = face.faceNormal;
+        _normals[6 * i + 5] = face.faceNormal;
+
+        _colors[6 * i + 3] = face.vertexColors[2];
+        _colors[6 * i + 4] = face.vertexColors[3];
+        _colors[6 * i + 5] = face.vertexColors[0];
+    }
 }
 
 void Cube::draw(ShaderProgram *program, PerspectiveCamera *camera) {
@@ -329,6 +259,12 @@ void Cube::draw(ShaderProgram *program, PerspectiveCamera *camera) {
 }
 
 void Cube::destroy(bool freeGLResources) {
+
+    if (_faces != nullptr)
+    {
+        delete[] _faces;
+        _faces = nullptr;
+    }
 
     if (freeGLResources)
     {

@@ -2,7 +2,7 @@ package com.wizneylabs.kollie.jni
 
 import com.wizneylabs.kollie.ShaderProgram
 
-class BoxSphere {
+class UvSphere {
 
     private var _nativeHandle: Long;
 
