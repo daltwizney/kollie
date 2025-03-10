@@ -1,5 +1,6 @@
 package com.wizneylabs.kollie.core
 
+import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import android.util.Log
 import com.wizneylabs.kollie.FullScreenQuad
@@ -9,6 +10,7 @@ import com.wizneylabs.kollie.jni.Camera2D
 import com.wizneylabs.kollie.jni.Cube
 import com.wizneylabs.kollie.jni.Grid2D
 import com.wizneylabs.kollie.jni.PerspectiveCamera
+import com.wizneylabs.kollie.jni.UvSphere
 import javax.microedition.khronos.opengles.GL10
 
 class CanvasRenderer: GLSurfaceView.Renderer {
@@ -31,6 +33,9 @@ class CanvasRenderer: GLSurfaceView.Renderer {
     private var _cubeShader: ShaderProgram? = null;
     private var _cube: Cube? = null;
 
+    private var _sphereShader: ShaderProgram? = null;
+    private var _sphere: UvSphere? = null;
+
     private var _width: Int = 0;
     private var _height: Int = 0;
 
@@ -49,6 +54,7 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         _gridShader = ShaderProgram();
         _lineShader = ShaderProgram();
         _cubeShader = ShaderProgram();
+        _sphereShader = ShaderProgram();
 
         // compile full screen quad shader
         var shaderSource = shaderSources["fullScreenQuad"];
@@ -89,6 +95,16 @@ class CanvasRenderer: GLSurfaceView.Renderer {
             _cubeShader?.fragmentShaderSource = shaderSource.second;
             _cubeShader?.compile();
         }
+
+        // compile phong shader
+        shaderSource = shaderSources["phong"];
+
+        if (shaderSource != null)
+        {
+            _sphereShader?.vertexShaderSource = shaderSource.first;
+            _sphereShader?.fragmentShaderSource = shaderSource.second;
+            _sphereShader?.compile();
+        }
     }
 
     override fun onSurfaceChanged(p0: GL10?, width: Int, height: Int) {
@@ -120,6 +136,11 @@ class CanvasRenderer: GLSurfaceView.Renderer {
             _cube = Cube();
         }
 
+        if (_sphere == null)
+        {
+            _sphere = UvSphere();
+        }
+
         camera2D?.setScreenDimensions(width, height);
 
         perspectiveCamera?.setAspectRatio(aspectRatio);
@@ -134,6 +155,26 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         RenderingEngine.clearColorBuffer();
 
         this._drawCube();
+
+//        _drawSphere();
+    }
+
+    private fun _drawSphere() {
+
+        _sphereShader?.let { shader ->
+
+            shader.use();
+
+            shader.setUniform1f("ambient", 0.1f);
+
+            shader.updateViewMatrix(perspectiveCamera!!);
+            shader.updateProjectionMatrix(perspectiveCamera!!);
+
+            // TODO: setting "model" uniform inside draw call for now,
+            // but need to update shader JNI to accept mat4's from kotlin!
+
+            _sphere?.draw(shader, perspectiveCamera!!);
+        }
     }
 
     private fun _drawCube() {

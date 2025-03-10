@@ -103,6 +103,12 @@ class Canvas(private val context: Context) : GLSurfaceView(context) {
         fragmentShaderSource = this._loadShaderFromAssets("shaders/cube/cube.frag");
 
         renderer.shaderSources["cube"] = Pair(vertexShaderSource, fragmentShaderSource);
+
+        // load phong shader resource
+        vertexShaderSource = this._loadShaderFromAssets("shaders/standard/phong.vert");
+        fragmentShaderSource = this._loadShaderFromAssets("shaders/standard/phong.frag");
+
+        renderer.shaderSources["phong"] = Pair(vertexShaderSource, fragmentShaderSource);
     }
 
     private fun _loadShaderFromAssets(fileName: String): String {
