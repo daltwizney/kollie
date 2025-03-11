@@ -11,7 +11,8 @@
 #include "kollie/log.h"
 
 UvSphere::UvSphere(int segments, int rings, float radius)
-    : _segments(segments), _rings(rings), _radius(radius)
+    : _segments(segments), _rings(rings), _radius(radius),
+        _model(glm::mat4(1.0))
 {
     // initialize sphere data
     _allocateSphereMemory();
@@ -203,9 +204,10 @@ glm::vec3 _convertToCartesian(float radius, float theta, float phi) {
 
     glm::vec3 result;
 
+    // NOTE the 'z' and 'y' flip here - b.c. 'up' is 'y' in opengl!
     result.x = radius * glm::sin(theta) * glm::cos(phi);
-    result.y = radius * glm::sin(theta) * sin(phi);
-    result.z = radius * cos(theta);
+    result.z = radius * glm::sin(theta) * sin(phi);
+    result.y = radius * cos(theta);
 
     return result;
 }
@@ -231,9 +233,11 @@ void UvSphere::_generateVertexData() {
     // TODO: update the indexing to consider the top and bottom tris separately
     for (int i = 0; i < nThetaAngles - 1; ++i)
     {
-        for (int j = 0; j < nPhiAngles - 1; ++j)
+        for (int j = 0; j < nPhiAngles; ++j)
         {
-            float theta1 = (i + 1) * dTheta;
+            // be careful calculating theta1 in terms of 'i', b.c. _faces
+            // gets populated based on 'i' too!
+            float theta1 = (i+1) * dTheta;
             float phi1 = j * dPhi;
 
             float theta2 = theta1 + dTheta;
@@ -254,11 +258,22 @@ void UvSphere::_generateVertexData() {
             face.vertexPositions[3] = _convertToCartesian(
                     _radius, theta2, phi1);
 
-            LOGI("vertex = (%f, %f, %f), radius = %f",
-                 face.vertexPositions[0].x,
-                 face.vertexPositions[0].y,
-                 face.vertexPositions[0].z,
-                 glm::length(face.vertexPositions[0]));
+            float theta1d = theta1 * 180.0f / M_PI;
+            float theta2d = theta2 * 180.0f / M_PI;
+            float phi1d = phi1 * 180.0f / M_PI;
+            float phi2d = phi2 * 180.0f / M_PI;
+
+            LOGI("FACE p1 = (%f, %f), p2 = (%f, %f), p3 = (%f, %f), p4 = (%f, %f)",
+                 theta1d, phi1d,
+                 theta1d, phi2d,
+                 theta2d, phi2d,
+                 theta2d, phi1d);
+
+//            LOGI("vertex = (%f, %f, %f), radius = %f",
+//                 face.vertexPositions[0].x,
+//                 face.vertexPositions[0].y,
+//                 face.vertexPositions[0].z,
+//                 glm::length(face.vertexPositions[0]));
 
             // compute vertex normals
             face.faceNormal = glm::vec3(0, 0, 0);
@@ -273,7 +288,7 @@ void UvSphere::_generateVertexData() {
             // compute vertex colors
             for (int k = 0; k < 4; ++k)
             {
-                face.vertexColors[i] = glm::vec3(0.0f, 0.0f, 1.0f);
+                face.vertexColors[k] = glm::vec3(0.0f, 0.0f, 1.0f);
             }
 
             // save computed face
@@ -283,7 +298,7 @@ void UvSphere::_generateVertexData() {
         }
     }
 
-    LOGI("computed face count = %d", count + 3);
+    LOGI("computed face count = %d", count);
 }
 
 void UvSphere::_generateTriangleMesh() {
@@ -319,6 +334,12 @@ void UvSphere::_generateTriangleMesh() {
         _colors[6 * i + 4] = face.vertexColors[3];
         _colors[6 * i + 5] = face.vertexColors[0];
     }
+
+//    for (int i = 0; i < _nColors; i++)
+//    {
+//        LOGI("VERTEX COLOR: (%f, %f, %f)",
+//             _colors[i].x, _colors[i].y, _colors[i].z);
+//    }
 
     // generate indices
     for (int i = 0; i < _nIndices; ++i)
