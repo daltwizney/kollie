@@ -20,6 +20,8 @@ UvSphere::UvSphere(int segments, int rings, float radius)
 
     _generateTriangleMesh();
 
+    LOGI("_nFaces = %d, _nIndices = %d, _nPositions = %d", _nFaces, _nIndices, _nPositions);
+
     // create VAO, VBOs and EBO
     glGenVertexArrays(1, &_VAO);
 
@@ -47,13 +49,13 @@ UvSphere::UvSphere(int segments, int rings, float radius)
     glEnableVertexAttribArray(0);
 
     // bind color VBO and buffer data
-    glBindBuffer(GL_ARRAY_BUFFER, _normalVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, _colorVBO);
     glBufferData(GL_ARRAY_BUFFER,
                  _nColors * sizeof(glm::vec3),
-                 _normals, GL_STATIC_DRAW);
+                 _colors, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(1);
 
     // bind normal VBO and buffer data
     glBindBuffer(GL_ARRAY_BUFFER, _normalVBO);
@@ -76,8 +78,8 @@ void UvSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
 
     glEnable(GL_DEPTH_TEST);
 
-    glEnable(GL_CULL_FACE);
-//    glDisable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
 
     glBindVertexArray(_VAO);
 
@@ -134,6 +136,12 @@ void UvSphere::destroy(bool freeGLResources) {
     {
         delete[] _colors;
         _colors = nullptr;
+    }
+
+    if (_indices != nullptr)
+    {
+        delete[] _indices;
+        _indices = nullptr;
     }
 
     // free opengl resources
@@ -218,6 +226,8 @@ void UvSphere::_generateVertexData() {
     int nThetaAngles = _rings - 1; // doesn't include top and bottom verts
     int nPhiAngles = _segments;
 
+    int count = 0;
+
     // TODO: update the indexing to consider the top and bottom tris separately
     for (int i = 0; i < nThetaAngles - 1; ++i)
     {
@@ -227,7 +237,7 @@ void UvSphere::_generateVertexData() {
             float phi1 = j * dPhi;
 
             float theta2 = theta1 + dTheta;
-            float phi2 = phi1 = dPhi;
+            float phi2 = phi1 + dPhi;
 
             UvSphereFace face;
 
@@ -244,6 +254,12 @@ void UvSphere::_generateVertexData() {
             face.vertexPositions[3] = _convertToCartesian(
                     _radius, theta2, phi1);
 
+            LOGI("vertex = (%f, %f, %f), radius = %f",
+                 face.vertexPositions[0].x,
+                 face.vertexPositions[0].y,
+                 face.vertexPositions[0].z,
+                 glm::length(face.vertexPositions[0]));
+
             // compute vertex normals
             face.faceNormal = glm::vec3(0, 0, 0);
 
@@ -252,16 +268,22 @@ void UvSphere::_generateVertexData() {
                 face.faceNormal += face.vertexPositions[k];
             }
 
+            face.faceNormal = glm::normalize(face.faceNormal);
+
             // compute vertex colors
             for (int k = 0; k < 4; ++k)
             {
-                face.vertexColors[i] = glm::vec3(0.0f, 1.0f, 0.0f);
+                face.vertexColors[i] = glm::vec3(0.0f, 0.0f, 1.0f);
             }
 
             // save computed face
             _faces[i * _segments + j] = face;
+
+            count++;
         }
     }
+
+    LOGI("computed face count = %d", count + 3);
 }
 
 void UvSphere::_generateTriangleMesh() {

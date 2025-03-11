@@ -154,9 +154,9 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
         RenderingEngine.clearColorBuffer();
 
-        this._drawCube();
+//        _drawCube();
 
-//        _drawSphere();
+        _drawSphere();
     }
 
     private fun _drawSphere() {
@@ -240,6 +240,9 @@ class CanvasRenderer: GLSurfaceView.Renderer {
 
         _cube?.destroy();
         _cube = null;
+
+        _sphere?.destroy();
+        _sphere = null;
 
         _fullScreenShader?.destroy(false);
         _fullScreenShader = null;

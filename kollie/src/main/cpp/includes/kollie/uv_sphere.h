@@ -21,7 +21,7 @@ class UvSphere {
 
 public:
 
-    UvSphere(int segments = 7, int rings = 5, float radius = 1.0f);
+    UvSphere(int segments = 7, int rings = 5, float radius = 0.5f);
 
     void draw(ShaderProgram* program, PerspectiveCamera *camera);
 
