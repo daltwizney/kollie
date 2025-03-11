@@ -79,8 +79,8 @@ void UvSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
 
     glEnable(GL_DEPTH_TEST);
 
-//    glEnable(GL_CULL_FACE);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+//    glDisable(GL_CULL_FACE);
 
     glBindVertexArray(_VAO);
 
@@ -181,14 +181,14 @@ void UvSphere::_allocateSphereMemory() {
     // initialize array sizes
     _nFaces = _segments * _rings;
 
-    // this is just for testing without top and bottom rings for now
-    _nFaces -= 2 * _segments; // TODO: remove before flight
+    size_t nQuads = _nFaces - 2 * _segments;
+    size_t nTris = _nFaces - nQuads;
 
     // TODO: this will be different for flat vs smooth shading
-    _nPositions = _nFaces * 6;
-    _nColors = _nFaces * 6;
-    _nNormals = _nFaces * 6;
-    _nIndices = _nFaces * 6;
+    _nPositions = nQuads * 6 + nTris * 3;
+    _nColors = _nPositions;
+    _nNormals = _nPositions;
+    _nIndices = _nPositions;
 
     // allocate _positions, _colors, _normals arrays
     _positions = new glm::vec3[_nPositions];
@@ -230,6 +230,97 @@ void UvSphere::_generateVertexData() {
 
     int count = 0;
 
+    glm::vec3 purple((128 / 255.0f), (0/255.0f), (128/255.0f));
+    glm::vec3 lightBlue((144 / 255.0f), (213/255.0f), (1.0f));
+
+    // add top ring tris
+    for (int j = 0; j < nPhiAngles; ++j)
+    {
+        float theta1 = 0;
+        float phi1 = j * dPhi;
+
+        float theta2 = theta1 + dTheta;
+        float phi2 = phi1 + dPhi;
+
+        UvSphereFace face;
+
+        face.isQuad = false;
+
+        // compute vertex positions
+        face.vertexPositions[0] = _convertToCartesian(
+                _radius, theta1, phi1);
+
+        face.vertexPositions[1] = _convertToCartesian(
+                _radius, theta2, phi2);
+
+        face.vertexPositions[2] = _convertToCartesian(
+                _radius, theta2, phi1);
+
+        // compute vertex colors
+        face.vertexColors[0] = glm::mix(purple, lightBlue, theta1 / M_PI);
+        face.vertexColors[1] = glm::mix(purple, lightBlue, theta2 / M_PI);
+        face.vertexColors[2] = glm::mix(purple, lightBlue, theta2 / M_PI);
+
+        // compute vertex normals
+        face.faceNormal = glm::vec3(0, 0, 0);
+
+        for (int k = 0; k < 3; ++k)
+        {
+            face.faceNormal += face.vertexPositions[k];
+        }
+
+        face.faceNormal = glm::normalize(face.faceNormal);
+
+        // save computed face
+        _faces[count] = face;
+
+        count++;
+    }
+
+    // add bottom ring tris
+    for (int j = 0; j < nPhiAngles; ++j)
+    {
+        float theta1 = M_PI;
+        float phi1 = j * dPhi;
+
+        float theta2 = theta1 - dTheta;
+        float phi2 = phi1 + dPhi;
+
+        UvSphereFace face;
+
+        face.isQuad = false;
+
+        // compute vertex positions
+        face.vertexPositions[0] = _convertToCartesian(
+                _radius, theta1, phi1);
+
+        face.vertexPositions[1] = _convertToCartesian(
+                _radius, theta2, phi1);
+
+        face.vertexPositions[2] = _convertToCartesian(
+                _radius, theta2, phi2);
+
+        // compute vertex colors
+        face.vertexColors[0] = glm::mix(purple, lightBlue, theta1 / M_PI);
+        face.vertexColors[1] = glm::mix(purple, lightBlue, theta2 / M_PI);
+        face.vertexColors[2] = glm::mix(purple, lightBlue, theta2 / M_PI);
+
+        // compute vertex normals
+        face.faceNormal = glm::vec3(0, 0, 0);
+
+        for (int k = 0; k < 3; ++k)
+        {
+            face.faceNormal += face.vertexPositions[k];
+        }
+
+        face.faceNormal = glm::normalize(face.faceNormal);
+
+        // save computed face
+        _faces[count] = face;
+
+        count++;
+    }
+
     // TODO: update the indexing to consider the top and bottom tris separately
     for (int i = 0; i < nThetaAngles - 1; ++i)
     {
@@ -245,6 +336,8 @@ void UvSphere::_generateVertexData() {
 
             UvSphereFace face;
 
+            face.isQuad = true;
+
             // compute vertex positions
             face.vertexPositions[0] = _convertToCartesian(
                     _radius, theta1, phi1);
@@ -258,22 +351,28 @@ void UvSphere::_generateVertexData() {
             face.vertexPositions[3] = _convertToCartesian(
                     _radius, theta2, phi1);
 
-            float theta1d = theta1 * 180.0f / M_PI;
-            float theta2d = theta2 * 180.0f / M_PI;
-            float phi1d = phi1 * 180.0f / M_PI;
-            float phi2d = phi2 * 180.0f / M_PI;
-
-            LOGI("FACE p1 = (%f, %f), p2 = (%f, %f), p3 = (%f, %f), p4 = (%f, %f)",
-                 theta1d, phi1d,
-                 theta1d, phi2d,
-                 theta2d, phi2d,
-                 theta2d, phi1d);
+//            float theta1d = theta1 * 180.0f / M_PI;
+//            float theta2d = theta2 * 180.0f / M_PI;
+//            float phi1d = phi1 * 180.0f / M_PI;
+//            float phi2d = phi2 * 180.0f / M_PI;
+//
+//            LOGI("FACE p1 = (%f, %f), p2 = (%f, %f), p3 = (%f, %f), p4 = (%f, %f)",
+//                 theta1d, phi1d,
+//                 theta1d, phi2d,
+//                 theta2d, phi2d,
+//                 theta2d, phi1d);
 
 //            LOGI("vertex = (%f, %f, %f), radius = %f",
 //                 face.vertexPositions[0].x,
 //                 face.vertexPositions[0].y,
 //                 face.vertexPositions[0].z,
 //                 glm::length(face.vertexPositions[0]));
+
+            // compute vertex colors
+            face.vertexColors[0] = glm::mix(purple, lightBlue, theta1 / M_PI);
+            face.vertexColors[1] = glm::mix(purple, lightBlue, theta1 / M_PI);
+            face.vertexColors[2] = glm::mix(purple, lightBlue, theta2 / M_PI);
+            face.vertexColors[3] = glm::mix(purple, lightBlue, theta2 / M_PI);
 
             // compute vertex normals
             face.faceNormal = glm::vec3(0, 0, 0);
@@ -285,14 +384,8 @@ void UvSphere::_generateVertexData() {
 
             face.faceNormal = glm::normalize(face.faceNormal);
 
-            // compute vertex colors
-            for (int k = 0; k < 4; ++k)
-            {
-                face.vertexColors[k] = glm::vec3(0.0f, 0.0f, 1.0f);
-            }
-
             // save computed face
-            _faces[i * _segments + j] = face;
+            _faces[count] = face;
 
             count++;
         }
@@ -303,36 +396,59 @@ void UvSphere::_generateVertexData() {
 
 void UvSphere::_generateTriangleMesh() {
 
+    size_t currentPosition = 0;
+
     // generate vertex attribute data
     for (int i = 0; i < _nFaces; ++i)
     {
         UvSphereFace face = _faces[i];
 
-        // first triangle
-        _positions[6 * i + 0] = face.vertexPositions[0];
-        _positions[6 * i + 1] = face.vertexPositions[1];
-        _positions[6 * i + 2] = face.vertexPositions[2];
+        if (face.isQuad)
+        {
+            // first triangle
+            _positions[currentPosition + 0] = face.vertexPositions[0];
+            _positions[currentPosition + 1] = face.vertexPositions[1];
+            _positions[currentPosition + 2] = face.vertexPositions[2];
 
-        _normals[6 * i + 0] = face.faceNormal;
-        _normals[6 * i + 1] = face.faceNormal;
-        _normals[6 * i + 2] = face.faceNormal;
+            _normals[currentPosition + 0] = face.faceNormal;
+            _normals[currentPosition + 1] = face.faceNormal;
+            _normals[currentPosition + 2] = face.faceNormal;
 
-        _colors[6 * i + 0] = face.vertexColors[0];
-        _colors[6 * i + 1] = face.vertexColors[1];
-        _colors[6 * i + 2] = face.vertexColors[2];
+            _colors[currentPosition + 0] = face.vertexColors[0];
+            _colors[currentPosition + 1] = face.vertexColors[1];
+            _colors[currentPosition + 2] = face.vertexColors[2];
 
-        // second triangle
-        _positions[6 * i + 3] = face.vertexPositions[2];
-        _positions[6 * i + 4] = face.vertexPositions[3];
-        _positions[6 * i + 5] = face.vertexPositions[0];
+            // second triangle
+            _positions[currentPosition + 3] = face.vertexPositions[2];
+            _positions[currentPosition + 4] = face.vertexPositions[3];
+            _positions[currentPosition + 5] = face.vertexPositions[0];
 
-        _normals[6 * i + 3] = face.faceNormal;
-        _normals[6 * i + 4] = face.faceNormal;
-        _normals[6 * i + 5] = face.faceNormal;
+            _normals[currentPosition + 3] = face.faceNormal;
+            _normals[currentPosition + 4] = face.faceNormal;
+            _normals[currentPosition + 5] = face.faceNormal;
 
-        _colors[6 * i + 3] = face.vertexColors[2];
-        _colors[6 * i + 4] = face.vertexColors[3];
-        _colors[6 * i + 5] = face.vertexColors[0];
+            _colors[currentPosition + 3] = face.vertexColors[2];
+            _colors[currentPosition + 4] = face.vertexColors[3];
+            _colors[currentPosition + 5] = face.vertexColors[0];
+
+            currentPosition += 6;
+        }
+        else // it's a tri
+        {
+            _positions[currentPosition + 0] = face.vertexPositions[0];
+            _positions[currentPosition + 1] = face.vertexPositions[1];
+            _positions[currentPosition + 2] = face.vertexPositions[2];
+
+            _normals[currentPosition + 0] = face.faceNormal;
+            _normals[currentPosition + 1] = face.faceNormal;
+            _normals[currentPosition + 2] = face.faceNormal;
+
+            _colors[currentPosition + 0] = face.vertexColors[0];
+            _colors[currentPosition + 1] = face.vertexColors[1];
+            _colors[currentPosition + 2] = face.vertexColors[2];
+
+            currentPosition += 3;
+        }
     }
 
 //    for (int i = 0; i < _nColors; i++)

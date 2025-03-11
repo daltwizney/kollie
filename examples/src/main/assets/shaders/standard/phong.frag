@@ -11,7 +11,7 @@ out vec4 fragColor;
 void main() {
 
     // light is pointing towards object from camera, tilted 'downward' at 45 degrees
-    vec3 lightDirection = -normalize(vec3(0, -1, -1)); // in view coordinates
+    vec3 lightDirection = -normalize(vec3(0, 0, -1)); // in view coordinates
 
     float diffuseFactor = max(dot(lightDirection, vNormal), 0.0);
 

@@ -12,6 +12,8 @@
 
 struct UvSphereFace {
 
+    bool isQuad;
+
     glm::vec3 vertexPositions[4];
     glm::vec3 faceNormal;
     glm::vec3 vertexColors[4];
@@ -21,7 +23,7 @@ class UvSphere {
 
 public:
 
-    UvSphere(int segments = 10, int rings = 8, float radius = 1.0f);
+    UvSphere(int segments = 10, int rings = 7, float radius = 1.0f);
 
     void draw(ShaderProgram* program, PerspectiveCamera *camera);
 
