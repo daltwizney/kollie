@@ -8,6 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.compose.material3.Text
 import androidx.core.content.ContextCompat
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
@@ -15,11 +17,10 @@ import com.google.ar.core.Session
 import com.google.ar.core.SharedCamera
 
 import com.wizneylabs.examples.ui.theme.KollieTheme
+import com.wizneylabs.examples.viewmodels.MainViewModel
 import com.wizneylabs.kollie.composables.KollieCanvas
 
 class MainActivity : ComponentActivity() {
-
-    private var _arSession: Session? = null;
 
     private var _hasCameraPermission = false;
 
@@ -28,6 +29,14 @@ class MainActivity : ComponentActivity() {
     ) { isGranted ->
         _hasCameraPermission = isGranted;
     }
+
+    private val _mainViewModel: MainViewModel by viewModels();
+
+    val camera: SharedCamera?
+        get() = _camera;
+
+    val cameraId: String
+        get() = _cameraId;
 
     private var _camera: SharedCamera? = null;
     private var _cameraId: String = "";
@@ -47,7 +56,15 @@ class MainActivity : ComponentActivity() {
 //            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
             KollieTheme {
-                KollieCanvas()
+
+                if (_mainViewModel.arSession.value != null)
+                {
+                    KollieCanvas(_mainViewModel.arSession.value!!);
+                }
+                else
+                {
+                    Text("loading AR Session...");
+                }
             }
         }
     }
@@ -55,7 +72,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val currentSession = _arSession;
+        val currentSession = _mainViewModel.arSession.value;
 
         if (currentSession != null)
         {
@@ -91,24 +108,29 @@ class MainActivity : ComponentActivity() {
 
         Log.i("ExamplesMainActivity", "pausing session!");
 
-        _arSession?.pause();
+        _mainViewModel.arSession.value?.pause();
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        _arSession?.close();
+        _mainViewModel.arSession.value?.close();
     }
 
     fun createSession() {
 
         Log.i("ExamplesMainActivity", "creating AR session!");
 
-        _arSession = Session(this);
+        _mainViewModel.arSession.value = Session(this);
 
-        val config = Config(_arSession);
+        val config = Config(_mainViewModel.arSession.value);
 
-        _arSession?.configure(config);
+//        config.setFocusMode(Config.FocusMode.AUTO);
+//        config.setUpdateMode(Config.UpdateMode.BLOCKING);
+
+        _mainViewModel.arSession.value?.configure(config);
+
+        _mainViewModel.arSession.value?.resume();
 
 //        _camera = _arSession?.sharedCamera;
 //        _cameraId = _arSession?.getCameraConfig()?.getCameraId() ?: "";

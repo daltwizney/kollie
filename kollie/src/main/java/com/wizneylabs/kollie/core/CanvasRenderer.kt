@@ -3,6 +3,8 @@ package com.wizneylabs.kollie.core
 import android.graphics.Shader
 import android.opengl.GLSurfaceView
 import android.util.Log
+import com.google.ar.core.Session
+import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.wizneylabs.kollie.FullScreenQuad
 import com.wizneylabs.kollie.RenderingEngine
 import com.wizneylabs.kollie.ShaderProgram
@@ -13,7 +15,7 @@ import com.wizneylabs.kollie.jni.PerspectiveCamera
 import com.wizneylabs.kollie.jni.UvSphere
 import javax.microedition.khronos.opengles.GL10
 
-class CanvasRenderer: GLSurfaceView.Renderer {
+class CanvasRenderer(private val _arSession: Session): GLSurfaceView.Renderer {
 
     private val TAG = CanvasRenderer::class.simpleName;
 
@@ -47,6 +49,8 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         Log.d(TAG, "Kollie surface created!");
 
         RenderingEngine.initialize();
+
+        _arSession.setCameraTextureName(RenderingEngine.getArCoreTextureId().toInt());
 
         _grid = Grid2D();
 
@@ -155,6 +159,14 @@ class CanvasRenderer: GLSurfaceView.Renderer {
         RenderingEngine.clearColorBuffer();
 
 //        _drawCube();
+
+        val frame =
+            try {
+                _arSession.update();
+            } catch (e: CameraNotAvailableException) {
+                Log.e("ExamplesMainActivity", "Camera not available during onDrawFrame", e)
+                return
+            }
 
         _drawSphere();
     }

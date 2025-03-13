@@ -18,6 +18,8 @@ public:
     static void clearColorBuffer();
 
     static bool isContextValid();
+
+    static unsigned int getArCoreTextureId();
 };
 
 #endif //KOLLIE_RENDERER_H

@@ -35,3 +35,10 @@ Java_com_wizneylabs_kollie_RenderingEngine_00024Companion_isContextValid(JNIEnv 
                                                                                 jobject thiz) {
     return Renderer::isContextValid();
 }
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_wizneylabs_kollie_RenderingEngine_00024Companion_getArCoreTextureId(JNIEnv *env,
+                                                                             jobject thiz) {
+
+    return Renderer::getArCoreTextureId();
+}

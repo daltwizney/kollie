@@ -4,6 +4,7 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.opengl.GLSurfaceView.EGLConfigChooser
 import android.util.Log
+import com.google.ar.core.Session
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.egl.EGLDisplay
@@ -51,11 +52,13 @@ internal class MultisampleConfigChooser : EGLConfigChooser {
     }
 }
 
-class Canvas(private val context: Context) : GLSurfaceView(context) {
+class Canvas(private val context: Context,
+    private val _arSession: Session
+) : GLSurfaceView(context) {
 
     val TAG = Canvas::class.simpleName;
 
-    private val renderer = CanvasRenderer();
+    private val renderer = CanvasRenderer(_arSession);
 
     init {
 

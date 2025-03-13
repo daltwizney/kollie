@@ -24,6 +24,8 @@ class RenderingEngine {
 
         external fun isContextValid(): Boolean;
 
+        external fun getArCoreTextureId(): Long;
+
         private external fun _init();
     }
 }
