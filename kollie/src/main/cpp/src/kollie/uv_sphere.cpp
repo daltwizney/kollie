@@ -78,15 +78,16 @@ UvSphere::UvSphere(int segments, int rings, float radius)
 void UvSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
 
     glEnable(GL_DEPTH_TEST);
+//    glDisable(GL_DEPTH_TEST);
+
+//    glDepthMask(GL_TRUE);
+
+    glDepthFunc(GL_LESS);
 
     glEnable(GL_CULL_FACE);
 //    glDisable(GL_CULL_FACE);
 
     glBindVertexArray(_VAO);
-
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GLint modelLoc = glGetUniformLocation(program->id(), "model");
     GLint viewLoc = glGetUniformLocation(program->id(), "view");
@@ -102,6 +103,8 @@ void UvSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
     // Update model matrix to rotate sphere
     _model = glm::rotate(_model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+//    _model = glm::translate(_model, glm::vec3(0, 0, -1.0f));
+
     glm::mat4 modelViewMatrix = camera->getViewMatrix() * _model;
 
     _normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelViewMatrix)));
@@ -110,6 +113,13 @@ void UvSphere::draw(ShaderProgram *program, PerspectiveCamera *camera) {
     program->setUniformMatrix3fv("normalMatrix", 1, false, glm::value_ptr(_normalMatrix));
 
     glDrawElements(GL_TRIANGLES, _nIndices, GL_UNSIGNED_INT, 0);
+//
+//    int error = glGetError();
+//
+//    if (error != GL_NO_ERROR)
+//    {
+//        LOGE("OpenGL ERROR: %d", error);
+//    }
 }
 
 void UvSphere::destroy(bool freeGLResources) {

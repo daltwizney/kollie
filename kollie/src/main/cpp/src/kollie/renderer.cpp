@@ -14,7 +14,7 @@ static unsigned int arCoreTextureId = -1;
 void Renderer::init() {
 
     // set clear color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
     GLint samples;
     glGetIntegerv(GL_SAMPLES, &samples);
@@ -44,6 +44,7 @@ void Renderer::resize(int width, int height) {
 
 void Renderer::clearColorBuffer() {
 
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -53,5 +54,10 @@ bool Renderer::isContextValid() {
 
 unsigned int Renderer::getArCoreTextureId() {
     return arCoreTextureId;
+}
+
+void Renderer::clearDepthBuffer() {
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 

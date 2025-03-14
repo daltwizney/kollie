@@ -11,7 +11,7 @@
 
 FullScreenQuad::FullScreenQuad()
     : _vertices {
-        // positions        // texture coords
+        // positions                    // texture coords
         -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,   // top left
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   // bottom left
         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,   // top right
@@ -40,7 +40,10 @@ FullScreenQuad::FullScreenQuad()
 
 void FullScreenQuad::draw() {
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+//    glDepthMask(GL_FALSE);
+
+//    glClear(GL_DEPTH_BUFFER_BIT);
 
     glBindVertexArray(_VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

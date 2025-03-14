@@ -42,3 +42,9 @@ Java_com_wizneylabs_kollie_RenderingEngine_00024Companion_getArCoreTextureId(JNI
 
     return Renderer::getArCoreTextureId();
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_wizneylabs_kollie_RenderingEngine_00024Companion_clearDepthBuffer(JNIEnv *env,
+                                                                           jobject thiz) {
+    return Renderer::clearDepthBuffer();
+}

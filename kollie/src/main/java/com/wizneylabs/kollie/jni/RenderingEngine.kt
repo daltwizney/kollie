@@ -22,6 +22,8 @@ class RenderingEngine {
 
         external fun clearColorBuffer();
 
+        external fun clearDepthBuffer();
+
         external fun isContextValid(): Boolean;
 
         external fun getArCoreTextureId(): Long;

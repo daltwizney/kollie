@@ -157,17 +157,17 @@ class CanvasRenderer(private val _arSession: Session): GLSurfaceView.Renderer {
     override fun onDrawFrame(p0: GL10?) {
 
         RenderingEngine.clearColorBuffer();
+        RenderingEngine.clearDepthBuffer();
 
-//        _drawCube();
+//        val frame =
+//            try {
+//                _arSession.update();
+//            } catch (e: CameraNotAvailableException) {
+//                Log.e("ExamplesMainActivity", "Camera not available during onDrawFrame", e)
+//                return
+//            }
 
-        val frame =
-            try {
-                _arSession.update();
-            } catch (e: CameraNotAvailableException) {
-                Log.e("ExamplesMainActivity", "Camera not available during onDrawFrame", e)
-                return
-            }
-
+//        _drawFullScreenQuad();
         _drawSphere();
     }
 

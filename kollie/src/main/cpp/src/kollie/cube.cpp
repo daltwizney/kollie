@@ -230,10 +230,6 @@ void Cube::draw(ShaderProgram *program, PerspectiveCamera *camera) {
 
     glBindVertexArray(_VAO);
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     GLint modelLoc = glGetUniformLocation(program->id(), "model");
     GLint viewLoc = glGetUniformLocation(program->id(), "view");
     GLint projLoc = glGetUniformLocation(program->id(), "projection");

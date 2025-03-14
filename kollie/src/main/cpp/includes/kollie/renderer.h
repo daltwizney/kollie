@@ -17,6 +17,8 @@ public:
 
     static void clearColorBuffer();
 
+    static void clearDepthBuffer();
+
     static bool isContextValid();
 
     static unsigned int getArCoreTextureId();

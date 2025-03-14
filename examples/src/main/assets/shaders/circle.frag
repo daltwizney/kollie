@@ -18,12 +18,14 @@ void main()
     float distance = length(uv - center);
 
     // Circle radius
-    float radius = 0.2;
+    float radius = 0.5;
 
     // Smooth edge
     float smoothWidth = 0.01;
     float circle = smoothstep(radius + smoothWidth, radius - smoothWidth, distance);
 
+    vec3 color = vec3(0.2f, 0.3f, 0.3f);
+
     // Output color (white circle on black background)
-    FragColor = vec4(vec3(circle), 1.0);
+    FragColor = vec4(circle * color, 1.0);
 }
